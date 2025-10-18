@@ -26,7 +26,7 @@ export const ThemeList = styled.ul`
   padding: 0;
 `;
 
-export const ThemeItem = styled.li`
+export const ThemeItem = styled.div`
   margin-bottom: 40px;
 `;
 
@@ -58,7 +58,7 @@ export const ExpandIcon = styled.div`
   margin-left: 8px;
 `;
 
-export const ThemeTitle = styled.div`\
+export const ThemeTitle = styled.div`
   flex: 1;
 `;
 

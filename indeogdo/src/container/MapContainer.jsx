@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import MapSearch from '@/components/Map/MapSearch';
 import MapReset from '@/components/Map/MapReset';
 
@@ -12,9 +12,127 @@ function MapContainer() {
   const [searchResults, setSearchResults] = useState([]);
   const [mapInstance, setMapInstance] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(18); // 줌 레벨을 더 확대되도록 설정
+  const [selectedSites, setSelectedSites] = useState([]);
+  const [siteMarkers, setSiteMarkers] = useState([]);
+  const siteMarkersRef = useRef([]);
 
   // 초기 위치 정보 저장
   const [initialPosition, setInitialPosition] = useState(null);
+
+  // 선택된 sites 데이터를 받아서 POI 마커 생성
+  const createSiteMarkers = useCallback((sites) => {
+    console.log('createSiteMarkers called with:', sites);
+    console.log('mapInstance available:', !!mapInstance);
+    console.log('sites length:', sites?.length);
+
+    if (!mapInstance) {
+      console.error('mapInstance not available');
+      return;
+    }
+
+    // 기존 site 마커들 제거 (항상 실행)
+    clearSiteMarkers();
+
+    if (!sites || sites.length === 0) {
+      console.log('No sites to create markers for - all markers cleared');
+      return;
+    }
+
+    const newMarkers = [];
+
+    sites.forEach((site, index) => {
+      console.log(`Processing site ${index + 1}:`, site);
+
+      if (site.latitude && site.longitude) {
+        console.log(`Creating marker for site: ${site.title} at ${site.latitude}, ${site.longitude}`);
+
+        // 커스텀 아이콘 생성
+        const icon = site.icon?.img ? {
+          url: site.icon.img,
+          scaledSize: new window.google.maps.Size(32, 32),
+          anchor: new window.google.maps.Point(16, 16)
+        } : null;
+
+        const marker = new window.google.maps.Marker({
+          position: {
+            lat: parseFloat(site.latitude),
+            lng: parseFloat(site.longitude)
+          },
+          map: mapInstance,
+          title: site.title,
+          icon: icon,
+          animation: window.google.maps.Animation.DROP
+        });
+
+        // 인포윈도우 생성
+        const infoWindow = new window.google.maps.InfoWindow({
+          content: `
+            <div style="padding: 10px; max-width: 200px;">
+              <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #333;">${site.title}</h3>
+              ${site.address ? `<p style="margin: 0 0 8px 0; font-size: 14px; color: #666;">${site.address}</p>` : ''}
+              ${site.contents ? `<p style="margin: 0; font-size: 12px; color: #888;">${site.contents}</p>` : ''}
+              ${site.cluster ? `<p style="margin: 8px 0 0 0; font-size: 12px; color: #2196f3; font-weight: bold;">클러스터: ${site.cluster.title}</p>` : ''}
+            </div>
+          `
+        });
+
+        // 마커 클릭 시 인포윈도우 표시
+        marker.addListener('click', () => {
+          infoWindow.open(mapInstance, marker);
+        });
+
+        // 마커에 식별자 추가
+        marker._isSiteMarker = true;
+        marker._siteId = site.id;
+
+        newMarkers.push(marker);
+        console.log(`Marker created for ${site.title}`);
+      } else {
+        console.warn(`Site ${site.title} missing latitude or longitude:`, {
+          latitude: site.latitude,
+          longitude: site.longitude
+        });
+      }
+    });
+
+    siteMarkersRef.current = newMarkers;
+    setSiteMarkers(newMarkers);
+    console.log(`Successfully created ${newMarkers.length} site markers`);
+  }, [mapInstance]);
+
+  // 기존 site 마커들 제거
+  const clearSiteMarkers = useCallback(() => {
+    console.log('Clearing site markers, current count:', siteMarkersRef.current.length);
+    siteMarkersRef.current.forEach(marker => {
+      console.log('Removing marker:', marker);
+      marker.setMap(null);
+    });
+    siteMarkersRef.current = [];
+    setSiteMarkers([]);
+    console.log('All site markers cleared');
+  }, []);
+
+  // Navigation에서 선택된 sites 데이터를 받는 전역 함수 설정
+  const handleSitesSelected = useCallback((sites) => {
+    console.log('MapContainer: Received sites from Navigation:', sites);
+    console.log('MapContainer: mapInstance available:', !!mapInstance);
+    setSelectedSites(sites);
+    if (mapInstance) {
+      createSiteMarkers(sites);
+    } else {
+      console.warn('MapContainer: mapInstance not available, cannot create markers');
+    }
+  }, [mapInstance, createSiteMarkers]);
+
+  useEffect(() => {
+    window.onSitesSelected = handleSitesSelected;
+
+    return () => {
+      if (window.onSitesSelected) {
+        delete window.onSitesSelected;
+      }
+    };
+  }, [handleSitesSelected]);
 
   // 구글 지도 초기화
   useEffect(() => {
@@ -195,8 +313,12 @@ function MapContainer() {
       const markers = document.querySelectorAll('[data-marker]');
       markers.forEach(marker => marker.remove());
 
+      // site 마커들도 제거
+      clearSiteMarkers();
+
       // 검색 결과 리셋
       setSearchResults([]);
+      setSelectedSites([]);
 
       console.log('지도가 초기 위치로 리셋됨:', initialPosition);
     } catch (error) {
