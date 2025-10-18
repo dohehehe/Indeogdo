@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import MapSearch from '@/components/common/MapSearch';
-import MapReset from '@/components/common/MapReset';
+import MapSearch from '@/components/Map/MapSearch';
+import MapReset from '@/components/Map/MapReset';
 
-function Map() {
+function MapContainer() {
   const mapRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -433,4 +433,4 @@ function Map() {
   );
 };
 
-export default Map;
+export default MapContainer;
