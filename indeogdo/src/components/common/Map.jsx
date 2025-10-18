@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import MapSearch from './MapSearch';
+import MapSearch from '@/components/common/MapSearch';
+import MapReset from '@/components/common/MapReset';
 
 function Map() {
   const mapRef = useRef(null);
@@ -11,6 +12,9 @@ function Map() {
   const [searchResults, setSearchResults] = useState([]);
   const [mapInstance, setMapInstance] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(18); // 줌 레벨을 더 확대되도록 설정
+
+  // 초기 위치 정보 저장
+  const [initialPosition, setInitialPosition] = useState(null);
 
   // 구글 지도 초기화
   useEffect(() => {
@@ -58,6 +62,9 @@ function Map() {
             setMapInstance(map);
             setLoading(false);
             setMapInitialized(true);
+
+            // 초기 위치 저장 (지도 생성 후)
+            setInitialPosition({ lat, lng, zoom: zoomLevel });
             return;
           }
 
@@ -81,6 +88,9 @@ function Map() {
                 setMapInstance(map);
                 setLoading(false);
                 setMapInitialized(true);
+
+                // 초기 위치 저장 (지도 생성 후)
+                setInitialPosition({ lat, lng, zoom: zoomLevel });
               } catch (error) {
                 console.error('Map initialization error:', error);
                 setError(error.message);
@@ -158,6 +168,41 @@ function Map() {
     }
   };
 
+
+  // 지도 리셋 함수
+  const handleMapReset = () => {
+
+    if (!mapInstance) {
+      console.log('mapInstance가 없습니다');
+      return;
+    }
+
+    if (!initialPosition) {
+      console.log('initialPosition이 없습니다');
+      return;
+    }
+
+    try {
+
+      // 초기 위치로 이동
+      mapInstance.setCenter({
+        lat: initialPosition.lat,
+        lng: initialPosition.lng
+      });
+      mapInstance.setZoom(initialPosition.zoom);
+
+      // 모든 마커 제거
+      const markers = document.querySelectorAll('[data-marker]');
+      markers.forEach(marker => marker.remove());
+
+      // 검색 결과 리셋
+      setSearchResults([]);
+
+      console.log('지도가 초기 위치로 리셋됨:', initialPosition);
+    } catch (error) {
+      console.error('지도 리셋 중 오류:', error);
+    }
+  };
 
   // 검색 결과 클릭 핸들러
   const handleResultClick = (place) => {
@@ -355,10 +400,10 @@ function Map() {
           onSearch={searchPlaces}
           searchResults={searchResults}
           onResultClick={handleResultClick}
+          onFocusOut={() => setSearchResults([])}
           placeholder="장소를 검색하세요..."
         />
       )}
-
 
       {/* 지도 컨테이너 */}
       <div
@@ -380,6 +425,10 @@ function Map() {
         <>error...</>
       )}
 
+      {/* 리셋 버튼 - 지도가 초기화된 후에만 표시 */}
+      {mapInitialized && (
+        <MapReset onReset={handleMapReset} />
+      )}
     </div>
   );
 };
