@@ -1,6 +1,7 @@
 import "./globals.css";
 import Providers from "@/components/Providers";
 import MapContainer from "@/container/MapContainer";
+import Navigation from "@/components/Navigation/Navigation";
 
 export const metadata = {
   title: "Create Next App",
@@ -13,6 +14,7 @@ export default function RootLayout({ children }) {
       <body>
         <Providers>
           <MapContainer />
+          <Navigation />
           {children}
         </Providers>
       </body>
