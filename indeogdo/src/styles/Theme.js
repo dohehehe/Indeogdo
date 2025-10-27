@@ -1,7 +1,7 @@
 // 기본 테마 설정
 export const theme = {
   colors: {
-    primary: '#0070f3',
+    primary: '#ADD5FF',
     secondary: '#7928ca',
     success: '#0070f3',
     warning: '#f5a623',
