@@ -117,7 +117,7 @@ function Navigation() {
                 >
                   <S.ThemeTitle>{theme.title}</S.ThemeTitle>
                   <S.ExpandIcon $isExpanded={isExpanded}>
-                    {isExpanded ? '▼' : '▶'}
+                    {isExpanded ? '▲' : '▼'}
                   </S.ExpandIcon>
                 </S.ThemeHeader>
 
@@ -129,9 +129,10 @@ function Navigation() {
                       <S.ClusterItem
                         key={cluster.id}
                         $isActive={activeClusterIds.has(cluster.id)}
+                        onClick={(e) => handleClusterToggle(cluster.id, e)}
                       >
                         <S.ToggleSwitch
-                          onClick={(e) => handleClusterToggle(cluster.id, e)}
+
                           $isActive={activeClusterIds.has(cluster.id)}
                         >
                           <S.ToggleSlider $isActive={activeClusterIds.has(cluster.id)} />

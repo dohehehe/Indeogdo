@@ -3,17 +3,20 @@ import styled from '@emotion/styled';
 
 export const NavigationWrapper = styled.div`
   position: fixed;
-  top: 10px;
-  left: 10px;
+  top: 15px;
+  left: 0;
   width: 300px;
   max-height: 80dvh;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 0 8px 8px 0;
+  border: 1.6px solid black;
+  border-left: none;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  z-index: 10;
 `;
 
 export const ThemeList = styled.ul`
@@ -27,7 +30,7 @@ export const ThemeList = styled.ul`
 `;
 
 export const ThemeItem = styled.div`
-  margin-bottom: 40px;
+  margin-bottom: 0px;
 `;
 
 export const ThemeHeader = styled.div`
@@ -42,13 +45,6 @@ export const ThemeHeader = styled.div`
   align-items: center;
   font-family: 'Sweet';
   font-size: 1.7rem;
-
-  &:hover {
-    background-color: #e3f2fd;
-    border-color: #2196f3;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
 `;
 
 export const ExpandIcon = styled.div`
@@ -56,6 +52,7 @@ export const ExpandIcon = styled.div`
   color: #666;
   transition: transform 0.2s ease;
   margin-left: 8px;
+  margin-top: -5px;
 `;
 
 export const ThemeTitle = styled.div`
@@ -73,10 +70,14 @@ export const EmptyText = styled.div`
 
 export const ClusterList = styled.div`
   margin-top: 8px;
-  margin-left: 17px;
-  display: flex;
+  margin-left: 14px;
+  display: ${props => props.$isVisible ? 'flex' : 'none'};
   flex-direction: column;
   gap: 18px;
+  height: ${props => props.$isVisible ? 'auto' : '0'};
+  // overflow-y: hidden;
+  transition: height 0.3s ease;
+  margin-bottom: 40px;
 `;
 
 export const ClusterItem = styled.li`
@@ -91,18 +92,15 @@ export const ClusterItem = styled.li`
   justify-content: space-between;
   align-items: center;
   gap: 15px;
+  color: #333;
 
   &:hover {
-    background-color: #e8f4fd;
-    border-color: #2196f3;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    // color:rgb(50, 149, 255);
+    font-weight: 800;
   }
-
 `;
 
 export const ClusterTitle = styled.div`
-  color: #333;
   flex: 1;
 `;
 

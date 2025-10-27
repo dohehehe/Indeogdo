@@ -6,17 +6,17 @@ import { theme } from '@/styles/Theme';
 export const BoardWrapper = styled.div`
   position: fixed;
   font-family: 'Sweet';
-  top: 8dvh;
+  top: 70px;
   right: 0;
   width: ${props => {
     switch (props.$widthMode) {
-      case 'wide': return '70dvw';
+      case 'wide': return 'calc(100dvw - 390px)';
       case 'normal': return '40dvw';
       case 'narrow': return '60px';
       default: return '40dvw';
     }
   }};
-  height: 92dvh;
+  height: calc(100dvh - 70px);
   background-color: white;
   border-radius: 12px 0 0 0;
   box-shadow: 0 4px 20px rgba(9, 36, 50, 0.39);

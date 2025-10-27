@@ -2,15 +2,15 @@ import styled from '@emotion/styled';
 
 export const MapSearchContainer = styled.div`
   position: fixed;
-  top: 20px;
-  left: 20px;
+  top: 16px;
+  left: 320px;
   right: 20px;
   z-index: 10;
 `
 export const MapSearchForm = styled.form`
   width: 300px;
   height: 40px;
-  border: 1px solid black;
+  border: 1.6px solid black;
   border-radius: 20px;
   padding: 12px 15px 12px 20px;
   font-size: 1.2rem;
@@ -22,11 +22,11 @@ export const MapSearchForm = styled.form`
   gap: 10px;
 
   &:focus-within {
-    outline: 1px solid red;
+    outline: 1px solid #74b7ff;
   }
 
   &:hover {
-    outline: 1px solid red;
+    outline: 1px solid #74b7ff;
   }
 `
 
@@ -54,6 +54,8 @@ export const MapSearchResultsList = styled.ul`
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 2;
 `
 
 export const MapSearchResultItem = styled.li`

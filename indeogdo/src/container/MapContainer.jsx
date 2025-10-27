@@ -108,7 +108,7 @@ function MapContainer() {
           onSearch={searchPlaces}
           searchResults={searchResults}
           onResultClick={handleResultClick}
-          onFocusOut={() => setSearchResults([])}
+          onFocusOut={clearSearchResults}
           placeholder="장소를 검색하세요..."
         />
       )}
