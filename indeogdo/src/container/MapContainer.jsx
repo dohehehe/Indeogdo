@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import MapSearch from '@/components/Map/MapSearch';
 import MapReset from '@/components/Map/MapReset';
 import useMapInitialization from '@/hooks/map/useMapInitialization';
@@ -8,6 +9,8 @@ import useSiteMarkers from '@/hooks/map/useSiteMarkers';
 import useMapSearch from '@/hooks/map/useMapSearch';
 
 function MapContainer() {
+  const router = useRouter();
+
   // 지도 초기화 훅
   const {
     mapRef,
@@ -45,16 +48,25 @@ function MapContainer() {
     }
   }, [mapInstance, createSiteMarkers]);
 
+  // POI 클릭 시 라우팅 처리
+  const handlePOIClick = useCallback((site) => {
+    router.push(`/sites/${site.id}`);
+  }, [router]);
+
   // Navigation에서 선택된 sites 데이터를 받는 전역 함수 설정
   useEffect(() => {
     window.onSitesSelected = handleSitesSelected;
+    window.onPOIClick = handlePOIClick;
 
     return () => {
       if (window.onSitesSelected) {
         delete window.onSitesSelected;
       }
+      if (window.onPOIClick) {
+        delete window.onPOIClick;
+      }
     };
-  }, [handleSitesSelected]);
+  }, [handleSitesSelected, handlePOIClick]);
 
 
   // 지도 리셋 함수

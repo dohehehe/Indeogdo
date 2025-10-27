@@ -1,10 +1,10 @@
 import { useCallback, useRef, useState } from 'react';
-
+import { useRouter } from 'next/navigation';
 // POI 마커 관리를 위한 커스텀 훅
 const useSiteMarkers = (mapInstance) => {
   const [siteMarkers, setSiteMarkers] = useState([]);
   const siteMarkersRef = useRef([]);
-
+  const router = useRouter();
   // 기존 site 마커들 제거
   const clearSiteMarkers = useCallback(() => {
     siteMarkersRef.current.forEach(marker => {
@@ -70,15 +70,19 @@ const useSiteMarkers = (mapInstance) => {
             <div style="padding: 10px; max-width: 200px;">
               <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #333;">${site.title}</h3>
               ${site.address ? `<p style="margin: 0 0 8px 0; font-size: 14px; color: #666;">${site.address}</p>` : ''}
-              ${site.contents ? `<p style="margin: 0; font-size: 12px; color: #888;">${site.contents}</p>` : ''}
               ${site.cluster ? `<p style="margin: 8px 0 0 0; font-size: 12px; color: #2196f3; font-weight: bold;">클러스터: ${site.cluster.title}</p>` : ''}
             </div>
           `
         });
 
-        // 마커 클릭 시 인포윈도우 표시
+        // 마커 클릭 시 인포윈도우 표시 및 라우팅
         marker.addListener('click', () => {
-          infoWindow.open(mapInstance, marker);
+          // infoWindow.open(mapInstance, marker);
+
+          // POI 상세 페이지로 라우팅
+          if (window.onPOIClick) {
+            window.onPOIClick(site);
+          }
         });
 
         // 마커에 식별자 추가

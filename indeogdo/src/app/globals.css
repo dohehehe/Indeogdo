@@ -84,7 +84,7 @@ body {
 
   ::selection {
     color: black;
-    background-color: red;
+    background-color: #74b7ff;
   }
 }
 
