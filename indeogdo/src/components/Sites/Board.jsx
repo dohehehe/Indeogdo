@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import * as S from '@/styles/Sites/board.style';
 
 function Board({ children }) {
   const [widthMode, setWidthMode] = useState('normal'); // 'wide', 'normal', 'narrow'
   const pathname = usePathname();
+  const router = useRouter();
 
   // 경로가 변경될 때마다 widthMode를 normal로 리셋
   useEffect(() => {
@@ -29,9 +30,16 @@ function Board({ children }) {
     }
   };
 
+  const handleMobileClick = () => {
+    router.push('/');
+  };
+
   return (
     <S.BoardWrapper $widthMode={widthMode}>
       <S.BoardButtonWrapper>
+        <S.BoardButtonMobile onClick={handleMobileClick}>
+          x
+        </S.BoardButtonMobile>
         <S.BoardButton
           onClick={expandWidth}
           $disabled={widthMode === 'wide'}

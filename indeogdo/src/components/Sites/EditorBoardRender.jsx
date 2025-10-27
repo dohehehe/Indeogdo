@@ -2,17 +2,22 @@
 
 import styled from '@emotion/styled';
 import { memo } from 'react';
+import { theme } from '@/styles/Theme';
 
 const EditorArticle = styled.article`
   display: flex;
   flex-direction: column;
   margin-top: 90px;
   margin-left: 5px;
+
+  ${theme.media.mobile} {
+    margin-left: 0px;
+  }
 `
 const EditorPara = styled.p`
   font-weight: 500;
   font-size: 1.1rem;
-  line-height: 1.4;
+  line-height: 1.5;
   margin-bottom: 30px;
   
   & b {
@@ -28,6 +33,11 @@ const EditorPara = styled.p`
     text-underline-offset: 4.5px;
     line-height: 2.1;
   }
+
+  ${theme.media.mobile} {
+    font-size: 1.2rem;
+    line-height: 1.6;
+  }
 `
 
 const EditorImgWrapper = styled.div`
@@ -38,6 +48,10 @@ const EditorImgWrapper = styled.div`
 const EditorImg = styled.img`
   width: 100%;
   border: 2px solid black;
+
+  ${theme.media.mobile} {
+    border: 1px solid black;
+  }
 `
 const EditorImgCaption = styled.div`
   margin-top: 6px;

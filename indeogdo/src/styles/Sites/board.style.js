@@ -1,9 +1,11 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { theme } from '@/styles/Theme';
 
 export const BoardWrapper = styled.div`
   position: fixed;
+  font-family: 'Sweet';
   top: 8dvh;
   right: 0;
   width: ${props => {
@@ -29,6 +31,23 @@ export const BoardWrapper = styled.div`
   &:hover {
     box-shadow: 0 4px 30px rgba(6, 109, 160, 0.8);
   }
+
+  /* 모바일에서의 스타일 */
+  ${theme.media.mobile} {
+    width: calc(100dvw - 20px);
+    margin: 0 10px;
+    top: unset;
+    bottom: 10px;
+    right: unset;
+    border-radius: 12px;
+    border: 1px solid black;
+    height: 80dvh;
+    flex-direction: column;
+
+    &:hover {
+      box-shadow: 0 0px 20px rgba(12, 73, 104, 0.56);
+    }
+  }
 `;
 
 export const BoardButtonWrapper = styled.div`
@@ -40,6 +59,29 @@ export const BoardButtonWrapper = styled.div`
   align-items: center;
   justify-content: center;
   padding-left: 10px;
+  position: relative;
+  z-index: 2;
+
+  ${theme.media.mobile} {
+    padding-top: 5px;
+    padding-right:0px;
+  }
+`;
+
+export const BoardButtonMobile = styled.button`
+  display: none;
+  ${theme.media.mobile} {
+    display: block;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 3rem;
+    font-weight: 600;
+    color: black;
+    opacity: 0.7;
+    border-radius: 50%;
+    margin-left: auto;
+  }
 `;
 
 export const BoardButton = styled.button`
@@ -70,11 +112,14 @@ export const BoardButton = styled.button`
     background-color: ${props => props.$disabled ? 'transparent' : '#f0f0f0'};
     opacity: ${props => props.$disabled ? 0.3 : 1};
   }
+
+  ${theme.media.mobile} {
+    display: none;
+  }
 `;
 
 export const BoardDetailWrapper = styled.div`
   padding: 50px 50px 30px 10px;
-  font-family: 'Sweet';
   overflow-y: auto;
   height: 100%;
   min-width: 200px;
@@ -86,6 +131,12 @@ export const BoardDetailWrapper = styled.div`
   
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
+  }
+
+  ${theme.media.mobile} {
+    padding: 30px 20px;
+    margin-top: -43px;
+    padding-top: 25px;
   }
 `;
 
