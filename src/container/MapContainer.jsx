@@ -83,20 +83,18 @@ function MapContainer() {
       });
       mapInstance.setZoom(initialPosition.zoom);
 
-      // 모든 마커 제거
-      const markers = document.querySelectorAll('[data-marker]');
-      markers.forEach(marker => marker.remove());
+      // 검색 마커만 제거 (POI 마커는 유지)
+      const searchMarkers = document.querySelectorAll('[data-marker]');
+      searchMarkers.forEach(marker => marker.remove());
 
-      // site 마커들도 제거
-      clearSiteMarkers();
-
-      // 검색 결과 리셋
+      // 검색 결과만 리셋 (POI는 유지)
       clearSearchResults();
-      setSelectedSites([]);
+
+      // selectedSites는 유지하여 POI 마커가 계속 표시되도록 함
     } catch (error) {
       console.error('지도 리셋 중 오류:', error);
     }
-  }, [mapInstance, initialPosition, clearSiteMarkers, clearSearchResults]);
+  }, [mapInstance, initialPosition, clearSearchResults]);
 
 
 

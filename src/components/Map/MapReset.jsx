@@ -4,7 +4,7 @@ const MapResetButton = styled.button`
   position: fixed;
   top: 65px;
   left: 325px;
-  z-index: 29;
+  z-index: 4;
   background-color: white;
   border: 1.6px solid black;
   border-radius: 50%;

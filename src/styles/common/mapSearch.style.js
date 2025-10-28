@@ -55,7 +55,7 @@ export const MapSearchResultsList = styled.ul`
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   position: relative;
-  z-index: 2;
+  z-index: 10;
 `
 
 export const MapSearchResultItem = styled.li`
