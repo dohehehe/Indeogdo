@@ -17,6 +17,7 @@ export const NavigationWrapper = styled.div`
   display: flex;
   flex-direction: column;
   z-index: 10;
+  color: black;
 `;
 
 export const ThemeList = styled.ul`
@@ -57,6 +58,7 @@ export const ExpandIcon = styled.div`
 
 export const ThemeTitle = styled.div`
   flex: 1;
+  color: black;
 `;
 
 export const EmptyText = styled.div`
@@ -102,13 +104,14 @@ export const ClusterItem = styled.li`
 
 export const ClusterTitle = styled.div`
   flex: 1;
+  color: black;
 `;
 
 export const ToggleSwitch = styled.button`
   position: relative;
   width: 35px;
   height: 16px;
-  background-color: ${props => props.$isActive ? 'blue' : '#ccc'};
+  background-color: ${props => props.$isActive ? 'black' : '#ccc'};
   border-radius: 12px;
   border: none;
   cursor: pointer;
@@ -116,7 +119,7 @@ export const ToggleSwitch = styled.button`
   outline: none;
 
   &:hover {
-    background-color: ${props => props.$isActive ? 'blue' : '#bbb'};
+    background-color: ${props => props.$isActive ? 'black' : '#bbb'};
   }
 
   &:focus {

@@ -6,6 +6,7 @@ import { theme } from '@/styles/Theme';
 export const BoardWrapper = styled.div`
   position: fixed;
   font-family: 'Sweet';
+  color: black;
   top: 70px;
   right: 0;
   width: ${props => {
@@ -156,16 +157,19 @@ export const BoardClusterIcon = styled.img`
 export const BoardClusterTitle = styled.h2`
   font-size: 2.1rem;
   font-weight: 900;
+  color: black;
 `;
 
 export const BoardTitle = styled.h1`
   font-size: 1.9rem;
   font-weight: 800;
   margin-bottom: 12px;
+  color: black;
 `;
 
 export const BoardAddress = styled.h3`
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 10px;
+  color: black;
 `

@@ -18,6 +18,7 @@ export const MapSearchForm = styled.form`
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
+  color: black;
   justify-content: space-between;
   gap: 10px;
 
@@ -37,6 +38,7 @@ export const MapSearchInput = styled.input`
   outline: none;
   font-size: 1.2rem;
   background-color: transparent;
+  color: black;
 `
 
 export const MapSearchButton = styled.button`

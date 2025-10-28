@@ -9,6 +9,7 @@ const EditorArticle = styled.article`
   flex-direction: column;
   margin-top: 90px;
   margin-left: 5px;
+  color: black;
 
   ${theme.media.mobile} {
     margin-left: 0px;
@@ -19,7 +20,7 @@ const EditorPara = styled.p`
   font-size: 1.1rem;
   line-height: 1.5;
   margin-bottom: 30px;
-  
+  color: black;
   & b {
     font-weight: 800;
   }
