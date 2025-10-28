@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { theme } from '@/styles/Theme';
 
 const MapResetButton = styled.button`
   position: fixed;
@@ -22,6 +23,12 @@ const MapResetButton = styled.button`
   &:hover {
     background-color: #f0f0f0;
     transform: scale(1.1);
+  }
+
+  ${theme.media.mobile} {
+    left: unset;
+    right: 8px;
+    top: 12px;
   }
 `;
 

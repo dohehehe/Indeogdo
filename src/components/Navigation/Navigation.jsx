@@ -4,15 +4,18 @@ import * as S from '@/styles/Navigation/navigation.style';
 import useTheme from '@/hooks/useTheme';
 import useCluster from '@/hooks/useCluster';
 import useSites from '@/hooks/useSites';
+import useMobile from '@/hooks/useMobile';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 
 function Navigation() {
   const { themes, loading, error } = useTheme();
   const { clusters, loading: clusterLoading } = useCluster();
   const { fetchSitesByCluster } = useSites();
+  const isMobile = useMobile();
   const [expandedThemes, setExpandedThemes] = useState(new Set());
   const [activeClusterIds, setActiveClusterIds] = useState(new Set());
   const [clusterSitesCache, setClusterSitesCache] = useState(new Map());
+  const [isNavOpen, setIsNavOpen] = useState(true);
 
   // 활성화된 클러스터들의 sites 데이터를 메모이제이션
   const activeSites = useMemo(() => {
@@ -48,6 +51,10 @@ function Navigation() {
       newExpandedThemes.add(theme.id);
     }
     setExpandedThemes(newExpandedThemes);
+  };
+
+  const toggleNavigation = () => {
+    setIsNavOpen(!isNavOpen);
   };
 
 
@@ -100,56 +107,67 @@ function Navigation() {
   }, [activeClusterIds, clusterSitesCache]);
 
   return (
-    <S.NavigationWrapper>
-      <S.ThemeList>
-        {themes.length === 0 && !loading ? (
-          <S.EmptyText>등록된 테마가 없습니다.</S.EmptyText>
-        ) : (
-          themes.map((theme) => {
-            const themeClusters = clusters.filter(cluster => cluster.theme_id === theme.id);
-            const isExpanded = expandedThemes.has(theme.id);
-
-            return (
-              <S.ThemeItem key={theme.id}>
-                <S.ThemeHeader
-                  onClick={() => handleThemeClick(theme)}
-                  $isExpanded={isExpanded}
-                >
-                  <S.ThemeTitle>{theme.title}</S.ThemeTitle>
-                  <S.ExpandIcon $isExpanded={isExpanded}>
-                    {isExpanded ? '▲' : '▼'}
-                  </S.ExpandIcon>
-                </S.ThemeHeader>
-
-                <S.ClusterList $isVisible={isExpanded}>
-                  {themeClusters.length === 0 && !clusterLoading ? (
-                    <S.EmptyText>등록된 클러스터가 없습니다.</S.EmptyText>
-                  ) : (
-                    themeClusters.map((cluster) => (
-                      <S.ClusterItem
-                        key={cluster.id}
-                        $isActive={activeClusterIds.has(cluster.id)}
-                        onClick={(e) => handleClusterToggle(cluster.id, e)}
-                      >
-                        <S.ToggleSwitch
-
-                          $isActive={activeClusterIds.has(cluster.id)}
-                        >
-                          <S.ToggleSlider $isActive={activeClusterIds.has(cluster.id)} />
-                        </S.ToggleSwitch>
-                        <S.ClusterTitle>{cluster.title}</S.ClusterTitle>
-
-                      </S.ClusterItem>
-                    ))
-                  )}
-                </S.ClusterList>
-              </S.ThemeItem>
-            );
-          })
+    <>
+      <S.NavigationWrapper $isMobile={isMobile} $isOpen={isNavOpen}>
+        {isMobile && (
+          <S.MobileToggleButton onClick={toggleNavigation} $isOpen={isNavOpen}>
+            <S.HamburgerIcon $isOpen={isNavOpen}>
+              <S.HamburgerIconSpan $isOpen={isNavOpen} />
+              <S.HamburgerIconSpan $isOpen={isNavOpen} />
+              <S.HamburgerIconSpan $isOpen={isNavOpen} />
+            </S.HamburgerIcon>
+          </S.MobileToggleButton>
         )}
-      </S.ThemeList>
+        <S.ThemeList $isMobile={isMobile} $isOpen={isNavOpen}>
+          {themes.length === 0 && !loading ? (
+            <S.EmptyText>등록된 테마가 없습니다.</S.EmptyText>
+          ) : (
+            themes.map((theme) => {
+              const themeClusters = clusters.filter(cluster => cluster.theme_id === theme.id);
+              const isExpanded = expandedThemes.has(theme.id);
 
-    </S.NavigationWrapper>
+              return (
+                <S.ThemeItem key={theme.id}>
+                  <S.ThemeHeader
+                    onClick={() => handleThemeClick(theme)}
+                    $isExpanded={isExpanded}
+                  >
+                    <S.ThemeTitle>{theme.title}</S.ThemeTitle>
+                    <S.ExpandIcon $isExpanded={isExpanded}>
+                      {isExpanded ? '▲' : '▼'}
+                    </S.ExpandIcon>
+                  </S.ThemeHeader>
+
+                  <S.ClusterList $isVisible={isExpanded}>
+                    {themeClusters.length === 0 && !clusterLoading ? (
+                      <S.EmptyText>등록된 클러스터가 없습니다.</S.EmptyText>
+                    ) : (
+                      themeClusters.map((cluster) => (
+                        <S.ClusterItem
+                          key={cluster.id}
+                          $isActive={activeClusterIds.has(cluster.id)}
+                          onClick={(e) => handleClusterToggle(cluster.id, e)}
+                        >
+                          <S.ToggleSwitch
+
+                            $isActive={activeClusterIds.has(cluster.id)}
+                          >
+                            <S.ToggleSlider $isActive={activeClusterIds.has(cluster.id)} />
+                          </S.ToggleSwitch>
+                          <S.ClusterTitle>{cluster.title}</S.ClusterTitle>
+
+                        </S.ClusterItem>
+                      ))
+                    )}
+                  </S.ClusterList>
+                </S.ThemeItem>
+              );
+            })
+          )}
+        </S.ThemeList>
+
+      </S.NavigationWrapper>
+    </>
   );
 }
 
