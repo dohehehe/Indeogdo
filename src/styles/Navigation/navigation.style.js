@@ -7,7 +7,7 @@ export const NavigationWrapper = styled.div`
   position: fixed;
   top: 15px;
   left: 0;
-  width: 300px;
+  width: ${props => props.isAdmin ? '450px' : '300px'};
   max-height: 80dvh;
   background-color: white;
   border-radius: 0 8px 8px 0;
@@ -248,4 +248,98 @@ export const ToggleSlider = styled.div`
   box-shadow: 0 2px 6px rgba(25, 37, 103, 0.42);
 `;
 
+// 인라인 편집 관련 스타일
+export const ClusterTitleInput = styled.input`
+  flex: 1;
+  padding: 4px 8px;
+  border: 2px solid #192567;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: white;
+  outline: none;
+  
+  &:focus {
+    border-color: #4A90E2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+`;
+
+export const EditActionButtons = styled.div`
+  display: flex;
+  gap: 5px;
+  margin-left: 10px;
+`;
+
+export const SaveButton = styled.button`
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #45a049;
+  }
+`;
+
+export const CancelButton = styled.button`
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #da190b;
+  }
+`;
+
+// Site 목록 관련 스타일
+export const ClusterContainer = styled.div`
+  margin-bottom: 8px;
+`;
+
+export const SiteList = styled.div`
+  margin-left: 30px;
+  margin-top: 8px;
+  padding-left: 17px;
+  border-left: 2px solid #e0e0e0;
+`;
+
+export const SiteItem = styled.div`
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+`;
+
+export const SiteTitle = styled.div`
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: black;
+  // margin-bottom: 2px;
+  margin-right: auto;
+`;
+
+export const SiteIcon = styled.img`
+  width: 15px;
+  height: 15px;
+  object-fit: cover;
+`;
 
