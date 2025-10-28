@@ -1,5 +1,7 @@
 'use client';
+
 import styled from '@emotion/styled';
+import { theme } from '@/styles/Theme';
 
 export const NavigationWrapper = styled.div`
   position: fixed;
@@ -18,16 +20,96 @@ export const NavigationWrapper = styled.div`
   flex-direction: column;
   z-index: 10;
   color: black;
+
+  ${theme.media.mobile} {
+    top: 60px;
+    padding-top: 10px;
+    left: unset;
+    right: 7px;
+    border-radius: ${props => props.$isOpen ? '10px 150px 10px 10px' : '50%'};
+    border: 1.5px solid black;
+    transition: all 0.8s ease-in-out;
+    width: ${props => props.$isOpen ? '300px' : '43px'};
+    max-height: ${props => props.$isOpen ? '80dvh' : '41px'};
+    padding: ${props => props.$isOpen ? '0px 12px 0px 5px' : '0'};
+  }
+`;
+
+export const MobileToggleButton = styled.button`
+  display: none;
+  ${theme.media.mobile} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    position: fixed;
+    right: 6.6px;
+    top: 58px;
+    z-index: 20;
+    height: 40px;
+    width: 40px;
+  }
+`;
+
+export const HamburgerIcon = styled.div`
+  display: none;
+  width: 24px;
+  height: 12px;
+  position: relative;
+  cursor: pointer;
+  
+  ${theme.media.mobile} {
+    display: block;
+  }
+`;
+
+export const HamburgerIconSpan = styled.span`
+  display: block;
+  width: 90%;
+  height: 2px;
+  border-radius: 2px;
+  background-color: black;
+  position: absolute;
+  transition: all 0.5s ease;
+  outline: 2px solid white;
+  
+  &:nth-of-type(1) {
+    top: ${props => props.$isOpen ? '2px' : '0px'};
+    transform: ${props => props.$isOpen ? 'rotate(45deg)' : 'rotate(0deg)'};
+  }
+  
+  &:nth-of-type(2) {
+    top: 7px;
+    opacity: ${props => props.$isOpen ? '0' : '1'};
+    transform: ${props => props.$isOpen ? 'translateX(20px)' : 'translateX(0px)'};
+  }
+  
+  &:nth-of-type(3) {
+    top: ${props => props.$isOpen ? '2px' : '14px'};
+    transform: ${props => props.$isOpen ? 'rotate(-45deg)' : 'rotate(0deg)'};
+  }
 `;
 
 export const ThemeList = styled.ul`
   flex: 1;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
   list-style: none;
   padding: 0;
+  transition: all 0.5s ease;
+
+  ${theme.media.mobile} {
+    height: ${props => props.$isOpen ? '100%' : '0'};
+    overflow: hidden;
+    overflow-y: auto;
+    padding-top: 5px;
+    margin-left: 2px;
+    gap: 0;
+    opacity: ${props => props.$isOpen ? '1' : '0'};
+  }
 `;
 
 export const ThemeItem = styled.div`
@@ -46,6 +128,12 @@ export const ThemeHeader = styled.div`
   align-items: center;
   font-family: 'Sweet';
   font-size: 1.7rem;
+
+  ${theme.media.mobile} {
+    font-size: 1.5rem;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
 `;
 
 export const ExpandIcon = styled.div`
@@ -54,11 +142,20 @@ export const ExpandIcon = styled.div`
   transition: transform 0.2s ease;
   margin-left: 8px;
   margin-top: -5px;
+
+  ${theme.media.mobile} {
+    margin-top: -1px;
+    margin-left: 2px;
+    margin-right: 10px;
+  }
 `;
 
 export const ThemeTitle = styled.div`
   flex: 1;
   color: black;
+  ${theme.media.mobile} {
+    flex: unset;
+  }
 `;
 
 export const EmptyText = styled.div`
@@ -80,6 +177,10 @@ export const ClusterList = styled.div`
   // overflow-y: hidden;
   transition: height 0.3s ease;
   margin-bottom: 40px;
+
+  ${theme.media.mobile} {
+    margin-bottom: 30px;
+  }
 `;
 
 export const ClusterItem = styled.li`
@@ -99,6 +200,10 @@ export const ClusterItem = styled.li`
   &:hover {
     // color:rgb(50, 149, 255);
     font-weight: 800;
+  }
+
+  ${theme.media.mobile} {
+    font-size: 1.3rem;
   }
 `;
 
@@ -124,6 +229,10 @@ export const ToggleSwitch = styled.button`
 
   &:focus {
     box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
+  }
+
+  ${theme.media.mobile} {
+    margin-top: 1px;
   }
 `;
 

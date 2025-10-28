@@ -63,6 +63,14 @@ html,
 body {
   max-width: 100dvw;
   overflow-x: hidden;
+  /* iOS Safari에서 인풋 클릭 시 확대 방지 */
+  -webkit-text-size-adjust: 100%;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 body {
@@ -146,6 +154,19 @@ html {
 
 body {
   font-size: 1rem;
+}
+
+/* 인풋 요소들은 텍스트 선택 허용 */
+input,
+textarea,
+select {
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  /* iOS에서 인풋 포커스 시 확대 방지 */
+  font-size: 16px;
 }
 
 @media (prefers-color-scheme: dark) {
