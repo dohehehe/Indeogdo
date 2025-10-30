@@ -2,7 +2,7 @@
 
 import { useEffect, forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-// import { useImageUpload } from '@/hooks/useImageUpload';
+import { useImageUpload } from '@/hooks/useImageUpload';
 
 const EditorWrapper = styled.div`
   border: 1px solid #e1e5e9;
@@ -19,10 +19,10 @@ const Editor = forwardRef(({ data }, ref) => {
   const editorInstanceRef = useRef(null);
   const [isMounted, setIsMounted] = useState(false);
 
-  // const { uploadImageToServer } = useImageUpload({
-  //   bucket: 'gallery',
-  //   maxSizeInMB: 0.5
-  // });
+  const { uploadImageToServer } = useImageUpload({
+    bucket: 'gallery',
+    maxSizeInMB: 0.5
+  });
 
   useImperativeHandle(ref, () => ({
     save: async () => {
@@ -72,10 +72,14 @@ const Editor = forwardRef(({ data }, ref) => {
                 uploader: {
                   uploadByFile: async (file) => {
                     try {
-                      console.log('Editor 이미지 업로드 시작:', file);
                       const result = await uploadImageToServer(file);
-                      console.log('Editor 이미지 업로드 결과:', result);
-                      return result;
+                      if (result?.success && result?.file?.url) {
+                        return {
+                          success: 1,
+                          file: { url: result.file.url }
+                        };
+                      }
+                      return { success: 0, error: result?.error || '업로드 실패' };
                     } catch (error) {
                       console.error('Editor 이미지 업로드 에러:', error);
                       return { success: 0, error: error.message };

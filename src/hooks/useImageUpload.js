@@ -1,7 +1,5 @@
 import { useCallback } from 'react';
-import { createClient } from '@/utils/supabase/client';
 import { checkAndCompressImage, logImageInfo } from '@/utils/imageCompression';
-import { uploadImage as uploadImageApi, uploadMultipleImages as uploadMultipleImagesApi } from '@/utils/api/image-upload-api';
 
 /**
  * 이미지 업로드를 위한 커스텀 훅
@@ -12,9 +10,6 @@ import { uploadImage as uploadImageApi, uploadMultipleImages as uploadMultipleIm
  */
 export const useImageUpload = (options = {}) => {
   const { bucket = 'gallery', maxSizeInMB = 1 } = options;
-
-  // Supabase 클라이언트 생성
-  const supabase = createClient();
 
   /**
    * 로컬 프리뷰용 이미지 처리 (스토리지 업로드 없음)
@@ -69,20 +64,41 @@ export const useImageUpload = (options = {}) => {
       // 이미지 정보 로그
       logImageInfo(file, '서버 업로드 전');
 
-      // 이미지 압축 (maxSizeInMB 초과시)
-      const compressedFile = await checkAndCompressImage(file, maxSizeInMB);
-
-      // 압축 후 이미지 정보 로그
-      if (compressedFile !== file) {
-        logImageInfo(compressedFile, '압축 후');
+      // GIF 특별 처리: 3MB 이상이면 알림 후 중단, 3MB 미만이면 무압축 원본 업로드
+      const isGif = (file.type || '').toLowerCase() === 'image/gif';
+      const threeMB = 3 * 1024 * 1024;
+      let processedFile = file;
+      if (isGif) {
+        if (file.size > threeMB) {
+          if (typeof window !== 'undefined') {
+            alert('GIF 파일이 3MB를 초과합니다. 용량을 줄인 뒤 업로드해 주세요.');
+          }
+          return { success: 0, error: 'GIF 3MB 초과' };
+        }
+        // 3MB 이하면 압축 생략
+      } else {
+        // 비-GIF는 지정 용량 기준으로 압축
+        processedFile = await checkAndCompressImage(file, maxSizeInMB);
+        if (processedFile !== file) {
+          logImageInfo(processedFile, '압축 후');
+        }
       }
 
       // 서버사이드 이미지 업로드
-      const result = await uploadImageApi(compressedFile, bucket, maxSizeInMB);
+      const formData = new FormData();
+      formData.append('file', processedFile);
+      formData.append('bucket', bucket);
+      formData.append('maxSizeInMB', maxSizeInMB);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const result = await res.json().catch(() => ({}));
 
       console.log('uploadImage 결과:', result);
 
-      if (result && result.success) {
+      if (res.ok && result && result.success) {
         console.log('서버사이드 이미지 업로드 성공:', result.data?.url);
         return {
           success: 1,
@@ -94,7 +110,7 @@ export const useImageUpload = (options = {}) => {
         };
       } else {
         console.error('이미지 업로드 실패:', result);
-        throw new Error(result?.error || '이미지 업로드에 실패했습니다.');
+        throw new Error(result?.details || result?.error || '이미지 업로드에 실패했습니다.');
       }
     } catch (error) {
       console.error('서버사이드 이미지 업로드 오류:', error);
@@ -159,19 +175,7 @@ export const useImageUpload = (options = {}) => {
         error: error.message || '이미지 업로드에 실패했습니다.'
       };
     }
-  }, [bucket, maxSizeInMB, supabase]);
-
-  /**
-   * 여러 이미지 업로드 핸들러
-   * @param {File[]} files - 업로드할 이미지 파일 배열
-   * @returns {Promise<Object[]>} 업로드 결과 배열
-   */
-  const uploadMultipleImages = useCallback(async (files) => {
-    const uploadPromises = files.map(file => uploadImage(file));
-    const results = await Promise.all(uploadPromises);
-
-    return results;
-  }, [uploadImage]);
+  }, [bucket, maxSizeInMB]);
 
   /**
    * 이미지 삭제 핸들러
@@ -203,12 +207,11 @@ export const useImageUpload = (options = {}) => {
         error: error.message || '이미지 삭제에 실패했습니다.'
       };
     }
-  }, [bucket, supabase]);
+  }, [bucket]);
 
   return {
     uploadImage, // 기존 클라이언트 업로드 (호환성 유지)
     uploadImageToServer, // 새로운 서버사이드 업로드
-    uploadMultipleImages,
     deleteImage,
     deleteImageFromServer: deleteImage, // 별칭 추가
     processImageForPreview,

@@ -175,12 +175,20 @@ export const BoardAddress = styled.h3`
 `
 
 
-// boardedit 스타일
+// --------------------------------------------  boardedit 스타일
 
 export const BoardEditWrapper = styled.div`
-  padding: 40px 20px 10px 0px;
+  padding: 40px 30px 10px 0px;
   width: 100%;
   overflow-y: auto;
+
+    /* 스크롤바 숨기기 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 `
 
 export const BoardEditForm = styled.form`
@@ -188,6 +196,14 @@ export const BoardEditForm = styled.form`
   flex-direction: column;
   gap: 10px;
   width: 100%;
+`
+
+export const BoardHeaderWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  position: relative;
 `
 
 export const BoardInputGroup = styled.div`
@@ -251,8 +267,7 @@ export const IconPreview = styled.img`
 
 // Custom dropdown for icons
 export const IconSelectWrapper = styled.div`
-  position: relative;
-  width: 100%;
+  // position: relative;
 `
 
 export const IconSelectButton = styled.button`
@@ -261,7 +276,7 @@ export const IconSelectButton = styled.button`
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: #fff;
+  background: ${props => props.$iconOpen ? '#fff' : '#ccc'};
   color: black;
   font-weight: 600;
   border: 1px solid black;
@@ -273,19 +288,19 @@ export const IconSelectList = styled.ul`
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  right: 0;
   background: #fff;
   border: 1px solid black;
   border-radius: 8px;
   max-height: 260px;
   overflow-y: auto;
   z-index: 30;
-  box-shadow: 0 4px 20px rgba(9, 36, 50, 0.2);
+  box-shadow: 0 4px 20px rgba(9, 36, 50, 0.32);
   list-style: none;
   margin: 0;
   padding: 6px;
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
 `
 
 export const IconSelectItem = styled.li`
@@ -306,4 +321,20 @@ export const IconThumb = styled.img`
   width: 24px;
   height: 24px;
   object-fit: cover;
+`
+
+export const BoardClusterSelectWrapper = styled.div`
+  flex-grow: 1;
+`
+
+export const BoardClusterSelect = styled.select`
+  width: 100%;
+  padding: 10.3px 12px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: black;
+  background-color: #fff;
+  border: 1px solid black;
+  border-radius: 8px;
+  outline: none;
 `
