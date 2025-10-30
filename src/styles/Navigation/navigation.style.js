@@ -177,6 +177,7 @@ export const ClusterList = styled.div`
   // overflow-y: hidden;
   transition: height 0.3s ease;
   margin-bottom: 40px;
+  margin-right: 9px;
 
   ${theme.media.mobile} {
     margin-bottom: 30px;
@@ -196,6 +197,7 @@ export const ClusterItem = styled.li`
   align-items: center;
   gap: 15px;
   color: #333;
+  margin-right: 9px;
 
   &:hover {
     // color:rgb(50, 149, 255);
@@ -308,8 +310,8 @@ export const ClusterContainer = styled.div`
 
 export const SiteList = styled.div`
   margin-left: 30px;
-  margin-top: 8px;
-  padding-left: 17px;
+  margin-top: 12px;
+  padding-left: 20px;
   border-left: 2px solid #e0e0e0;
 `;
 

@@ -8,10 +8,11 @@ import useMobile from '@/hooks/useMobile';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import EditButton from '@/components/admin/EditButton';
+import AddButton from '@/components/admin/AddButton';
 
 function Navigation() {
   const { themes, loading, error } = useTheme();
-  const { clusters, loading: clusterLoading, deleteCluster, updateCluster } = useCluster();
+  const { clusters, loading: clusterLoading, deleteCluster, updateCluster, createCluster } = useCluster();
   const { fetchSitesByCluster, deleteSite } = useSites();
   const isMobile = useMobile();
   const [expandedThemes, setExpandedThemes] = useState(new Set());
@@ -21,6 +22,8 @@ function Navigation() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [editingClusterId, setEditingClusterId] = useState(null);
   const [editingTitle, setEditingTitle] = useState('');
+  const [addingThemeId, setAddingThemeId] = useState(null);
+  const [newClusterTitle, setNewClusterTitle] = useState('');
   const [clusterSites, setClusterSites] = useState(new Map()); // 각 cluster의 sites 데이터
   const router = useRouter(); // 라우터 인스턴스 생성
   const pathname = usePathname();
@@ -105,6 +108,28 @@ function Navigation() {
   const handleCancelEdit = () => {
     setEditingClusterId(null);
     setEditingTitle('');
+  };
+
+  const handleStartAddCluster = (themeId) => {
+    setAddingThemeId(themeId);
+    setNewClusterTitle('');
+  };
+
+  const handleCreateCluster = async () => {
+    if (!addingThemeId || !newClusterTitle.trim()) return;
+    try {
+      const result = await createCluster(newClusterTitle.trim(), addingThemeId);
+      if (result) {
+        setNewClusterTitle('');
+        setAddingThemeId(null);
+        alert('클러스터가 생성되었습니다.');
+      } else {
+        alert('클러스터 생성에 실패했습니다.');
+      }
+    } catch (e) {
+      console.error('Create cluster error:', e);
+      alert('클러스터 생성 중 오류가 발생했습니다.');
+    }
   };
 
   const handleDeleteCluster = async (cluster) => {
@@ -284,6 +309,27 @@ function Navigation() {
                   </S.ThemeHeader>
 
                   <S.ClusterList $isVisible={isExpanded}>
+                    {isAdmin && (
+                      <>
+                        <AddButton onClick={(e) => { e.stopPropagation(); handleStartAddCluster(theme.id); }} />
+                        {addingThemeId === theme.id && (
+                          <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8 }}>
+                            <S.ClusterTitleInput
+                              value={newClusterTitle}
+                              placeholder="새 클러스터 이름"
+                              onChange={(e) => setNewClusterTitle(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleCreateCluster();
+                                if (e.key === 'Escape') { setAddingThemeId(null); setNewClusterTitle(''); }
+                              }}
+                              autoFocus
+                            />
+                            <S.SaveButton onClick={handleCreateCluster}>추가</S.SaveButton>
+                            <S.CancelButton onClick={() => { setAddingThemeId(null); setNewClusterTitle(''); }}>취소</S.CancelButton>
+                          </div>
+                        )}
+                      </>
+                    )}
                     {themeClusters.length === 0 && !clusterLoading ? (
                       <S.EmptyText>등록된 클러스터가 없습니다.</S.EmptyText>
                     ) : (
@@ -345,6 +391,7 @@ function Navigation() {
                                     />
                                   </S.SiteItem>
                                 ))}
+
                               </S.SiteList>
                             )}
                           </S.ClusterContainer>
