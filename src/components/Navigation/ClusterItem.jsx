@@ -87,7 +87,7 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
 
   const handleDelete = async (e) => {
     e?.stopPropagation();
-    if (!confirm(`"${cluster.title}" 클러스터를 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`)) return;
+    if (!confirm(`"${cluster.title}" 클러스터를 삭제하시겠습니까?\n\n**주의**\n아래에 포함된 장소들도 함께 삭제됩니다. \n장소를 다른 그룹에 옮기고 수행해주세요\n\n이 작업은 되돌릴 수 없습니다.`)) return;
     try {
       const result = await deleteCluster(cluster.id);
       if (result) {

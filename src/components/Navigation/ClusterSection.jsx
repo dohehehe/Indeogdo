@@ -50,9 +50,16 @@ function ClusterSection({
     <>
       {isAdmin && (
         <>
-          <AddButton onClick={(e) => { e.stopPropagation(); handleStartAddCluster(); }} />
+          <AddButton onClick={(e) => { e.stopPropagation(); handleStartAddCluster(); }}>
+            <span>+</span>
+            <span>추가하기</span>
+          </AddButton>
           {isAdding && (
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8 }}>
+            <div style={{ display: 'flex', gap: 14, alignItems: 'center', margin: '6px 4px 6px 0px' }}>
+              <S.ToggleSwitch $isActive={isAdding}>
+                <S.ToggleSlider $isActive={isAdding} />
+              </S.ToggleSwitch>
+
               <S.ClusterTitleInput
                 value={newClusterTitle}
                 placeholder="새 클러스터 이름"
@@ -66,7 +73,10 @@ function ClusterSection({
                 }}
                 autoFocus
               />
-              <S.SaveButton onClick={handleCreateCluster}>추가</S.SaveButton>
+              <S.EditActionButtons>
+                <S.SaveButton onClick={handleCreateCluster}>추가</S.SaveButton>
+                <S.CancelButton onClick={() => { setNewClusterTitle(''); setIsAdding(false); }}>취소</S.CancelButton>
+              </S.EditActionButtons>
             </div>
           )}
         </>

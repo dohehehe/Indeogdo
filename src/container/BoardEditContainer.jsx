@@ -138,10 +138,8 @@ function BoardEditContainer({ siteData, onChange }) {
             <S.IconSelectWrapper ref={iconWrapRef}>
               <input type="hidden" {...register('iconId')} />
               <S.IconSelectButton type="button" onClick={handleOpenIconSelect} aria-label="아이콘 선택" title="아이콘 선택" $iconOpen={!iconOpen}>
-                {selectedIcon?.img ? (
+                {selectedIcon?.img && (
                   <S.IconThumb src={selectedIcon.img} alt={selectedIcon?.name || 'icon'} />
-                ) : (
-                  <S.IconThumb src="" alt="no-icon" style={{ visibility: 'hidden' }} />
                 )}
               </S.IconSelectButton>
 

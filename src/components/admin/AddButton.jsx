@@ -7,7 +7,7 @@ const AddButtonWrapper = styled.button`
   border-radius: 12px;
   padding: 4px 10px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: ${props => props.$themeSize ? '1.2rem' : '0.9rem'};
   font-weight: 500;
   color: black;
   // position: relative;
@@ -16,20 +16,19 @@ const AddButtonWrapper = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: -10px;
   gap: 5px;
+  height: ${props => props.$themeSize ? '40px' : 'auto'};
 
   &:hover {
     background-color: #f0f0f0;
   }
 `;
 
-function AddButton({ onClick }) {
+function AddButton({ onClick, children, $themeSize }) {
 
   return (
-    <AddButtonWrapper type="button" onClick={onClick}>
-      <span>+</span>
-      <span>추가하기</span>
+    <AddButtonWrapper type="button" onClick={onClick} $themeSize={$themeSize}>
+      {children}
     </AddButtonWrapper>
   );
 }

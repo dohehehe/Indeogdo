@@ -8,18 +8,27 @@ export const NavigationWrapper = styled.div`
   top: 15px;
   left: 0;
   width: ${props => props.isAdmin ? '450px' : '300px'};
-  max-height: 80dvh;
+  max-height: 90dvh;
   background-color: white;
   border-radius: 0 8px 8px 0;
   border: 1.6px solid black;
   border-left: none;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 16px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   z-index: 10;
   color: black;
+
+    /* 스크롤바 숨기기 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 
   ${theme.media.mobile} {
     top: 60px;
@@ -114,6 +123,7 @@ export const ThemeList = styled.ul`
 
 export const ThemeItem = styled.div`
   margin-bottom: 0px;
+  font-family: 'Sweet';
 `;
 
 export const ThemeHeader = styled.div`
@@ -124,6 +134,7 @@ export const ThemeHeader = styled.div`
   transition: all 0.2s ease;
   position: relative;
   display: flex;
+  gap: 10px;
   justify-content: space-between;
   align-items: center;
   font-family: 'Sweet';
@@ -133,6 +144,7 @@ export const ThemeHeader = styled.div`
     font-size: 1.5rem;
     flex-direction: row-reverse;
     justify-content: flex-end;
+    gap: 0;
   }
 `;
 
@@ -140,7 +152,7 @@ export const ExpandIcon = styled.div`
   font-size: 1rem;
   color: #666;
   transition: transform 0.2s ease;
-  margin-left: 8px;
+  margin-left: auto;
   margin-top: -5px;
 
   ${theme.media.mobile} {
@@ -151,8 +163,8 @@ export const ExpandIcon = styled.div`
 `;
 
 export const ThemeTitle = styled.div`
-  flex: 1;
   color: black;
+  font-family: 'Sweet';
   ${theme.media.mobile} {
     flex: unset;
   }
@@ -163,6 +175,7 @@ export const EmptyText = styled.div`
   color: #999;
   font-style: italic;
   padding: 20px;
+  font-family: 'Sweet';
 `;
 
 // Cluster 관련 스타일
@@ -212,6 +225,7 @@ export const ClusterItem = styled.li`
 export const ClusterTitle = styled.div`
   flex: 1;
   color: black;
+  font-family: 'Sweet';
 `;
 
 export const ToggleSwitch = styled.button`
@@ -253,11 +267,11 @@ export const ToggleSlider = styled.div`
 // 인라인 편집 관련 스타일
 export const ClusterTitleInput = styled.input`
   flex: 1;
-  padding: 4px 8px;
-  border: 2px solid #192567;
+  padding: 8px 8px;
+  border: 1px solid #192567;
   border-radius: 4px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 800;
   background-color: white;
   outline: none;
   
@@ -270,7 +284,9 @@ export const ClusterTitleInput = styled.input`
 export const EditActionButtons = styled.div`
   display: flex;
   gap: 5px;
-  margin-left: 10px;
+  font-weight: 800;
+  font-family: 'Sweet';
+  font-size: 0.9rem;
 `;
 
 export const SaveButton = styled.button`
@@ -279,9 +295,9 @@ export const SaveButton = styled.button`
   border: none;
   padding: 4px 8px;
   border-radius: 4px;
-  font-size: 0.8rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
+
 
   &:hover {
     background-color: #45a049;
@@ -294,7 +310,6 @@ export const CancelButton = styled.button`
   border: none;
   padding: 4px 8px;
   border-radius: 4px;
-  font-size: 0.8rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
 
