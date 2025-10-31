@@ -2,113 +2,133 @@
 
 import * as S from '@/styles/Navigation/navigation.style';
 import useTheme from '@/hooks/useTheme';
-import useCluster from '@/hooks/useCluster';
-import useSites from '@/hooks/useSites';
 import useMobile from '@/hooks/useMobile';
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import ThemeSection from '@/components/Navigation/ThemeSection';
+import AddButton from '@/components/admin/AddButton';
+import EditButton from '@/components/admin/EditButton';
 
 function Navigation() {
-  const { themes, loading, error } = useTheme();
-  const { clusters, loading: clusterLoading } = useCluster();
-  const { fetchSitesByCluster } = useSites();
+  const { themes, loading, error, createTheme, updateTheme, fetchThemes } = useTheme();
   const isMobile = useMobile();
-  const [expandedThemes, setExpandedThemes] = useState(new Set());
-  const [activeClusterIds, setActiveClusterIds] = useState(new Set());
-  const [clusterSitesCache, setClusterSitesCache] = useState(new Map());
   const [isNavOpen, setIsNavOpen] = useState(true);
-
-  // 활성화된 클러스터들의 sites 데이터를 메모이제이션
-  const activeSites = useMemo(() => {
-    const sites = [];
-    for (const clusterId of activeClusterIds) {
-      const cachedSites = clusterSitesCache.get(clusterId);
-      if (cachedSites) {
-        sites.push(...cachedSites);
-      }
-    }
-    return sites;
-  }, [activeClusterIds, clusterSitesCache]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAddingTheme, setIsAddingTheme] = useState(false);
+  const [newThemeTitle, setNewThemeTitle] = useState('');
+  const [isOrdering, setIsOrdering] = useState(false);
+  const [localThemes, setLocalThemes] = useState([]);
+  const [isSaving, setIsSaving] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (themes.length > 0) {
-      const allThemeIds = new Set(themes.map(theme => theme.id));
-      setExpandedThemes(allThemeIds);
-    }
-  }, [themes]);
-
-  // 활성화된 sites가 변경될 때마다 MapContainer에 전달
-  useEffect(() => {
-    if (window.onSitesSelected) {
-      window.onSitesSelected(activeSites);
-    }
-  }, [activeSites, activeClusterIds]);
-
-  const handleThemeClick = (theme) => {
-    const newExpandedThemes = new Set(expandedThemes);
-    if (newExpandedThemes.has(theme.id)) {
-      newExpandedThemes.delete(theme.id);
+    if (pathname.startsWith('/admin')) {
+      setIsAdmin(true);
     } else {
-      newExpandedThemes.add(theme.id);
+      setIsAdmin(false);
     }
-    setExpandedThemes(newExpandedThemes);
-  };
+  }, [pathname]);
 
   const toggleNavigation = () => {
     setIsNavOpen(!isNavOpen);
   };
 
+  const handleStartAddTheme = (e) => {
+    e.stopPropagation();
+    setIsAddingTheme(true);
+    setNewThemeTitle('');
+  };
 
-  // 개별 클러스터의 sites 데이터 가져오기 (캐시 활용)
-  const fetchSitesForCluster = useCallback(async (clusterId) => {
+  const handleSaveTheme = async (e) => {
+    e?.stopPropagation();
+    if (!newThemeTitle.trim()) return;
     try {
-      const sites = await fetchSitesByCluster(clusterId);
-
-      if (sites) {
-        // 캐시에 저장
-        setClusterSitesCache(prev => new Map(prev).set(clusterId, sites));
+      const result = await createTheme(newThemeTitle.trim());
+      if (result) {
+        setIsAddingTheme(false);
+        setNewThemeTitle('');
+        alert('테마가 추가되었습니다.');
+      } else {
+        alert('테마 추가에 실패했습니다.');
       }
-    } catch (error) {
-      console.error(`Failed to fetch sites for cluster ${clusterId}:`, error);
+    } catch (err) {
+      console.error('Create theme error:', err);
+      alert('테마 추가 중 오류가 발생했습니다.');
     }
-  }, [fetchSitesByCluster]);
+  };
 
+  const handleCancelAddTheme = (e) => {
+    e?.stopPropagation();
+    setIsAddingTheme(false);
+    setNewThemeTitle('');
+  };
 
-  const handleClusterToggle = useCallback(async (clusterId, event) => {
-    event.stopPropagation();
-    const newActiveClusterIds = new Set(activeClusterIds);
-
-    if (newActiveClusterIds.has(clusterId)) {
-      // 클러스터 비활성화
-      newActiveClusterIds.delete(clusterId);
-    } else {
-      // 클러스터 활성화
-      newActiveClusterIds.add(clusterId);
-
-      // 캐시에 없는 경우에만 sites 데이터 가져오기
-      if (!clusterSitesCache.has(clusterId)) {
-        await fetchSitesForCluster(clusterId);
-      }
+  // 순서 변경 모드일 때 로컬 상태로 themes 관리
+  useEffect(() => {
+    if (isOrdering) {
+      setLocalThemes([...themes]);
     }
+  }, [isOrdering, themes]);
 
-    setActiveClusterIds(newActiveClusterIds);
+  // 기본적으로는 themes 사용, 순서 변경 모드일 때는 localThemes 사용
+  const displayThemes = isOrdering ? localThemes : themes;
 
-    // 즉시 활성화된 sites 업데이트 (비활성화 시 빈 배열 전달)
-    const currentActiveSites = [];
-    for (const id of newActiveClusterIds) {
-      const cachedSites = clusterSitesCache.get(id);
-      if (cachedSites) {
-        currentActiveSites.push(...cachedSites);
-      }
+  const handleOrder = (e) => {
+    e?.stopPropagation();
+    setIsOrdering(prev => !prev);
+  };
+
+  const handleMoveUp = (index) => {
+    if (index === 0) return;
+    setLocalThemes(prev => {
+      const newThemes = [...prev];
+      [newThemes[index - 1], newThemes[index]] = [newThemes[index], newThemes[index - 1]];
+      return newThemes;
+    });
+  };
+
+  const handleMoveDown = (index) => {
+    if (index === localThemes.length - 1) return;
+    setLocalThemes(prev => {
+      const newThemes = [...prev];
+      [newThemes[index], newThemes[index + 1]] = [newThemes[index + 1], newThemes[index]];
+      return newThemes;
+    });
+  };
+
+  const handleSaveOrder = async () => {
+    setIsSaving(true);
+    try {
+      // 모든 theme를 순서대로 업데이트 (1, 2, 3, 4...)
+      // 기존 데이터는 유지하고 order만 업데이트
+      const updatePromises = localThemes.map((theme, index) =>
+        updateTheme(theme.id, theme.title, index + 1)
+      );
+
+      await Promise.all(updatePromises);
+
+      // 데이터 새로고침 - 전체 themes 목록 다시 가져오기
+      await fetchThemes();
+
+      alert('순서가 저장되었습니다.');
+      setIsOrdering(false);
+    } catch (err) {
+      console.error('Save order error:', err);
+      alert('순서 저장 중 오류가 발생했습니다.');
+    } finally {
+      setIsSaving(false);
     }
+  };
 
-    if (window.onSitesSelected) {
-      window.onSitesSelected(currentActiveSites);
-    }
-  }, [activeClusterIds, clusterSitesCache]);
+  const handleCancelOrder = () => {
+    // 원래 순서로 복원
+    setLocalThemes([...themes]);
+    setIsOrdering(false);
+  };
 
   return (
     <>
-      <S.NavigationWrapper $isMobile={isMobile} $isOpen={isNavOpen}>
+      <S.NavigationWrapper $isMobile={isMobile} $isOpen={isNavOpen} isAdmin={isAdmin}>
         {isMobile && (
           <S.MobileToggleButton onClick={toggleNavigation} $isOpen={isNavOpen}>
             <S.HamburgerIcon $isOpen={isNavOpen}>
@@ -118,54 +138,88 @@ function Navigation() {
             </S.HamburgerIcon>
           </S.MobileToggleButton>
         )}
+        {isAdmin && !isOrdering && (
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginLeft: 'auto', marginRight: '18px', marginTop: '5px', marginBottom: '16px', transform: 'scale(1.2)' }}>
+            <EditButton onOrder={handleOrder} themeOrder={true} text="테마" />
+          </div>
+        )}
+        {isOrdering && (
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginLeft: 'auto', marginRight: '18px', marginTop: '5px', marginBottom: '16px' }}>
+            <S.SaveButton onClick={handleSaveOrder} disabled={isSaving}>
+              {isSaving ? '저장 중...' : '순서 저장'}
+            </S.SaveButton>
+            <S.CancelButton onClick={handleCancelOrder} disabled={isSaving}>
+              취소
+            </S.CancelButton>
+          </div>
+        )}
         <S.ThemeList $isMobile={isMobile} $isOpen={isNavOpen}>
-          {themes.length === 0 && !loading ? (
+          {displayThemes.length === 0 && !loading ? (
             <S.EmptyText>등록된 테마가 없습니다.</S.EmptyText>
           ) : (
-            themes.map((theme) => {
-              const themeClusters = clusters.filter(cluster => cluster.theme_id === theme.id);
-              const isExpanded = expandedThemes.has(theme.id);
-
-              return (
+            displayThemes.map((theme, index) => (
+              isOrdering ? (
                 <S.ThemeItem key={theme.id}>
-                  <S.ThemeHeader
-                    onClick={() => handleThemeClick(theme)}
-                    $isExpanded={isExpanded}
-                  >
+                  <S.ThemeHeader $isExpanded={false}>
                     <S.ThemeTitle>{theme.title}</S.ThemeTitle>
-                    <S.ExpandIcon $isExpanded={isExpanded}>
-                      {isExpanded ? '▲' : '▼'}
-                    </S.ExpandIcon>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      <S.OrderButton
+                        onClick={() => handleMoveUp(index)}
+                        disabled={index === 0}
+                      >
+                        ↑
+                      </S.OrderButton>
+                      <S.OrderButton
+                        onClick={() => handleMoveDown(index)}
+                        disabled={index === displayThemes.length - 1}
+                      >
+                        ↓
+                      </S.OrderButton>
+                    </div>
                   </S.ThemeHeader>
-
-                  <S.ClusterList $isVisible={isExpanded}>
-                    {themeClusters.length === 0 && !clusterLoading ? (
-                      <S.EmptyText>등록된 클러스터가 없습니다.</S.EmptyText>
-                    ) : (
-                      themeClusters.map((cluster) => (
-                        <S.ClusterItem
-                          key={cluster.id}
-                          $isActive={activeClusterIds.has(cluster.id)}
-                          onClick={(e) => handleClusterToggle(cluster.id, e)}
-                        >
-                          <S.ToggleSwitch
-
-                            $isActive={activeClusterIds.has(cluster.id)}
-                          >
-                            <S.ToggleSlider $isActive={activeClusterIds.has(cluster.id)} />
-                          </S.ToggleSwitch>
-                          <S.ClusterTitle>{cluster.title}</S.ClusterTitle>
-
-                        </S.ClusterItem>
-                      ))
-                    )}
-                  </S.ClusterList>
                 </S.ThemeItem>
-              );
-            })
+              ) : (
+                <ThemeSection
+                  key={theme.id}
+                  theme={theme}
+                  isAdmin={isAdmin}
+                />
+              )
+            ))
           )}
         </S.ThemeList>
-
+        {isAdmin && !isOrdering && (
+          <div style={{ marginBottom: '40px', borderTop: '1px solid #e0e0e0', padding: '22px 10px 0px 13px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {isAddingTheme ? (
+              <div style={{ display: 'flex', gap: 10, paddingLeft: '4px', alignItems: 'center' }}>
+                <S.ClusterTitleInput
+                  value={newThemeTitle}
+                  onChange={(e) => setNewThemeTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSaveTheme(e);
+                    else if (e.key === 'Escape') handleCancelAddTheme(e);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  placeholder="테마 이름을 입력하세요"
+                  autoFocus
+                />
+                <S.EditActionButtons>
+                  <S.SaveButton onClick={handleSaveTheme}>저장</S.SaveButton>
+                  <S.CancelButton onClick={handleCancelAddTheme}>취소</S.CancelButton>
+                </S.EditActionButtons>
+                <S.ExpandIcon >
+                  ▲
+                </S.ExpandIcon>
+              </div>
+            ) : (
+              <AddButton onClick={handleStartAddTheme} $themeSize={true}>
+                <span>+</span>
+                <span>테마 추가</span>
+              </AddButton>
+            )
+            }
+          </div>
+        )}
       </S.NavigationWrapper>
     </>
   );

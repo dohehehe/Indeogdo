@@ -52,7 +52,7 @@ export async function PUT(request, { params }) {
   try {
     const { id } = params;
     const body = await request.json();
-    const { title } = body;
+    const { title, order } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -68,9 +68,14 @@ export async function PUT(request, { params }) {
       );
     }
 
+    const updateData = { title };
+    if (order !== undefined && order !== null) {
+      updateData.order = order;
+    }
+
     const { data, error } = await supabaseAdmin
       .from('theme')
-      .update({ title })
+      .update(updateData)
       .eq('id', id)
       .select();
 

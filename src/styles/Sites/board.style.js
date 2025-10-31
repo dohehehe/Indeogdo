@@ -173,3 +173,169 @@ export const BoardAddress = styled.h3`
   margin-bottom: 10px;
   color: black;
 `
+
+
+// --------------------------------------------  boardedit 스타일
+
+export const BoardEditWrapper = styled.div`
+  padding: 40px 30px 10px 0px;
+  width: 100%;
+  overflow-y: auto;
+
+    /* 스크롤바 숨기기 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+`
+
+export const BoardEditForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+`
+
+export const BoardHeaderWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  position: relative;
+`
+
+export const BoardInputGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+`
+
+export const BoardInputLabel = styled.label`
+  font-size: 1rem;
+  font-weight: 600;
+  color: black;
+`
+
+export const BoardTextInput = styled.input`
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: black;
+  background-color: #fff;
+  border: 1px solid black;
+  border-radius: 8px;
+  outline: none;
+
+  &::placeholder {
+    color: #999;
+    font-weight: 500;
+  }
+
+  ${theme.media.mobile} {
+    border-width: 1px;
+  }
+`
+
+export const BoardSelect = styled.select`
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: black;
+  background-color: #fff;
+  border: 1px solid black;
+  border-radius: 8px;
+  outline: none;
+
+  ${theme.media.mobile} {
+    border-width: 1px;
+  }
+`
+
+export const IconPreview = styled.img`
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  border: 1px solid black;
+  border-radius: 4px;
+`
+
+// Custom dropdown for icons
+export const IconSelectWrapper = styled.div`
+  // position: relative;
+`
+
+export const IconSelectButton = styled.button`
+  width: 49px;
+  height: 47px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: ${props => props.$iconOpen ? '#fff' : '#ccc'};
+  color: black;
+  font-weight: 600;
+  border: 1px solid black;
+  border-radius: 8px;
+  cursor: pointer;
+`
+
+export const IconSelectList = styled.ul`
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: #fff;
+  border: 1px solid black;
+  border-radius: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 30;
+  box-shadow: 0 4px 20px rgba(9, 36, 50, 0.32);
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+`
+
+export const IconSelectItem = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    background:rgb(230, 230, 230);
+  }
+`
+
+export const IconThumb = styled.img`
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+`
+
+export const BoardClusterSelectWrapper = styled.div`
+  flex-grow: 1;
+`
+
+export const BoardClusterSelect = styled.select`
+  width: 100%;
+  padding: 10.3px 12px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: black;
+  background-color: #fff;
+  border: 1px solid black;
+  border-radius: 8px;
+  outline: none;
+`

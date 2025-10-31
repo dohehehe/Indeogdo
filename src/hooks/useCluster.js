@@ -95,7 +95,7 @@ const useCluster = () => {
   }, []);
 
   // 클러스터 수정
-  const updateCluster = useCallback(async (id, title, themeId = null) => {
+  const updateCluster = useCallback(async (id, title, themeId = null, order = null) => {
     setLoading(true);
     setError(null);
 
@@ -103,6 +103,9 @@ const useCluster = () => {
       const updateData = { title };
       if (themeId) {
         updateData.theme_id = themeId;
+      }
+      if (order !== null && order !== undefined) {
+        updateData.order = order;
       }
 
       const response = await fetch(`/api/cluster/${id}`, {

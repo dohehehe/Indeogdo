@@ -7,19 +7,28 @@ export const NavigationWrapper = styled.div`
   position: fixed;
   top: 15px;
   left: 0;
-  width: 300px;
-  max-height: 80dvh;
+  width: ${props => props.isAdmin ? '450px' : '300px'};
+  max-height: 90dvh;
   background-color: white;
   border-radius: 0 8px 8px 0;
   border: 1.6px solid black;
   border-left: none;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 16px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   z-index: 10;
   color: black;
+
+    /* 스크롤바 숨기기 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 
   ${theme.media.mobile} {
     top: 60px;
@@ -114,6 +123,7 @@ export const ThemeList = styled.ul`
 
 export const ThemeItem = styled.div`
   margin-bottom: 0px;
+  font-family: 'Sweet';
 `;
 
 export const ThemeHeader = styled.div`
@@ -124,6 +134,7 @@ export const ThemeHeader = styled.div`
   transition: all 0.2s ease;
   position: relative;
   display: flex;
+  gap: 10px;
   justify-content: space-between;
   align-items: center;
   font-family: 'Sweet';
@@ -133,6 +144,7 @@ export const ThemeHeader = styled.div`
     font-size: 1.5rem;
     flex-direction: row-reverse;
     justify-content: flex-end;
+    gap: 0;
   }
 `;
 
@@ -140,7 +152,8 @@ export const ExpandIcon = styled.div`
   font-size: 1rem;
   color: #666;
   transition: transform 0.2s ease;
-  margin-left: 8px;
+  margin-left: auto;
+  padding-left: 5px;
   margin-top: -5px;
 
   ${theme.media.mobile} {
@@ -151,8 +164,9 @@ export const ExpandIcon = styled.div`
 `;
 
 export const ThemeTitle = styled.div`
-  flex: 1;
   color: black;
+  padding-right: 15px;
+  font-family: 'Sweet';
   ${theme.media.mobile} {
     flex: unset;
   }
@@ -163,6 +177,7 @@ export const EmptyText = styled.div`
   color: #999;
   font-style: italic;
   padding: 20px;
+  font-family: 'Sweet';
 `;
 
 // Cluster 관련 스타일
@@ -172,11 +187,12 @@ export const ClusterList = styled.div`
   margin-left: 14px;
   display: ${props => props.$isVisible ? 'flex' : 'none'};
   flex-direction: column;
-  gap: 18px;
+  gap: 3px;
   height: ${props => props.$isVisible ? 'auto' : '0'};
   // overflow-y: hidden;
   transition: height 0.3s ease;
   margin-bottom: 40px;
+  margin-right: 9px;
 
   ${theme.media.mobile} {
     margin-bottom: 30px;
@@ -196,6 +212,7 @@ export const ClusterItem = styled.li`
   align-items: center;
   gap: 15px;
   color: #333;
+  margin-right: 9px;
 
   &:hover {
     // color:rgb(50, 149, 255);
@@ -210,6 +227,7 @@ export const ClusterItem = styled.li`
 export const ClusterTitle = styled.div`
   flex: 1;
   color: black;
+  font-family: 'Sweet';
 `;
 
 export const ToggleSwitch = styled.button`
@@ -248,4 +266,113 @@ export const ToggleSlider = styled.div`
   box-shadow: 0 2px 6px rgba(25, 37, 103, 0.42);
 `;
 
+// 인라인 편집 관련 스타일
+export const ClusterTitleInput = styled.input`
+  flex: 1;
+  padding: 8px 8px;
+  border: 1px solid #192567;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 800;
+  background-color: white;
+  outline: none;
+  
+  &:focus {
+    border-color: #4A90E2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+`;
+
+export const EditActionButtons = styled.div`
+  display: flex;
+  gap: 5px;
+  font-weight: 800;
+  font-family: 'Sweet';
+  font-size: 0.9rem;
+`;
+
+export const SaveButton = styled.button`
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+
+  &:hover {
+    background-color: #45a049;
+  }
+`;
+
+export const CancelButton = styled.button`
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #da190b;
+  }
+`;
+
+export const OrderButton = styled.button`
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  background-color: ${props => props.$disabled ? '#f0f0f0' : '#fff'};
+  cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+`;
+
+// Site 목록 관련 스타일
+export const ClusterContainer = styled.div`
+  margin-bottom: 8px;
+`;
+
+export const SiteList = styled.div`
+  margin-left: 30px;
+  margin-top: 12px;
+  padding-left: 20px;
+  border-left: 2px solid #e0e0e0;
+`;
+
+export const SiteItem = styled.div`
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+`;
+
+export const SiteTitle = styled.div`
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: black;
+  // margin-bottom: 2px;
+  margin-right: auto;
+`;
+
+export const SiteIcon = styled.img`
+  width: 15px;
+  height: 15px;
+  object-fit: cover;
+`;
 
