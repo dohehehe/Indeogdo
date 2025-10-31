@@ -73,13 +73,13 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
       if (result) {
         setIsEditing(false);
         setEditingTitle('');
-        alert('클러스터가 수정되었습니다.');
+        alert(`"${cluster.title}" 주제 이름이 수정되었습니다.`);
       } else {
-        alert('클러스터 수정에 실패했습니다.');
+        alert(`"${cluster.title}" 주제 이름 수정에 실패했습니다.`);
       }
     } catch (err) {
-      console.error('Update cluster error:', err);
-      alert('클러스터 수정 중 오류가 발생했습니다.');
+      console.error('Update subject error:', err);
+      alert(`"${cluster.title}" 주제 이름 수정 중 오류가 발생했습니다.`);
     }
   };
 
@@ -91,17 +91,17 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
 
   const handleDelete = async (e) => {
     e?.stopPropagation();
-    if (!confirm(`"${cluster.title}" 클러스터를 삭제하시겠습니까?\n\n**주의**\n아래에 포함된 장소들도 함께 삭제됩니다. \n장소를 다른 그룹에 옮기고 수행해주세요\n\n이 작업은 되돌릴 수 없습니다.`)) return;
+    if (!confirm(`"${cluster.title}" 주제를 삭제하시겠습니까?\n\n**주의**\n아래에 포함된 장소들도 함께 삭제됩니다. \n장소를 다른 주제에 옮기고 수행해주세요\n\n이 작업은 되돌릴 수 없습니다.`)) return;
     try {
       const result = await deleteCluster(cluster.id);
       if (result) {
-        alert('클러스터가 삭제되었습니다.');
+        alert(`"${cluster.title}" 주제가 삭제되었습니다.`);
       } else {
-        alert('클러스터 삭제에 실패했습니다.');
+        alert(`"${cluster.title}" 주제 삭제에 실패했습니다.`);
       }
     } catch (err) {
-      console.error('Delete cluster error:', err);
-      alert('클러스터 삭제 중 오류가 발생했습니다.');
+      console.error('Delete subject error:', err);
+      alert(`"${cluster.title}" 주제 삭제 중 오류가 발생했습니다.`);
     }
   };
 
@@ -144,7 +144,7 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
               <S.CancelButton onClick={handleCancelEdit}>취소</S.CancelButton>
             </S.EditActionButtons>
           ) : (
-            <EditButton onEdit={handleStartEdit} onDelete={handleDelete} onOrder={handleOrder} />
+            <EditButton onEdit={handleStartEdit} onDelete={handleDelete} onOrder={handleOrder} text="장소" />
           )
         )}
       </S.ClusterItem>

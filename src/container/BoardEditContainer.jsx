@@ -75,7 +75,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
       } else {
         // 생성 모드
         if (!payload.cluster_id) {
-          throw new Error('클러스터를 선택해주세요.');
+          throw new Error('이 장소가 들어갈 주제를 선택해주세요.');
         }
         result = await createSite(payload);
         if (!result) throw new Error('저장에 실패했습니다.');
@@ -179,10 +179,10 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
                 value={watched.clusterId || ''}
                 onChange={(e) => setValue('clusterId', e.target.value, { shouldDirty: true, shouldTouch: true, shouldValidate: true })}
               >
-                <option value="">클러스터 선택</option>
+                <option value="">주제 선택</option>
                 {clusters?.map((cl) => (
                   <option key={cl.id} value={cl.id}>
-                    {(cl.theme?.title || '테마없음')} - {cl.title}
+                    {(cl.theme?.title || '주제없음')} - {cl.title}
                   </option>
                 ))}
               </S.BoardClusterSelect>

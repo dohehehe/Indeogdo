@@ -13,7 +13,7 @@ function ClusterSection({
   isOrdering,
   onOrderChange,
 }) {
-  const { clusters, loading: clusterLoading, createCluster, updateCluster, fetchClustersByTheme } = useCluster();
+  const { clusters, loading: clusterLoading, createCluster, updateCluster, fetchClusters } = useCluster();
   const [isAdding, setIsAdding] = useState(false);
   const [newClusterTitle, setNewClusterTitle] = useState('');
   const [localClusters, setLocalClusters] = useState([]);
@@ -49,13 +49,13 @@ function ClusterSection({
       if (result) {
         setNewClusterTitle('');
         setIsAdding(false);
-        alert('클러스터가 생성되었습니다.');
+        alert('새로운 주제가 생성되었습니다.');
       } else {
-        alert('클러스터 생성에 실패했습니다.');
+        alert('주제 생성에 실패했습니다.');
       }
     } catch (e) {
-      console.error('Create cluster error:', e);
-      alert('클러스터 생성 중 오류가 발생했습니다.');
+      console.error('Create subject error:', e);
+      alert('주제 생성 중 오류가 발생했습니다.');
     }
   };
 
@@ -87,13 +87,14 @@ function ClusterSection({
       );
 
       await Promise.all(updatePromises);
+
+      // 데이터 새로고침 - 전체 clusters 목록 다시 가져오기
+      await fetchClusters();
+
       alert('순서가 저장되었습니다.');
       if (onOrderChange) {
         onOrderChange();
       }
-
-      // 데이터 새로고침을 위해 fetchClustersByTheme 호출 (있는 경우)
-      // 또는 부모 컴포넌트에서 자동으로 갱신될 것으로 예상
     } catch (err) {
       console.error('Save order error:', err);
       alert('순서 저장 중 오류가 발생했습니다.');
@@ -114,7 +115,7 @@ function ClusterSection({
   return (
     <>
       {isOrdering && (
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginLeft: 'auto', marginRight: '9px', marginTop: '-10px' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginLeft: 'auto', marginRight: '9px', marginTop: '-10px', marginBottom: '12px' }}>
           <S.SaveButton onClick={handleSaveOrder} disabled={isSaving}>
             {isSaving ? '저장 중...' : '순서 저장'}
           </S.SaveButton>
@@ -124,8 +125,8 @@ function ClusterSection({
         </div>
       )}
       {isAdmin && !isOrdering && (
-        <>
-          <AddButton onClick={(e) => { e.stopPropagation(); handleStartAddCluster(); }}>
+        <div style={{ marginBottom: '18px', marginTop: '-4px' }}>
+          <AddButton onClick={(e) => { e.stopPropagation(); handleStartAddCluster(); }} >
             <span>+</span>
             <span>추가하기</span>
           </AddButton>
@@ -137,7 +138,7 @@ function ClusterSection({
 
               <S.ClusterTitleInput
                 value={newClusterTitle}
-                placeholder="새 클러스터 이름"
+                placeholder="새 주제 이름"
                 onChange={(e) => setNewClusterTitle(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleCreateCluster();
@@ -154,10 +155,10 @@ function ClusterSection({
               </S.EditActionButtons>
             </div>
           )}
-        </>
+        </div>
       )}
       {displayClusters.length === 0 && !clusterLoading ? (
-        <S.EmptyText>등록된 클러스터가 없습니다.</S.EmptyText>
+        <S.EmptyText>등록된 주제가 없습니다.</S.EmptyText>
       ) : (
         displayClusters.map((cluster, index) => (
           <S.ClusterContainer key={cluster.id}>

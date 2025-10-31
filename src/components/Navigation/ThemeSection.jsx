@@ -36,13 +36,13 @@ function ThemeSection({
       if (result) {
         setIsEditing(false);
         setEditingTitle('');
-        alert('테마가 수정되었습니다.');
+        alert(`"${theme.title}" 테마 이름이 수정되었습니다.`);
       } else {
-        alert('테마 수정에 실패했습니다.');
+        alert(`"${theme.title}" 테마 이름 수정에 실패했습니다.`);
       }
     } catch (err) {
       console.error('Update theme error:', err);
-      alert('테마 수정 중 오류가 발생했습니다.');
+      alert(`"${theme.title}" 테마 이름 수정 중 오류가 발생했습니다.`);
     }
   };
 
@@ -58,13 +58,13 @@ function ThemeSection({
     try {
       const result = await deleteTheme(theme.id);
       if (result) {
-        alert('테마가 삭제되었습니다.');
+        alert(`"${theme.title}" 테마가 삭제되었습니다.`);
       } else {
-        alert('테마 삭제에 실패했습니다.');
+        alert(`"${theme.title}" 테마 삭제에 실패했습니다.`);
       }
     } catch (err) {
       console.error('Delete theme error:', err);
-      alert('테마 삭제 중 오류가 발생했습니다.');
+      alert(`"${theme.title}" 테마 삭제 중 오류가 발생했습니다.`);
     }
   };
 
@@ -100,7 +100,7 @@ function ThemeSection({
               <S.CancelButton onClick={handleCancelEdit}>취소</S.CancelButton>
             </S.EditActionButtons>
           ) : (
-            <EditButton onEdit={handleStartEdit} onDelete={handleDelete} onOrder={handleOrder} />
+            <EditButton onEdit={handleStartEdit} onDelete={handleDelete} onOrder={handleOrder} text="주제" />
           )
         )}
         <S.ExpandIcon $isExpanded={isExpanded}>

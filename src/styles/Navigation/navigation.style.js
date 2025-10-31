@@ -187,7 +187,7 @@ export const ClusterList = styled.div`
   margin-left: 14px;
   display: ${props => props.$isVisible ? 'flex' : 'none'};
   flex-direction: column;
-  gap: 18px;
+  gap: 3px;
   height: ${props => props.$isVisible ? 'auto' : '0'};
   // overflow-y: hidden;
   transition: height 0.3s ease;

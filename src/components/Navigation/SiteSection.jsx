@@ -31,7 +31,7 @@ function SiteSection({ clusterId, isAdmin, isOrdering, onOrderChange }) {
 
   const handleDeleteSite = async (site) => {
     if (!site) return;
-    if (!confirm(`"${site.title}" 사이트를 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`)) return;
+    if (!confirm(`"${site.title}" 장소를 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`)) return;
     const result = await deleteSite(site.id);
     if (result) {
       // 삭제 성공 시 로컬 상태에서 제거
@@ -76,15 +76,16 @@ function SiteSection({ clusterId, isAdmin, isOrdering, onOrderChange }) {
       );
 
       await Promise.all(updatePromises);
-      alert('순서가 저장되었습니다.');
-      if (onOrderChange) {
-        onOrderChange();
-      }
 
       // 데이터 새로고침
       const fetchedSites = await fetchSitesByCluster(clusterId);
       if (fetchedSites) {
         setSites(fetchedSites);
+      }
+
+      alert('순서가 저장되었습니다.');
+      if (onOrderChange) {
+        onOrderChange();
       }
     } catch (err) {
       console.error('Save order error:', err);
@@ -148,7 +149,7 @@ function SiteSection({ clusterId, isAdmin, isOrdering, onOrderChange }) {
               <>
                 <S.SiteIcon src={site.icon?.img || undefined} alt={site.title} />
                 <S.SiteTitle>{site.title}</S.SiteTitle>
-                <EditButton onEdit={() => handleEditSite(site)} onDelete={() => handleDeleteSite(site)} />
+                <EditButton onEdit={() => handleEditSite(site)} onDelete={() => handleDeleteSite(site)} hidden={true} />
               </>
             )}
           </S.SiteItem>
