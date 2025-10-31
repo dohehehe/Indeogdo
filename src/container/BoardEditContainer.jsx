@@ -63,8 +63,7 @@ function BoardEditContainer({ siteData, onChange }) {
       const updated = await updateSite(siteData.id, payload);
       if (!updated) throw new Error('저장에 실패했습니다.');
 
-      const ts = Date.now();
-      router.push(`/admin?ts=${ts}`);
+      router.push('/admin');
     } catch (e) {
       alert(e.message || '저장 중 오류가 발생했습니다.');
     } finally {
@@ -73,8 +72,7 @@ function BoardEditContainer({ siteData, onChange }) {
   };
 
   const handleCancel = () => {
-    const ts = Date.now();
-    router.push(`/admin?ts=${ts}`);
+    router.push('/admin');
   };
 
   useEffect(() => {
@@ -142,7 +140,9 @@ function BoardEditContainer({ siteData, onChange }) {
               <S.IconSelectButton type="button" onClick={handleOpenIconSelect} aria-label="아이콘 선택" title="아이콘 선택" $iconOpen={!iconOpen}>
                 {selectedIcon?.img ? (
                   <S.IconThumb src={selectedIcon.img} alt={selectedIcon?.name || 'icon'} />
-                ) : null}
+                ) : (
+                  <S.IconThumb src="" alt="no-icon" style={{ visibility: 'hidden' }} />
+                )}
               </S.IconSelectButton>
 
               {iconOpen && (

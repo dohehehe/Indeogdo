@@ -1,15 +1,15 @@
 import * as S from '@/styles/admin/editButton.style';
 
 function EditButton({ onEdit, onDelete }) {
-  const handleEdit = () => {
+  const handleEdit = (e) => {
     if (onEdit) {
-      onEdit();
+      onEdit(e);
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = (e) => {
     if (onDelete) {
-      onDelete();
+      onDelete(e);
     }
   };
 
