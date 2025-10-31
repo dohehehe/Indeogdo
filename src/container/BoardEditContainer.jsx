@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import * as EB from '@/styles/admin/editButton.style';
 import useSites from '@/hooks/useSites';
 import useCluster from '@/hooks/useCluster';
+import AddressSearch from '@/components/admin/AddressSearch';
 
 function BoardEditContainer({ siteData, onChange, clusterId }) {
   const editorRef = useRef(null);
@@ -16,6 +17,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
   const [saving, setSaving] = useState(false);
   const { updateSite, createSite } = useSites();
   const { clusters, fetchClusters } = useCluster();
+  const [address, setAddress] = useState('');
 
   const { register, watch, reset, handleSubmit, setValue } = useForm({
     defaultValues: {
@@ -47,6 +49,8 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
         title: formValues.title || siteData?.title || '',
         address: formValues.address || siteData?.address || '',
         contents: contentsBlocks,
+        latitude: formValues.latitude || siteData?.latitude || '',
+        longitude: formValues.longitude || siteData?.longitude || '',
       };
 
       // icon_id
@@ -94,18 +98,20 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
       title: siteData?.title || '',
       address: siteData?.address || '',
       iconId: siteData?.icon?.id || '',
-      clusterId: clusterId || siteData?.cluster?.id || ''
+      clusterId: clusterId || siteData?.cluster?.id || '',
+      latitude: siteData?.latitude || '',
+      longitude: siteData?.longitude || '',
     });
     setEditorData({ blocks: siteData?.contents || [] });
-  }, [siteData?.title, siteData?.address, siteData?.contents, siteData?.icon?.id, reset]);
+  }, [siteData?.title, siteData?.address, siteData?.contents, siteData?.icon?.id, siteData?.latitude, siteData?.longitude, reset]);
 
   const watched = watch();
 
   useEffect(() => {
     if (typeof onChange === 'function') {
-      onChange({ title: watched.title, address: watched.address, iconId: watched.iconId, clusterId: watched.clusterId });
+      onChange({ title: watched.title, address: watched.address, iconId: watched.iconId, clusterId: watched.clusterId, latitude: watched.latitude, longitude: watched.longitude });
     }
-  }, [watched.title, watched.address, watched.iconId, watched.clusterId, onChange]);
+  }, [watched.title, watched.address, watched.iconId, watched.clusterId, watched.latitude, watched.longitude, onChange]);
 
   useEffect(() => {
     const onDocClick = (e) => {
@@ -198,13 +204,10 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
 
           <S.BoardInputGroup>
             <S.BoardInputLabel htmlFor="address" >주소</S.BoardInputLabel>
-            <S.BoardTextInput
-              type="text"
-              placeholder="주소를 입력하세요"
-              id="address"
-              name="address"
-              required
-              {...register('address')}
+            <AddressSearch
+              setValue={setValue}
+              register={register}
+              setAddress={setAddress}
             />
           </S.BoardInputGroup>
 
