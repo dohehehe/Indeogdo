@@ -19,7 +19,9 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
   const [sites, setSites] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingTitle, setEditingTitle] = useState('');
+  const [isOrdering, setIsOrdering] = useState(false);
   const router = useRouter();
+
   // 클러스터 활성화 시 sites 가져오기
   useEffect(() => {
     if (isActive) {
@@ -107,6 +109,11 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
     router.push(`/admin/sites/create/${cluster.id}`);
   };
 
+  const handleOrder = (e) => {
+    e?.stopPropagation();
+    setIsOrdering(prev => !prev);
+  };
+
   return (
     <S.ClusterContainer>
       <S.ClusterItem
@@ -137,14 +144,19 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
               <S.CancelButton onClick={handleCancelEdit}>취소</S.CancelButton>
             </S.EditActionButtons>
           ) : (
-            <EditButton onEdit={handleStartEdit} onDelete={handleDelete} />
+            <EditButton onEdit={handleStartEdit} onDelete={handleDelete} onOrder={handleOrder} />
           )
         )}
       </S.ClusterItem>
 
       {isAdmin && (
         <>
-          <SiteSection clusterId={cluster.id} isAdmin={isAdmin} />
+          <SiteSection
+            clusterId={cluster.id}
+            isAdmin={isAdmin}
+            isOrdering={isOrdering}
+            onOrderChange={() => setIsOrdering(false)}
+          />
           <div style={{ width: '100px', display: 'flex', margin: '10px 0px 0px 46px', transform: 'scale(0.9)' }}>
             <AddButton onClick={handleStartAddSite}>
               <span>+</span>

@@ -62,7 +62,7 @@ export async function PUT(request, context) {
   try {
     const { id } = await context.params;
     const body = await request.json();
-    const { title, address, latitude, longitude, contents, cluster_id, icon_id } = body;
+    const { title, address, latitude, longitude, contents, cluster_id, icon_id, order } = body;
     const normalizedClusterId = (cluster_id === '' ? null : cluster_id);
     const normalizedIconId = (icon_id === '' ? null : icon_id);
 
@@ -119,6 +119,7 @@ export async function PUT(request, context) {
     if (contents !== undefined) updateData.contents = contents;
     if (normalizedClusterId !== undefined) updateData.cluster_id = normalizedClusterId;
     if (normalizedIconId !== undefined) updateData.icon_id = normalizedIconId;
+    if (order !== undefined && order !== null) updateData.order = order;
 
     const { data, error } = await supabaseAdmin
       .from('sites')

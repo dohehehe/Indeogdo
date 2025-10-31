@@ -320,6 +320,20 @@ export const CancelButton = styled.button`
   }
 `;
 
+export const OrderButton = styled.button`
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  background-color: ${props => props.$disabled ? '#f0f0f0' : '#fff'};
+  cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+`;
+
 // Site 목록 관련 스타일
 export const ClusterContainer = styled.div`
   margin-bottom: 8px;

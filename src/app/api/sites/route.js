@@ -23,6 +23,7 @@ export async function GET(request) {
           img
         )
       `)
+      .order('order', { ascending: true, nullsLast: true })
       .order('created_at', { ascending: false })
       .range(parseInt(offset), parseInt(offset) + parseInt(limit) - 1);
 
@@ -65,7 +66,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { title, address, latitude, longitude, contents, cluster_id, icon_id } = body;
+    const { title, address, latitude, longitude, contents, cluster_id, icon_id, order } = body;
 
     if (!title) {
       return NextResponse.json(
@@ -111,17 +112,23 @@ export async function POST(request) {
       }
     }
 
+    const insertData = {
+      title,
+      address,
+      latitude,
+      longitude,
+      contents,
+      cluster_id,
+      icon_id
+    };
+
+    if (order !== undefined && order !== null) {
+      insertData.order = order;
+    }
+
     const { data, error } = await supabaseAdmin
       .from('sites')
-      .insert([{
-        title,
-        address,
-        latitude,
-        longitude,
-        contents,
-        cluster_id,
-        icon_id
-      }])
+      .insert([insertData])
       .select(`
         *,
         cluster:cluster_id (

@@ -14,6 +14,7 @@ function ThemeSection({
   const [isExpanded, setIsExpanded] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editingTitle, setEditingTitle] = useState('');
+  const [isOrdering, setIsOrdering] = useState(false);
 
   const handleToggleTheme = (e) => {
     if (!isEditing) {
@@ -67,6 +68,11 @@ function ThemeSection({
     }
   };
 
+  const handleOrder = (e) => {
+    e?.stopPropagation();
+    setIsOrdering(prev => !prev);
+  };
+
   return (
     <S.ThemeItem>
       <S.ThemeHeader
@@ -94,7 +100,7 @@ function ThemeSection({
               <S.CancelButton onClick={handleCancelEdit}>취소</S.CancelButton>
             </S.EditActionButtons>
           ) : (
-            <EditButton onEdit={handleStartEdit} onDelete={handleDelete} />
+            <EditButton onEdit={handleStartEdit} onDelete={handleDelete} onOrder={handleOrder} />
           )
         )}
         <S.ExpandIcon $isExpanded={isExpanded}>
@@ -106,6 +112,8 @@ function ThemeSection({
         <ClusterSection
           themeId={theme.id}
           isAdmin={isAdmin}
+          isOrdering={isOrdering}
+          onOrderChange={() => setIsOrdering(false)}
         />
       </S.ClusterList>
     </S.ThemeItem>

@@ -6,10 +6,11 @@ import EditButton from '@/components/admin/EditButton';
 import { useRouter } from 'next/navigation';
 import useSites from '@/hooks/useSites';
 
-function SiteSection({ clusterId, isAdmin }) {
+function SiteSection({ clusterId, isAdmin, isOrdering, onOrderChange }) {
   const router = useRouter();
-  const { deleteSite, fetchSitesByCluster } = useSites();
+  const { deleteSite, fetchSitesByCluster, updateSite } = useSites();
   const [sites, setSites] = useState([]);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Admin 모드일 때 sites 데이터 가져오기
   useEffect(() => {
@@ -38,18 +39,122 @@ function SiteSection({ clusterId, isAdmin }) {
     }
   };
 
-  if (!isAdmin || !sites || sites.length === 0) return null;
-  return (
-    <S.SiteList>
-      {sites.map((site) => (
-        <S.SiteItem key={site.id}>
-          <S.SiteIcon src={site.icon?.img || undefined} alt={site.title} />
-          <S.SiteTitle>{site.title}</S.SiteTitle>
-          <EditButton onEdit={() => handleEditSite(site)} onDelete={() => handleDeleteSite(site)} />
-        </S.SiteItem>
-      ))}
+  const handleMoveUp = (index) => {
+    if (index === 0) return;
+    setSites(prev => {
+      const newSites = [...prev];
+      [newSites[index - 1], newSites[index]] = [newSites[index], newSites[index - 1]];
+      return newSites;
+    });
+  };
 
-    </S.SiteList>
+  const handleMoveDown = (index) => {
+    if (index === sites.length - 1) return;
+    setSites(prev => {
+      const newSites = [...prev];
+      [newSites[index], newSites[index + 1]] = [newSites[index + 1], newSites[index]];
+      return newSites;
+    });
+  };
+
+  const handleSaveOrder = async () => {
+    setIsSaving(true);
+    try {
+      // 모든 site를 순서대로 업데이트 (1, 2, 3, 4...)
+      // 기존 데이터는 유지하고 order만 업데이트
+      const updatePromises = sites.map((site, index) =>
+        updateSite(site.id, {
+          title: site.title,
+          address: site.address || '',
+          latitude: site.latitude || null,
+          longitude: site.longitude || null,
+          contents: site.contents || [],
+          cluster_id: site.cluster?.id || site.cluster_id,
+          icon_id: site.icon?.id || site.icon_id || null,
+          order: index + 1
+        })
+      );
+
+      await Promise.all(updatePromises);
+      alert('순서가 저장되었습니다.');
+      if (onOrderChange) {
+        onOrderChange();
+      }
+
+      // 데이터 새로고침
+      const fetchedSites = await fetchSitesByCluster(clusterId);
+      if (fetchedSites) {
+        setSites(fetchedSites);
+      }
+    } catch (err) {
+      console.error('Save order error:', err);
+      alert('순서 저장 중 오류가 발생했습니다.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancelOrder = () => {
+    // 데이터 새로고침으로 원래 순서로 복원
+    const loadSites = async () => {
+      const fetchedSites = await fetchSitesByCluster(clusterId);
+      if (fetchedSites) {
+        setSites(fetchedSites);
+      }
+    };
+    loadSites();
+    if (onOrderChange) {
+      onOrderChange();
+    }
+  };
+
+  if (!isAdmin || !sites || sites.length === 0) return null;
+
+  return (
+    <>
+      {isOrdering && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', padding: '8px 0', marginLeft: 'auto', marginBottom: '-10px', marginRight: '5px' }}>
+          <S.SaveButton onClick={handleSaveOrder} disabled={isSaving}>
+            {isSaving ? '저장 중...' : '순서 저장'}
+          </S.SaveButton>
+          <S.CancelButton onClick={handleCancelOrder} disabled={isSaving}>
+            취소
+          </S.CancelButton>
+        </div>
+      )}
+      <S.SiteList>
+        {sites.map((site, index) => (
+          <S.SiteItem key={site.id}>
+            {isOrdering ? (
+              <>
+                <S.SiteIcon src={site.icon?.img || undefined} alt={site.title} />
+                <S.SiteTitle>{site.title}</S.SiteTitle>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  <S.OrderButton
+                    onClick={() => handleMoveUp(index)}
+                    disabled={index === 0}
+                  >
+                    ↑
+                  </S.OrderButton>
+                  <S.OrderButton
+                    onClick={() => handleMoveDown(index)}
+                    disabled={index === sites.length - 1}
+                  >
+                    ↓
+                  </S.OrderButton>
+                </div>
+              </>
+            ) : (
+              <>
+                <S.SiteIcon src={site.icon?.img || undefined} alt={site.title} />
+                <S.SiteTitle>{site.title}</S.SiteTitle>
+                <EditButton onEdit={() => handleEditSite(site)} onDelete={() => handleDeleteSite(site)} />
+              </>
+            )}
+          </S.SiteItem>
+        ))}
+      </S.SiteList>
+    </>
   );
 }
 
