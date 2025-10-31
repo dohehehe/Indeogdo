@@ -48,6 +48,7 @@ function SiteSection({ clusterId, isAdmin }) {
           <EditButton onEdit={() => handleEditSite(site)} onDelete={() => handleDeleteSite(site)} />
         </S.SiteItem>
       ))}
+
     </S.SiteList>
   );
 }

@@ -8,13 +8,13 @@ import * as EB from '@/styles/admin/editButton.style';
 import useSites from '@/hooks/useSites';
 import useCluster from '@/hooks/useCluster';
 
-function BoardEditContainer({ siteData, onChange }) {
+function BoardEditContainer({ siteData, onChange, clusterId }) {
   const editorRef = useRef(null);
   const [editorData, setEditorData] = useState({ blocks: [] });
   const { icons, loading: iconsLoading, fetchIcons } = useIcon();
   const router = useRouter();
   const [saving, setSaving] = useState(false);
-  const { updateSite } = useSites();
+  const { updateSite, createSite } = useSites();
   const { clusters, fetchClusters } = useCluster();
 
   const { register, watch, reset, handleSubmit, setValue } = useForm({
@@ -22,7 +22,7 @@ function BoardEditContainer({ siteData, onChange }) {
       title: siteData?.title || '',
       address: siteData?.address || '',
       iconId: siteData?.icon?.id || '',
-      clusterId: siteData?.cluster?.id || ''
+      clusterId: clusterId || siteData?.cluster?.id || ''
     }
   });
 
@@ -30,7 +30,10 @@ function BoardEditContainer({ siteData, onChange }) {
   const iconWrapRef = useRef(null);
 
   const onSubmit = async () => {
-    if (!siteData?.id || saving) return;
+    if (saving) return;
+
+    const isEditing = !!siteData?.id;
+
     try {
       setSaving(true);
       let contentsBlocks = [];
@@ -60,8 +63,19 @@ function BoardEditContainer({ siteData, onChange }) {
         payload.cluster_id = clusterToUse;
       }
 
-      const updated = await updateSite(siteData.id, payload);
-      if (!updated) throw new Error('저장에 실패했습니다.');
+      let result;
+      if (isEditing) {
+        // 수정 모드
+        result = await updateSite(siteData.id, payload);
+        if (!result) throw new Error('저장에 실패했습니다.');
+      } else {
+        // 생성 모드
+        if (!payload.cluster_id) {
+          throw new Error('클러스터를 선택해주세요.');
+        }
+        result = await createSite(payload);
+        if (!result) throw new Error('저장에 실패했습니다.');
+      }
 
       router.push('/admin');
     } catch (e) {
@@ -80,7 +94,7 @@ function BoardEditContainer({ siteData, onChange }) {
       title: siteData?.title || '',
       address: siteData?.address || '',
       iconId: siteData?.icon?.id || '',
-      clusterId: siteData?.cluster?.id || ''
+      clusterId: clusterId || siteData?.cluster?.id || ''
     });
     setEditorData({ blocks: siteData?.contents || [] });
   }, [siteData?.title, siteData?.address, siteData?.contents, siteData?.icon?.id, reset]);

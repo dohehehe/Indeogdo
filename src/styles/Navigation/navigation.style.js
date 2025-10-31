@@ -153,6 +153,7 @@ export const ExpandIcon = styled.div`
   color: #666;
   transition: transform 0.2s ease;
   margin-left: auto;
+  padding-left: 5px;
   margin-top: -5px;
 
   ${theme.media.mobile} {
@@ -164,6 +165,7 @@ export const ExpandIcon = styled.div`
 
 export const ThemeTitle = styled.div`
   color: black;
+  padding-right: 15px;
   font-family: 'Sweet';
   ${theme.media.mobile} {
     flex: unset;

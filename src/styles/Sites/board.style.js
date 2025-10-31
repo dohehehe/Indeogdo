@@ -272,6 +272,7 @@ export const IconSelectWrapper = styled.div`
 
 export const IconSelectButton = styled.button`
   width: 49px;
+  height: 47px;
   display: flex;
   align-items: center;
   gap: 10px;

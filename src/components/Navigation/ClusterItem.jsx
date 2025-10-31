@@ -7,6 +7,8 @@ import SiteSection from '@/components/Navigation/SiteSection';
 import useSites from '@/hooks/useSites';
 import useCluster from '@/hooks/useCluster';
 import useClusterSitesStore from '@/stores/clusterSitesStore';
+import AddButton from '@/components/admin/AddButton';
+import { useRouter } from 'next/navigation';
 
 function ClusterItem({ cluster, isAdmin, themeId }) {
   const { fetchSitesByCluster } = useSites();
@@ -17,7 +19,7 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
   const [sites, setSites] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingTitle, setEditingTitle] = useState('');
-
+  const router = useRouter();
   // 클러스터 활성화 시 sites 가져오기
   useEffect(() => {
     if (isActive) {
@@ -101,6 +103,10 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
     }
   };
 
+  const handleStartAddSite = () => {
+    router.push(`/admin/sites/create/${cluster.id}`);
+  };
+
   return (
     <S.ClusterContainer>
       <S.ClusterItem
@@ -137,7 +143,15 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
       </S.ClusterItem>
 
       {isAdmin && (
-        <SiteSection clusterId={cluster.id} isAdmin={isAdmin} />
+        <>
+          <SiteSection clusterId={cluster.id} isAdmin={isAdmin} />
+          <div style={{ width: '100px', display: 'flex', margin: '10px 0px 0px 46px', transform: 'scale(0.9)' }}>
+            <AddButton onClick={handleStartAddSite}>
+              <span>+</span>
+              <span>장소 추가</span>
+            </AddButton>
+          </div>
+        </>
       )}
     </S.ClusterContainer>
   );

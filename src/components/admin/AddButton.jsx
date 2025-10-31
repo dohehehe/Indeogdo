@@ -10,10 +10,8 @@ const AddButtonWrapper = styled.button`
   font-size: ${props => props.$themeSize ? '1.2rem' : '0.9rem'};
   font-weight: 500;
   color: black;
-  // position: relative;
-  // left: 50%;
-  // transform: translateX(-50%);
   display: flex;
+  width: 100%;
   align-items: center;
   justify-content: center;
   gap: 5px;
