@@ -96,12 +96,13 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
       const result = await deleteCluster(cluster.id);
       if (result) {
         alert(`"${cluster.title}" 주제가 삭제되었습니다.`);
-      } else {
-        alert(`"${cluster.title}" 주제 삭제에 실패했습니다.`);
       }
     } catch (err) {
       console.error('Delete subject error:', err);
-      alert(`"${cluster.title}" 주제 삭제 중 오류가 발생했습니다.`);
+      const errorMsg = err.message || `"${cluster.title}" 주제 삭제에 실패했습니다.`;
+      const details = err.details || '';
+      const fullMessage = details ? `${errorMsg}\n\n${details}` : errorMsg;
+      alert(fullMessage);
     }
   };
 

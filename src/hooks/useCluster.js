@@ -148,16 +148,21 @@ const useCluster = () => {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to delete cluster');
+        const errorMessage = result.error || 'Failed to delete cluster';
+        const error = new Error(errorMessage);
+        error.details = result.details || '';
+        error.originalResult = result;
+        throw error;
       }
 
-      // 로컬 상태 업데이트
+      // 성공 시 에러 상태 초기화 및 로컬 상태 업데이트
+      setError(null);
       setClusters(prev => prev.filter(cluster => cluster.id !== id));
       return result.data;
     } catch (err) {
-      setError(err.message);
+      // 에러를 throw하여 호출하는 쪽에서 처리할 수 있도록
       console.error('Delete cluster error:', err);
-      return null;
+      throw err;
     } finally {
       setLoading(false);
     }
