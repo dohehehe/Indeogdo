@@ -86,22 +86,17 @@ const useTheme = () => {
   }, []);
 
   // 테마 수정
-  const updateTheme = useCallback(async (id, title, order = null) => {
+  const updateTheme = useCallback(async (id, title) => {
     setLoading(true);
     setError(null);
 
     try {
-      const updateData = { title };
-      if (order !== null && order !== undefined) {
-        updateData.order = order;
-      }
-
       const response = await fetch(`/api/theme/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updateData),
+        body: JSON.stringify({ title }),
       });
 
       const result = await response.json();

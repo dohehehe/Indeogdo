@@ -7,7 +7,7 @@ export const NavigationWrapper = styled.div`
   position: fixed;
   top: 15px;
   left: 0;
-  width: ${props => props.isAdmin ? '450px' : '300px'};
+  width: ${props => props.isAdmin ? '500px' : '300px'};
   max-height: 90dvh;
   background-color: white;
   border-radius: 0 8px 8px 0;
