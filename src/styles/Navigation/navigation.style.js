@@ -7,14 +7,14 @@ export const NavigationWrapper = styled.div`
   position: fixed;
   top: 15px;
   left: 0;
-  width: ${props => props.isAdmin ? '450px' : '300px'};
-  max-height: 90dvh;
+  width: ${props => props.isAdmin ? '500px' : '300px'};
+  max-height: ${props => props.isAdmin ? '92dvh' : '80dvh'};
   background-color: white;
   border-radius: 0 8px 8px 0;
   border: 1.6px solid black;
   border-left: none;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 16px;
+  padding: ${props => props.isAdmin ? '0px 16px 16px 16px' : '16px'};
   overflow-x: hidden;
   overflow-y: auto;
   display: flex;

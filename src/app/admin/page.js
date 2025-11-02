@@ -1,7 +1,13 @@
+'use client';
+
+import IconBoard from '@/components/admin/IconBoard';
+import CreditBoard from '@/components/admin/CreditBoard';
+
 export default function AdminPage() {
   return (
-    <div>
-      <h1>Admin Page</h1>
-    </div>
+    <>
+      <IconBoard />
+      <CreditBoard />
+    </>
   );
 }

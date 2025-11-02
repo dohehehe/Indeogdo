@@ -59,12 +59,13 @@ function ThemeSection({
       const result = await deleteTheme(theme.id);
       if (result) {
         alert(`"${theme.title}" 테마가 삭제되었습니다.`);
-      } else {
-        alert(`"${theme.title}" 테마 삭제에 실패했습니다.`);
       }
     } catch (err) {
       console.error('Delete theme error:', err);
-      alert(`"${theme.title}" 테마 삭제 중 오류가 발생했습니다.`);
+      const errorMsg = err.message || `"${theme.title}" 테마 삭제에 실패했습니다.`;
+      const details = err.details || '';
+      const fullMessage = details ? `${errorMsg}\n\n${details}` : errorMsg;
+      alert(fullMessage);
     }
   };
 

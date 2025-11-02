@@ -6,6 +6,10 @@ export const EditButtonWrapper = styled.div`
   gap: 5px;
   font-family: 'Sweet';
   font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  flex-shrink: 0;
 `;
 
 export const EditButton = styled.button`
