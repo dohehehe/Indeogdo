@@ -138,21 +138,27 @@ function Navigation() {
             </S.HamburgerIcon>
           </S.MobileToggleButton>
         )}
-        {isAdmin && !isOrdering && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginLeft: 'auto', marginRight: '18px', marginTop: '5px', marginBottom: '16px', transform: 'scale(1.2)' }}>
+        {isAdmin && (
+          <div style={{
+            display: 'flex', gap: '8px', marginBottom: '20px', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '20px 24px 18px 24px', borderBottom: '1px solid #e0e0e0', position: 'sticky', top: '0', backgroundColor: 'white', zIndex: '10', marginLeft: '-16px', width: 'calc(100% + 32px)', boxShadow: '0 2px 10px 10px rgba(255, 255, 255, 0.91)'
+          }}>
+            <h1 style={{ fontSize: '2rem', fontFamily: 'Sweet', fontWeight: '800', color: 'black' }}>컨텐츠 관리</h1>
             <EditButton onOrder={handleOrder} themeOrder={true} text="테마" />
-          </div>
-        )}
-        {isOrdering && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginLeft: 'auto', marginRight: '18px', marginTop: '5px', marginBottom: '16px' }}>
-            <S.SaveButton onClick={handleSaveOrder} disabled={isSaving}>
-              {isSaving ? '저장 중...' : '순서 저장'}
-            </S.SaveButton>
-            <S.CancelButton onClick={handleCancelOrder} disabled={isSaving}>
-              취소
-            </S.CancelButton>
-          </div>
-        )}
+          </div >
+        )
+        }
+        {
+          isOrdering && (
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginLeft: 'auto', marginRight: '18px', marginTop: '5px', marginBottom: '16px' }}>
+              <S.SaveButton onClick={handleSaveOrder} disabled={isSaving}>
+                {isSaving ? '저장 중...' : '순서 저장'}
+              </S.SaveButton>
+              <S.CancelButton onClick={handleCancelOrder} disabled={isSaving}>
+                취소
+              </S.CancelButton>
+            </div>
+          )
+        }
         <S.ThemeList $isMobile={isMobile} $isOpen={isNavOpen}>
           {displayThemes.length === 0 && !loading ? (
             <S.EmptyText>등록된 테마가 없습니다.</S.EmptyText>
@@ -188,39 +194,41 @@ function Navigation() {
             ))
           )}
         </S.ThemeList>
-        {isAdmin && !isOrdering && (
-          <div style={{ marginBottom: '40px', borderTop: '1px solid #e0e0e0', padding: '22px 10px 0px 13px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {isAddingTheme ? (
-              <div style={{ display: 'flex', gap: 10, paddingLeft: '4px', alignItems: 'center' }}>
-                <S.ClusterTitleInput
-                  value={newThemeTitle}
-                  onChange={(e) => setNewThemeTitle(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSaveTheme(e);
-                    else if (e.key === 'Escape') handleCancelAddTheme(e);
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  placeholder="테마 이름을 입력하세요"
-                  autoFocus
-                />
-                <S.EditActionButtons>
-                  <S.SaveButton onClick={handleSaveTheme}>저장</S.SaveButton>
-                  <S.CancelButton onClick={handleCancelAddTheme}>취소</S.CancelButton>
-                </S.EditActionButtons>
-                <S.ExpandIcon >
-                  ▲
-                </S.ExpandIcon>
-              </div>
-            ) : (
-              <AddButton onClick={handleStartAddTheme} $themeSize={true}>
-                <span>+</span>
-                <span>테마 추가</span>
-              </AddButton>
-            )
-            }
-          </div>
-        )}
-      </S.NavigationWrapper>
+        {
+          isAdmin && !isOrdering && (
+            <div style={{ marginBottom: '40px', borderTop: '1px solid #e0e0e0', padding: '22px 10px 0px 13px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {isAddingTheme ? (
+                <div style={{ display: 'flex', gap: 10, paddingLeft: '4px', alignItems: 'center' }}>
+                  <S.ClusterTitleInput
+                    value={newThemeTitle}
+                    onChange={(e) => setNewThemeTitle(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSaveTheme(e);
+                      else if (e.key === 'Escape') handleCancelAddTheme(e);
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    placeholder="테마 이름을 입력하세요"
+                    autoFocus
+                  />
+                  <S.EditActionButtons>
+                    <S.SaveButton onClick={handleSaveTheme}>저장</S.SaveButton>
+                    <S.CancelButton onClick={handleCancelAddTheme}>취소</S.CancelButton>
+                  </S.EditActionButtons>
+                  <S.ExpandIcon >
+                    ▲
+                  </S.ExpandIcon>
+                </div>
+              ) : (
+                <AddButton onClick={handleStartAddTheme} $themeSize={true}>
+                  <span>+</span>
+                  <span>테마 추가</span>
+                </AddButton>
+              )
+              }
+            </div>
+          )
+        }
+      </S.NavigationWrapper >
     </>
   );
 }

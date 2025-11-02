@@ -9,7 +9,7 @@ export const IconBoardWrapper = styled.div`
   border-radius: 8px;
   border: 1.6px solid black;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 18px;
   position: fixed;
   top: 15px;
   left: 550px;
@@ -24,8 +24,8 @@ export const IconHeader = styled.div`
 `;
 
 export const IconTitle = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 2rem;
+  font-weight: 800;
   color: black;
 `;
 

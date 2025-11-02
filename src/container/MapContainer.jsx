@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import MapSearch from '@/components/Map/MapSearch';
 import MapReset from '@/components/Map/MapReset';
 import useMapInitialization from '@/hooks/map/useMapInitialization';
@@ -10,7 +10,16 @@ import useMapSearch from '@/hooks/map/useMapSearch';
 
 function MapContainer() {
   const router = useRouter();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const pathname = usePathname();
 
+  useEffect(() => {
+    if (pathname.startsWith('/admin')) {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [pathname]);
   // 지도 초기화 훅
   const {
     mapRef,
@@ -101,7 +110,7 @@ function MapContainer() {
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, width: '100dvw', height: '100dvh' }}>
       {/* 검색 컴포넌트 - 지도가 초기화된 후에만 표시 */}
-      {mapInitialized && (
+      {mapInitialized && !isAdmin && (
         <MapSearch
           onSearch={searchPlaces}
           searchResults={searchResults}
