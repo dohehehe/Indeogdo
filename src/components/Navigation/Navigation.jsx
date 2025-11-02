@@ -5,6 +5,7 @@ import useTheme from '@/hooks/useTheme';
 import useMobile from '@/hooks/useMobile';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 import ThemeSection from '@/components/Navigation/ThemeSection';
 import AddButton from '@/components/admin/AddButton';
 import EditButton from '@/components/admin/EditButton';
@@ -12,6 +13,7 @@ import EditButton from '@/components/admin/EditButton';
 function Navigation() {
   const { themes, loading, error, createTheme, updateTheme, fetchThemes } = useTheme();
   const isMobile = useMobile();
+  const { isAuthenticated } = useAuth();
   const [isNavOpen, setIsNavOpen] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAddingTheme, setIsAddingTheme] = useState(false);
@@ -21,13 +23,11 @@ function Navigation() {
   const [isSaving, setIsSaving] = useState(false);
   const pathname = usePathname();
 
+  // isAdmin은 /admin 경로일 때와 로그인 상태일 때 모두 충족해야 true
   useEffect(() => {
-    if (pathname.startsWith('/admin')) {
-      setIsAdmin(true);
-    } else {
-      setIsAdmin(false);
-    }
-  }, [pathname]);
+    const isAdminRoute = pathname.startsWith('/admin');
+    setIsAdmin(isAdminRoute && isAuthenticated);
+  }, [pathname, isAuthenticated]);
 
   const toggleNavigation = () => {
     setIsNavOpen(!isNavOpen);
