@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import LoginModal from '@/components/admin/LoginModal';
 
+
 export default function AdminLayout({ children }) {
   const { isAuthenticated, loading } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
