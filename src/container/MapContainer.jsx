@@ -4,9 +4,11 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import MapSearch from '@/components/Map/MapSearch';
 import MapReset from '@/components/Map/MapReset';
+import MapPolygons from '@/components/Map/MapPolygons';
 import useMapInitialization from '@/hooks/map/useMapInitialization';
 import useSiteMarkers from '@/hooks/map/useSiteMarkers';
 import useMapSearch from '@/hooks/map/useMapSearch';
+import usePOI from '@/hooks/map/usePOI';
 
 function MapContainer() {
   const router = useRouter();
@@ -47,6 +49,14 @@ function MapContainer() {
     clearSearchResults
   } = useMapSearch(mapInstance, zoomLevel);
 
+  // POI 생성 훅
+  const {
+    poiMarkers,
+    createPOI,
+    createPOIs,
+    clearPOI
+  } = usePOI(mapInstance, zoomLevel);
+
   const [selectedSites, setSelectedSites] = useState([]);
 
   // Navigation에서 선택된 sites 데이터를 받는 전역 함수 설정
@@ -62,10 +72,42 @@ function MapContainer() {
     router.push(`/sites/${site.id}`);
   }, [router]);
 
+  // POI 생성 핸들러 (단일)
+  const handleCreatePOI = useCallback((latitude, longitude, name, fontSize) => {
+    if (mapInstance && createPOI) {
+      createPOI(latitude, longitude, name, fontSize);
+    }
+  }, [mapInstance, createPOI]);
+
+  // POI 배열 생성 핸들러 (여러 개)
+  const handleCreatePOIs = useCallback((poiDataList) => {
+    if (mapInstance && createPOIs) {
+      createPOIs(poiDataList);
+    }
+  }, [mapInstance, createPOIs]);
+
+  // 초기 POI 데이터로 POI 생성 (지도 초기화 후)
+  useEffect(() => {
+    if (mapInitialized && mapInstance) {
+      // 예시: 초기 POI 데이터가 있다면 여기서 생성
+      // handleCreatePOIs([
+      //   { latitude: 37.5665, longitude: 126.9780, name: '서울시청' },
+      //   { latitude: 37.4979, longitude: 127.0276, name: '강남역' }
+      // ]);
+
+      // 또는 전역 함수로 받은 데이터로 생성
+      if (window.poiData && Array.isArray(window.poiData)) {
+        handleCreatePOIs(window.poiData);
+      }
+    }
+  }, [mapInitialized, mapInstance, handleCreatePOIs]);
+
   // Navigation에서 선택된 sites 데이터를 받는 전역 함수 설정
   useEffect(() => {
     window.onSitesSelected = handleSitesSelected;
     window.onPOIClick = handlePOIClick;
+    window.onCreatePOI = handleCreatePOI;
+    window.onCreatePOIs = handleCreatePOIs;
 
     return () => {
       if (window.onSitesSelected) {
@@ -74,8 +116,14 @@ function MapContainer() {
       if (window.onPOIClick) {
         delete window.onPOIClick;
       }
+      if (window.onCreatePOI) {
+        delete window.onCreatePOI;
+      }
+      if (window.onCreatePOIs) {
+        delete window.onCreatePOIs;
+      }
     };
-  }, [handleSitesSelected, handlePOIClick]);
+  }, [handleSitesSelected, handlePOIClick, handleCreatePOI, handleCreatePOIs]);
 
 
   // 지도 리셋 함수
@@ -98,6 +146,8 @@ function MapContainer() {
 
       // 검색 결과만 리셋 (POI는 유지)
       clearSearchResults();
+
+      // POI 마커는 유지 (제거하려면 clearPOI() 호출)
 
       // selectedSites는 유지하여 POI 마커가 계속 표시되도록 함
     } catch (error) {
@@ -144,6 +194,9 @@ function MapContainer() {
       {mapInitialized && (
         <MapReset onReset={handleMapReset} />
       )}
+
+      {/* 다각형들 렌더링 */}
+      <MapPolygons mapInstance={mapInstance} mapInitialized={mapInitialized} zoomLevel={zoomLevel} />
     </div>
   );
 };
