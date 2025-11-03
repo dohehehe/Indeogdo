@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import ThemeSection from '@/components/Navigation/ThemeSection';
 import AddButton from '@/components/admin/AddButton';
 import EditButton from '@/components/admin/EditButton';
+import Modal from '@/components/common/Modal';
 
 function Navigation() {
   const { themes, loading, error, createTheme, updateTheme, fetchThemes } = useTheme();
@@ -21,6 +22,7 @@ function Navigation() {
   const [isOrdering, setIsOrdering] = useState(false);
   const [localThemes, setLocalThemes] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const pathname = usePathname();
 
   // isAdmin은 /admin 경로일 때와 로그인 상태일 때 모두 충족해야 true
@@ -126,6 +128,14 @@ function Navigation() {
     setIsOrdering(false);
   };
 
+  const handleCredit = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <S.NavigationWrapper $isMobile={isMobile} $isOpen={isNavOpen} isAdmin={isAdmin}>
@@ -228,6 +238,22 @@ function Navigation() {
             </div>
           )
         }
+
+        <S.CreditButton onClick={handleCredit}>함께하는 사람들</S.CreditButton>
+
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal} title="함께하는 사람들">
+          <S.CreditList>
+            <S.CreditItem>
+              <S.CreditItemContent>
+                <span>역할</span>
+                <span>이름</span>
+              </S.CreditItemContent>
+            </S.CreditItem>
+          </S.CreditList>
+        </Modal>
+        <S.CopyRight>
+          <span>© 2025 B-Ground Architects. All rights reserved.</span>
+        </S.CopyRight>
       </S.NavigationWrapper >
     </>
   );

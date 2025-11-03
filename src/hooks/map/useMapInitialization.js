@@ -246,7 +246,7 @@ const useMapInitialization = () => {
             "color": "#ffffff"
           },
           {
-            "weight": "10.00"
+            "weight": "14.00"
           }
         ]
       },
@@ -267,7 +267,7 @@ const useMapInitialization = () => {
         "elementType": "labels.text.fill",
         "stylers": [
           {
-            "color": "#000000"
+            "color": "#FFFFFF"
           }
         ]
       },
@@ -285,7 +285,7 @@ const useMapInitialization = () => {
         "elementType": "all",
         "stylers": [
           {
-            "visibility": "on"
+            "visibility": "off"
           },
           {
             "weight": "1.00"
@@ -312,7 +312,7 @@ const useMapInitialization = () => {
       },
       {
         "featureType": "road.arterial",
-        "elementType": "labels.icon",
+        "elementType": "labels",
         "stylers": [
           {
             "visibility": "off"

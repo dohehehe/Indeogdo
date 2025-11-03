@@ -376,3 +376,49 @@ export const SiteIcon = styled.img`
   object-fit: cover;
 `;
 
+export const CreditButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #444;
+  text-align: center;
+  margin-top: 10px;
+  font-family: 'Sweet';
+  font-weight: 500;
+  margin-bottom:10px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-color: black;
+  text-decoration-thickness: 1.2px;
+  text-decoration-style: solid;
+`;
+
+export const CreditList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+export const CreditItem = styled.li`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+export const CreditItemContent = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+export const CopyRight = styled.div`
+  font-size: 0.8rem;
+  color: #666;
+  text-align: center;
+  margin-top: 10px;
+  font-family: 'Sweet';
+`;
