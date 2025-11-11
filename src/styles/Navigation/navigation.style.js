@@ -31,16 +31,15 @@ export const NavigationWrapper = styled.div`
   }
 
   ${theme.media.mobile} {
-    top: 60px;
-    padding-top: 10px;
+    top: ${props => props.$isOpen ? '58px' : '62px'};
     left: unset;
     right: 7px;
-    border-radius: ${props => props.$isOpen ? '10px 150px 10px 10px' : '50%'};
+    border-radius: ${props => props.$isOpen ? '10px 10px 10px 10px' : '50%'};
     border: 1.5px solid black;
     transition: all 0.8s ease-in-out;
-    width: ${props => props.$isOpen ? '300px' : '43px'};
-    max-height: ${props => props.$isOpen ? '80dvh' : '41px'};
-    padding: ${props => props.$isOpen ? '0px 12px 0px 5px' : '0'};
+    width: ${props => props.$isOpen ? '250px' : '43px'};
+    max-height: ${props => props.$isOpen ? '30dvh' : '41px'};
+    padding: ${props => props.$isOpen ? '0px 12px 40px 5px' : '0'};
   }
 `;
 
@@ -55,7 +54,7 @@ export const MobileToggleButton = styled.button`
     cursor: pointer;
     position: fixed;
     right: 6.6px;
-    top: 58px;
+    top: ${props => props.$isOpen ? '64px' : '60px'};
     z-index: 20;
     height: 40px;
     width: 40px;
@@ -112,10 +111,8 @@ export const ThemeList = styled.ul`
 
   ${theme.media.mobile} {
     height: ${props => props.$isOpen ? '100%' : '0'};
-    overflow: hidden;
-    overflow-y: auto;
-    padding-top: 5px;
-    margin-left: 2px;
+    padding-top: 2px;
+    margin-left: -2px;
     gap: 0;
     opacity: ${props => props.$isOpen ? '1' : '0'};
   }
@@ -145,6 +142,8 @@ export const ThemeHeader = styled.div`
     flex-direction: row-reverse;
     justify-content: flex-end;
     gap: 0;
+    margin-left: -3px;
+    padding-bottom: 6px;
   }
 `;
 
@@ -169,6 +168,7 @@ export const ThemeTitle = styled.div`
   font-family: 'Sweet';
   ${theme.media.mobile} {
     flex: unset;
+    font-size: 1.4rem;
   }
 `;
 
@@ -187,12 +187,12 @@ export const ClusterList = styled.div`
   margin-left: 14px;
   display: ${props => props.$isVisible ? 'flex' : 'none'};
   flex-direction: column;
-  gap: 3px;
   height: ${props => props.$isVisible ? 'auto' : '0'};
   // overflow-y: hidden;
   transition: height 0.3s ease;
   margin-bottom: 40px;
   margin-right: 9px;
+  line-height: 1.5;
 
   ${theme.media.mobile} {
     margin-bottom: 30px;
@@ -209,7 +209,7 @@ export const ClusterItem = styled.li`
   font-weight: 500;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 15px;
   color: #333;
   margin-right: 9px;
@@ -221,6 +221,7 @@ export const ClusterItem = styled.li`
 
   ${theme.media.mobile} {
     font-size: 1.3rem;
+
   }
 `;
 
@@ -240,6 +241,7 @@ export const ToggleSwitch = styled.button`
   cursor: pointer;
   transition: background-color 0.3s ease;
   outline: none;
+  margin-top: 4px;
 
   &:hover {
     background-color: ${props => props.$isActive ? 'black' : '#bbb'};
@@ -250,7 +252,7 @@ export const ToggleSwitch = styled.button`
   }
 
   ${theme.media.mobile} {
-    margin-top: 1px;
+    margin-top: 5px;
   }
 `;
 
@@ -337,7 +339,11 @@ export const OrderButton = styled.button`
 
 // Site 목록 관련 스타일
 export const ClusterContainer = styled.div`
-  margin-bottom: 8px;
+  margin-bottom: 5px;
+
+  ${theme.media.mobile} {
+    margin-bottom: 6px;
+  }
 `;
 
 export const SiteList = styled.div`
@@ -393,6 +399,10 @@ export const CreditButton = styled.button`
   text-decoration-color: black;
   text-decoration-thickness: 1.2px;
   text-decoration-style: solid;
+
+  ${theme.media.mobile} {
+    display: ${props => props.$isOpen ? 'block' : 'none'};
+  }
 `;
 
 export const CreditList = styled.ul`
@@ -437,4 +447,11 @@ export const CopyRight = styled.div`
   text-align: center;
   margin-top: 10px;
   font-family: 'Sweet';
+
+  ${theme.media.mobile} {
+    margin-left: 40px;
+    margin-right: 40px;
+    line-height: 1.3;
+    display: ${props => props.$isOpen ? 'block' : 'none'};
+  }
 `;

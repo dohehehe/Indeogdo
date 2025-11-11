@@ -241,8 +241,8 @@ function Navigation() {
           )
         }
 
-        <S.CreditButton onClick={handleCredit}>함께하는 사람들</S.CreditButton>
-        <S.CopyRight>
+        <S.CreditButton onClick={handleCredit} $isOpen={isNavOpen}>함께하는 사람들</S.CreditButton>
+        <S.CopyRight $isOpen={isNavOpen}>
           <span>© 2025 B-Ground Architects. All rights reserved.</span>
         </S.CopyRight>
       </S.NavigationWrapper >
