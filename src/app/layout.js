@@ -44,7 +44,6 @@ export const metadata = {
     apple: [],
     other: [],
   },
-  manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
     locale: "ko_KR",
