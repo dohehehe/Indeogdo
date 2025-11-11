@@ -401,19 +401,34 @@ export const CreditList = styled.ul`
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 13px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const CreditItem = styled.li`
   display: flex;
   gap: 10px;
-  align-items: center;
-`;
+  align-items: flex-start;
+  color: black;
+  font-family: 'Sweet';
+  font-weight: 400;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  word-break: keep-all;
 
-export const CreditItemContent = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: center;
+    & span:first-of-type {
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 45px;
+    display: inline-block;
+    text-align: right;
+  }
 `;
 
 export const CopyRight = styled.div`

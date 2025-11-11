@@ -3,6 +3,7 @@
 import * as S from '@/styles/Navigation/navigation.style';
 import useTheme from '@/hooks/useTheme';
 import useMobile from '@/hooks/useMobile';
+import useCredits from '@/hooks/useCredits';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,6 +15,7 @@ import Modal from '@/components/common/Modal';
 function Navigation() {
   const { themes, loading, error, createTheme, updateTheme, fetchThemes } = useTheme();
   const isMobile = useMobile();
+  const { credits, loading: creditsLoading, error: creditsError } = useCredits();
   const { isAuthenticated } = useAuth();
   const [isNavOpen, setIsNavOpen] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -240,21 +242,44 @@ function Navigation() {
         }
 
         <S.CreditButton onClick={handleCredit}>함께하는 사람들</S.CreditButton>
-
-        <Modal isOpen={isModalOpen} onClose={handleCloseModal} title="함께하는 사람들">
-          <S.CreditList>
-            <S.CreditItem>
-              <S.CreditItemContent>
-                <span>역할</span>
-                <span>이름</span>
-              </S.CreditItemContent>
-            </S.CreditItem>
-          </S.CreditList>
-        </Modal>
         <S.CopyRight>
           <span>© 2025 B-Ground Architects. All rights reserved.</span>
         </S.CopyRight>
       </S.NavigationWrapper >
+
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} title="함께하는 사람들">
+        <S.CreditList>
+          {creditsLoading && (
+            <S.CreditItem>
+              <S.CreditItemContent>
+                <span>불러오는 중...</span>
+              </S.CreditItemContent>
+            </S.CreditItem>
+          )}
+          {!creditsLoading && creditsError && (
+            <S.CreditItem>
+              <S.CreditItemContent>
+                <span>크레딧을 불러오지 못했습니다.</span>
+              </S.CreditItemContent>
+            </S.CreditItem>
+          )}
+          {!creditsLoading && !creditsError && credits.length === 0 && (
+            <S.CreditItem>
+              <S.CreditItemContent>
+                <span>등록된 크레딧이 없습니다.</span>
+              </S.CreditItemContent>
+            </S.CreditItem>
+          )}
+          {!creditsLoading && !creditsError && credits.map((credit) => (
+            <S.CreditItem key={credit.id}>
+
+              <span>{credit.role || '-'}</span>
+              <span>{credit.people || '-'}</span>
+
+            </S.CreditItem>
+          ))}
+        </S.CreditList>
+      </Modal>
     </>
   );
 }
