@@ -2,9 +2,14 @@ import { useState, useEffect } from 'react';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 import * as S from '@/styles/Sites/board.style';
 
-export default function AddressSearch({ register, setValue, setAddress }) {
+export default function AddressSearch({ register, setValue, namePrefix, error }) {
   const [isOpen, setIsOpen] = useState(false);
   const [kakaoLoaded, setKakaoLoaded] = useState(false);
+
+  const addressField = namePrefix ? `${namePrefix}.address` : 'address';
+  const latitudeField = namePrefix ? `${namePrefix}.latitude` : 'latitude';
+  const longitudeField = namePrefix ? `${namePrefix}.longitude` : 'longitude';
+  const idField = namePrefix ? `${namePrefix}.addressId` : 'addressId';
 
   // Kakao Maps SDK 로딩과 초기화를 별도의 useEffect에서 처리
   useEffect(() => {
@@ -67,12 +72,6 @@ export default function AddressSearch({ register, setValue, setAddress }) {
     if (!kakaoLoaded) {
       console.warn('Kakao Maps SDK가 로드되지 않아 좌표를 가져올 수 없습니다.');
 
-      const fieldNames = {
-        address: 'address',
-        latitude: 'latitude',
-        longitude: 'longitude'
-      };
-
       let fullAddress = data.address;
       let extraAddress = '';
 
@@ -86,11 +85,9 @@ export default function AddressSearch({ register, setValue, setAddress }) {
         if (extraAddress) fullAddress += ` (${extraAddress})`;
       }
 
-      setValue(fieldNames.address, fullAddress);
-      setValue(fieldNames.latitude, null);
-      setValue(fieldNames.longitude, null);
-
-      setAddress(fullAddress);
+      setValue(addressField, fullAddress, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      setValue(latitudeField, null, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      setValue(longitudeField, null, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
 
       setIsOpen(false);
       return;
@@ -111,17 +108,9 @@ export default function AddressSearch({ register, setValue, setAddress }) {
 
     const coords = await convertAddressToCoords(fullAddress);
 
-    const fieldNames = {
-      address: 'address',
-      latitude: 'latitude',
-      longitude: 'longitude'
-    };
-    console.log(coords);
-    setValue(fieldNames.address, fullAddress);
-    setValue(fieldNames.latitude, coords.latitude);
-    setValue(fieldNames.longitude, coords.longitude);
-
-    setAddress(fullAddress);
+    setValue(addressField, fullAddress, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+    setValue(latitudeField, coords.latitude, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+    setValue(longitudeField, coords.longitude, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
 
     setIsOpen(false);
   };
@@ -130,11 +119,15 @@ export default function AddressSearch({ register, setValue, setAddress }) {
     <>
       <S.BoardTextInput
         placeholder="주소를 검색해주세요."
-        {...register('address', { required: '주소는 필수 입력 항목입니다.' })}
+        {...register(addressField, { required: '주소는 필수 입력 항목입니다.' })}
         onClick={() => setIsOpen(!isOpen)}
         readOnly
       />
-      {isOpen && <DaumPostcodeEmbed onComplete={handleComplete} />}
+      <input type="hidden" {...register(latitudeField)} />
+      <input type="hidden" {...register(longitudeField)} />
+      <input type="hidden" {...register(idField)} />
+      {error && <S.BoardInputError>{error}</S.BoardInputError>}
+      {isOpen && <DaumPostcodeEmbed onComplete={handleComplete} style={{ border: '1px solid black', borderRadius: '8px', marginTop: '6px', padding: '2px 3px', width: '100%' }} />}
     </>
   );
 }
