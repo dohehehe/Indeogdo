@@ -17,7 +17,7 @@ function Navigation() {
   const isMobile = useMobile();
   const { credits, loading: creditsLoading, error: creditsError } = useCredits();
   const { isAuthenticated } = useAuth();
-  const [isNavOpen, setIsNavOpen] = useState(true);
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAddingTheme, setIsAddingTheme] = useState(false);
   const [newThemeTitle, setNewThemeTitle] = useState('');
