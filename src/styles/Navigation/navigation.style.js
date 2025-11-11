@@ -325,6 +325,7 @@ export const OrderButton = styled.button`
   border: 1px solid #ddd;
   border-radius: 4px;
   cursor: pointer;
+  color: black;
   transition: background-color 0.2s ease;
   background-color: ${props => props.$disabled ? '#f0f0f0' : '#fff'};
   cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};

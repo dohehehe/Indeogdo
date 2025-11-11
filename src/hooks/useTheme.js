@@ -86,7 +86,7 @@ const useTheme = () => {
   }, []);
 
   // 테마 수정
-  const updateTheme = useCallback(async (id, title) => {
+  const updateTheme = useCallback(async (id, title, order) => {
     setLoading(true);
     setError(null);
 
@@ -96,7 +96,10 @@ const useTheme = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title }),
+        body: JSON.stringify({
+          title,
+          ...(order !== undefined ? { order } : {}),
+        }),
       });
 
       const result = await response.json();
@@ -107,9 +110,7 @@ const useTheme = () => {
 
       // 로컬 상태 업데이트
       setThemes(prev =>
-        prev.map(theme =>
-          theme.id === id ? result.data : theme
-        )
+        prev.map(theme => (theme.id === id ? result.data : theme))
       );
       return result.data;
     } catch (err) {
