@@ -25,12 +25,14 @@ const ModalContent = styled.div`
   flex-direction: column;
   gap: 24px;
   font-family: 'Sweet';
+  max-height: 80dvh;
 `;
 
 export const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 `;
 
 export const ModalTitle = styled.h3`

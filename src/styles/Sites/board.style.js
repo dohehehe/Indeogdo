@@ -220,6 +220,73 @@ export const BoardInputLabel = styled.label`
   color: black;
 `
 
+export const BoardInputError = styled.span`
+  display: block;
+  margin-top: 6px;
+  margin-left: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #d64545;
+`
+
+export const AddressList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`
+
+export const AddressItem = styled.div`
+  display: flex;
+  gap: 6px;
+  // align-items: center;
+`
+
+export const AddressInputWrapper = styled.div`
+  flex: 1;
+`
+
+export const AddressActions = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+export const AddressAddButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 12px;
+  margin-right: 40px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: black;
+  background-color: #fff;
+  border: 1px dashed black;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`
+
+export const AddressRemoveButton = styled.button`
+  padding: 6px 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #d64545;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  align-self: flex-start;
+  min-width: 30px;
+  flex-shrink: 0;
+  padding-top: 14px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
 export const BoardTextInput = styled.input`
   width: 100%;
   padding: 10px 12px;

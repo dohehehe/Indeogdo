@@ -1,6 +1,6 @@
 import * as S from '@/styles/Sites/board.style';
 import { useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import Editor from '@/components/admin/Editor';
 import useIcon from '@/hooks/useIcon';
 import { useRouter } from 'next/navigation';
@@ -8,6 +8,7 @@ import * as EB from '@/styles/admin/editButton.style';
 import useSites from '@/hooks/useSites';
 import useCluster from '@/hooks/useCluster';
 import AddressSearch from '@/components/admin/AddressSearch';
+import useAddress from '@/hooks/useAddress';
 
 function BoardEditContainer({ siteData, onChange, clusterId }) {
   const editorRef = useRef(null);
@@ -17,15 +18,42 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
   const [saving, setSaving] = useState(false);
   const { updateSite, createSite } = useSites();
   const { clusters, fetchClusters } = useCluster();
-  const [address, setAddress] = useState('');
+  const { createAddress, updateAddress, deleteAddress, fetchAddressesBySite } = useAddress();
+  const originalAddressesRef = useRef([]);
+  const removedAddressIdsRef = useRef(new Set());
 
-  const { register, watch, reset, handleSubmit, setValue } = useForm({
+  const {
+    register,
+    watch,
+    reset,
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       title: siteData?.title || '',
-      address: siteData?.address || '',
       iconId: siteData?.icon?.id || '',
-      clusterId: clusterId || siteData?.cluster?.id || ''
-    }
+      clusterId: clusterId || siteData?.cluster?.id || '',
+      addresses: [
+        {
+          addressId: null,
+          address: '',
+          latitude: null,
+          longitude: null,
+        },
+      ],
+    },
+  });
+
+  const {
+    fields: addressFields,
+    append: appendAddress,
+    remove: removeAddress,
+    replace: replaceAddresses,
+  } = useFieldArray({
+    control,
+    name: 'addresses',
   });
 
   const [iconOpen, setIconOpen] = useState(false);
@@ -47,10 +75,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
       const formValues = watch();
       const payload = {
         title: formValues.title || siteData?.title || '',
-        address: formValues.address || siteData?.address || '',
         contents: contentsBlocks,
-        latitude: formValues.latitude || siteData?.latitude || '',
-        longitude: formValues.longitude || siteData?.longitude || '',
       };
 
       // icon_id
@@ -68,6 +93,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
       }
 
       let result;
+      const siteId = siteData?.id;
       if (isEditing) {
         // 수정 모드
         result = await updateSite(siteData.id, payload);
@@ -79,6 +105,101 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
         }
         result = await createSite(payload);
         if (!result) throw new Error('저장에 실패했습니다.');
+      }
+
+      const targetSiteId = isEditing ? siteId : result.id;
+      const submittedAddresses = (formValues.addresses || []).map((entry) => ({
+        addressId: entry.addressId || null,
+        address: entry.address?.trim() || '',
+        latitude: entry.latitude ?? null,
+        longitude: entry.longitude ?? null,
+      }));
+
+      const originalAddressesMap = new Map(
+        (originalAddressesRef.current || []).map((addr) => [addr.addressId, addr])
+      );
+
+      const addressesToCreate = [];
+      const addressesToUpdate = [];
+
+      submittedAddresses.forEach((entry) => {
+        if (entry.addressId) {
+          if (!entry.address) {
+            removedAddressIdsRef.current.add(entry.addressId);
+            return;
+          }
+
+          const original = originalAddressesMap.get(entry.addressId);
+
+          if (
+            !original ||
+            original.address !== entry.address ||
+            original.latitude !== entry.latitude ||
+            original.longitude !== entry.longitude
+          ) {
+            addressesToUpdate.push(entry);
+          }
+          originalAddressesMap.delete(entry.addressId);
+        } else if (entry.address || entry.latitude || entry.longitude) {
+          addressesToCreate.push(entry);
+        }
+      });
+
+      // 나머지 original은 폼에서 제거된 것
+      const addressesToDelete = new Set(removedAddressIdsRef.current);
+      originalAddressesMap.forEach((addr) => {
+        if (addr?.addressId) {
+          addressesToDelete.add(addr.addressId);
+        }
+      });
+
+      if (addressesToDelete.size > 0) {
+        await Promise.all(
+          Array.from(addressesToDelete).map((addressId) =>
+            deleteAddress(addressId).catch((err) => {
+              console.error('Delete address error:', err);
+              throw err;
+            })
+          )
+        );
+      }
+
+      if (addressesToUpdate.length > 0) {
+        await Promise.all(
+          addressesToUpdate.map((addr) =>
+            updateAddress(addr.addressId, {
+              name: addr.address,
+              latitude: addr.latitude,
+              longitude: addr.longitude,
+              site_id: targetSiteId,
+            }).catch((err) => {
+              console.error('Update address error:', err);
+              throw err;
+            })
+          )
+        );
+      }
+
+      if (addressesToCreate.length > 0) {
+        await Promise.all(
+          addressesToCreate.map((addr) =>
+            createAddress({
+              site_id: targetSiteId,
+              name: addr.address,
+              latitude: addr.latitude,
+              longitude: addr.longitude,
+            }).catch((err) => {
+              console.error('Create address error:', err);
+              throw err;
+            })
+          )
+        );
+      }
+
+      removedAddressIdsRef.current = new Set();
+
+      if (!isEditing) {
+        originalAddressesRef.current = [];
       }
 
       router.push('/admin');
@@ -94,24 +215,70 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
   };
 
   useEffect(() => {
-    reset({
-      title: siteData?.title || '',
-      address: siteData?.address || '',
-      iconId: siteData?.icon?.id || '',
-      clusterId: clusterId || siteData?.cluster?.id || '',
-      latitude: siteData?.latitude || '',
-      longitude: siteData?.longitude || '',
-    });
-    setEditorData({ blocks: siteData?.contents || [] });
-  }, [siteData?.title, siteData?.address, siteData?.contents, siteData?.icon?.id, siteData?.latitude, siteData?.longitude, reset]);
+    const loadAddresses = async () => {
+      const defaultAddress = [
+        {
+          addressId: null,
+          address: '',
+          latitude: null,
+          longitude: null,
+        },
+      ];
+
+      let addressesForForm = defaultAddress;
+
+      if (siteData?.id) {
+        try {
+          const fetched = await fetchAddressesBySite(siteData.id);
+          if (fetched && fetched.length > 0) {
+            addressesForForm = fetched.map((addr) => ({
+              addressId: addr.id,
+              address: addr.name || '',
+              latitude: addr.latitude ?? null,
+              longitude: addr.longitude ?? null,
+            }));
+            originalAddressesRef.current = fetched.map((addr) => ({
+              addressId: addr.id,
+              address: addr.name || '',
+              latitude: addr.latitude ?? null,
+              longitude: addr.longitude ?? null,
+            }));
+          } else {
+            originalAddressesRef.current = [];
+          }
+        } catch (error) {
+          console.error('Failed to fetch addresses:', error);
+          originalAddressesRef.current = [];
+        }
+      } else {
+        originalAddressesRef.current = [];
+      }
+
+      reset({
+        title: siteData?.title || '',
+        iconId: siteData?.icon?.id || '',
+        clusterId: clusterId || siteData?.cluster?.id || '',
+        addresses: addressesForForm,
+      });
+      replaceAddresses(addressesForForm);
+      setEditorData({ blocks: siteData?.contents || [] });
+    };
+
+    loadAddresses();
+  }, [siteData?.id, siteData?.title, siteData?.contents, siteData?.icon?.id, clusterId, fetchAddressesBySite, reset, replaceAddresses]);
 
   const watched = watch();
 
   useEffect(() => {
     if (typeof onChange === 'function') {
-      onChange({ title: watched.title, address: watched.address, iconId: watched.iconId, clusterId: watched.clusterId, latitude: watched.latitude, longitude: watched.longitude });
+      onChange({
+        title: watched.title,
+        iconId: watched.iconId,
+        clusterId: watched.clusterId,
+        addresses: watched.addresses,
+      });
     }
-  }, [watched.title, watched.address, watched.iconId, watched.clusterId, watched.latitude, watched.longitude, onChange]);
+  }, [watched.title, watched.iconId, watched.clusterId, watched.addresses, onChange]);
 
   useEffect(() => {
     const onDocClick = (e) => {
@@ -142,6 +309,23 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
   const handlePickIcon = (icon) => {
     setValue('iconId', icon.id, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
     setIconOpen(false);
+  };
+
+  const handleAddAddress = () => {
+    appendAddress({
+      addressId: null,
+      address: '',
+      latitude: null,
+      longitude: null,
+    });
+  };
+
+  const handleRemoveAddress = (index) => {
+    const field = addressFields[index];
+    if (field?.addressId) {
+      removedAddressIdsRef.current.add(field.addressId);
+    }
+    removeAddress(index);
   };
 
   return (
@@ -204,11 +388,33 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
 
           <S.BoardInputGroup>
             <S.BoardInputLabel htmlFor="address" >주소</S.BoardInputLabel>
-            <AddressSearch
-              setValue={setValue}
-              register={register}
-              setAddress={setAddress}
-            />
+            <S.AddressList>
+              {addressFields.map((field, index) => (
+                <S.AddressItem key={field.id ?? `address-${index}`}>
+                  <S.AddressInputWrapper>
+                    <AddressSearch
+                      setValue={setValue}
+                      register={register}
+                      namePrefix={`addresses.${index}`}
+                      error={errors?.addresses?.[index]?.address?.message}
+                    />
+                  </S.AddressInputWrapper>
+                  {addressFields.length > 1 && (
+                    <S.AddressActions>
+                      <S.AddressRemoveButton
+                        type="button"
+                        onClick={() => handleRemoveAddress(index)}
+                      >
+                        삭제
+                      </S.AddressRemoveButton>
+                    </S.AddressActions>
+                  )}
+                </S.AddressItem>
+              ))}
+              <S.AddressAddButton type="button" onClick={handleAddAddress}>
+                + 주소 추가
+              </S.AddressAddButton>
+            </S.AddressList>
           </S.BoardInputGroup>
 
           <S.BoardInputGroup>

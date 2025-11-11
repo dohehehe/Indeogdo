@@ -8,7 +8,7 @@ export async function POST(request) {
   try {
     const { address } = await request.json();
 
-    if (!address) {
+    if (!address || typeof address !== 'string' || !address.trim()) {
       return NextResponse.json(
         { error: '주소가 필요합니다.' },
         { status: 400 }
@@ -25,32 +25,46 @@ export async function POST(request) {
     }
 
     // 카카오 지오코딩 API 호출
-    const response = await fetch('https://dapi.kakao.com/v2/local/search/address.json', {
-      method: 'GET',
-      headers: {
-        'Authorization': `KakaoAK ${kakaoRestKey}`,
-        'Content-Type': 'application/json',
-      },
-      // URL에 쿼리 파라미터로 주소 전달
-      // URLSearchParams를 사용하여 안전하게 인코딩
-    });
-
     const url = new URL('https://dapi.kakao.com/v2/local/search/address.json');
-    url.searchParams.append('query', address);
+    url.searchParams.set('query', address.trim());
 
     const geocodeResponse = await fetch(url.toString(), {
       method: 'GET',
       headers: {
-        'Authorization': `KakaoAK ${kakaoRestKey}`,
-        'Content-Type': 'application/json',
+        Authorization: `KakaoAK ${kakaoRestKey}`,
+        Accept: 'application/json',
       },
+      cache: 'no-store',
     });
 
     if (!geocodeResponse.ok) {
-      const errorData = await geocodeResponse.json();
-      console.error('Kakao API error:', errorData);
+      let errorMessage = '주소 검색에 실패했습니다.';
+      let errorData = null;
+
+      try {
+        errorData = await geocodeResponse.json();
+      } catch (parseError) {
+        console.error('Kakao API response parse error:', parseError);
+      }
+
+      if (errorData?.error || errorData?.msg) {
+        errorMessage = errorData.error || errorData.msg;
+      }
+
+      if (geocodeResponse.status === 401 || geocodeResponse.status === 403) {
+        errorMessage = '카카오 API 인증에 실패했습니다. REST API 키를 확인해주세요.';
+      }
+
+      console.error('Kakao API error:', {
+        status: geocodeResponse.status,
+        data: errorData,
+      });
+
       return NextResponse.json(
-        { error: '주소 검색에 실패했습니다.' },
+        {
+          error: errorMessage,
+          details: errorData,
+        },
         { status: geocodeResponse.status }
       );
     }
