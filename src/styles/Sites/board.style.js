@@ -8,12 +8,17 @@ export const BoardWrapper = styled.div`
   font-family: 'Sweet';
   color: black;
   top: 70px;
-  right: 0;
+  right:  ${props => {
+    switch (props.$widthMode) {
+      case 'narrow': return 'calc( -40dvw + 60px)';
+      default: return '0';
+    }
+  }};
   width: ${props => {
     switch (props.$widthMode) {
       case 'wide': return 'calc(100dvw - 390px)';
       case 'normal': return '40dvw';
-      case 'narrow': return '60px';
+      // case 'narrow': return '60px';
       default: return '40dvw';
     }
   }};
@@ -22,12 +27,13 @@ export const BoardWrapper = styled.div`
   border-radius: 12px 0 0 0;
   box-shadow: 0 4px 20px rgba(9, 36, 50, 0.39);
   overflow: hidden;
-  z-index: 1000;
+  z-index: 5;
   display: flex;
   border: 2px solid black;
   border-right: none;
   border-bottom: none;
-  transition: width 0.7s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition: width 0.8s ease-in-out, right 0.8s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition-delay: 0.3s;
 
   &:hover {
     box-shadow: 0 4px 30px rgba(6, 109, 160, 0.8);
@@ -62,6 +68,7 @@ export const BoardButtonWrapper = styled.div`
   padding-left: 10px;
   position: relative;
   z-index: 2;
+  
 
   ${theme.media.mobile} {
     padding-top: 5px;
@@ -72,16 +79,38 @@ export const BoardButtonWrapper = styled.div`
 export const BoardButtonMobile = styled.button`
   display: none;
   ${theme.media.mobile} {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: transparent;
     border: none;
     cursor: pointer;
-    font-size: 3rem;
-    font-weight: 600;
-    color: black;
     opacity: 0.7;
     border-radius: 50%;
     margin-left: auto;
+    font-family: 'Sweet';
+    position: relative;
+    width: 30px;
+    height: 30px;
+    margin-top: 3px;
+    margin-right: -5px;
+    transition: opacity 0.2s ease-in-out;
+
+    span {
+      position: absolute;
+      width: 24px;
+      height: 3px;
+      background-color: black;
+      border-radius: 4px;
+
+      &:first-of-type {
+        transform: rotate(45deg);
+      }
+
+      &:last-of-type {
+        transform: rotate(-45deg);
+      }
+    }
   }
 `;
 
@@ -120,10 +149,10 @@ export const BoardButton = styled.button`
 `;
 
 export const BoardDetailWrapper = styled.div`
-  padding: 50px 50px 30px 10px;
+  padding: 40px 50px 30px 10px;
   overflow-y: auto;
-  height: 100%;
-  min-width: 200px;
+  width: 100%;
+  max-width: 800px;
 
     
   /* 스크롤바 숨기기 */
@@ -137,34 +166,69 @@ export const BoardDetailWrapper = styled.div`
   ${theme.media.mobile} {
     padding: 30px 20px;
     margin-top: -43px;
-    padding-top: 25px;
+    padding-top: 18px;
+    max-width: unset;
   }
 `;
 
 export const BoardClusterWrapper = styled.div`
   display: flex;
-  gap: 13px;
+  gap: 7px;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 50px;
+  position: sticky;
+  top: -25px;
+  z-index: 10;
+
+  ${theme.media.mobile} {
+    margin-bottom: 30px;
+    gap: 7px;
+    margin-left: -4px;
+    position: static;
+  }
 `;
 
 export const BoardClusterIcon = styled.img`
-  width: 27px;
-  height: 27px;
+  width: 25px;
+  height: 25px;
   object-fit: cover;
+
+  ${theme.media.mobile} {
+    width: 22px;
+    height: 22px;
+  }
 `;
 
 export const BoardClusterTitle = styled.h2`
-  font-size: 2.1rem;
-  font-weight: 900;
+  font-size: 1.7rem;
+  font-weight: 800;
   color: black;
+
+  ${theme.media.mobile} {
+    font-size: 1.4rem;
+    font-weight: 800;
+    padding-bottom: 1px;
+  }
 `;
 
 export const BoardTitle = styled.h1`
-  font-size: 1.9rem;
+  font-size: 2.3rem;
   font-weight: 800;
-  margin-bottom: 12px;
+  margin-bottom: 5px;
   color: black;
+  line-height: 1.2;
+  position: sticky;
+  top: 5px;
+  z-index: 10;
+  // background-color: red;
+
+  ${theme.media.mobile} {
+      position: sticky;
+      top: -2px;
+      font-size: 2rem;
+      z-index: 10;
+      width: calc(100% - 30px);
+  }
 `;
 
 export const BoardAddress = styled.h3`

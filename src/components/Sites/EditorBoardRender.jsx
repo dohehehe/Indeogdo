@@ -7,20 +7,22 @@ import { theme } from '@/styles/Theme';
 const EditorArticle = styled.article`
   display: flex;
   flex-direction: column;
-  margin-top: 90px;
+  margin-top: 50px;
   margin-left: 5px;
   color: black;
 
   ${theme.media.mobile} {
     margin-left: 0px;
+    margin-top: 70px;
   }
 `
 const EditorPara = styled.p`
   font-weight: 500;
-  font-size: 1.1rem;
-  line-height: 1.5;
-  margin-bottom: 30px;
+  font-size: 1.25rem;
+  line-height: 1.65;
+  margin-bottom: 20px;
   color: black;
+  word-break: keep-all;
   & b {
     font-weight: 800;
   }
@@ -36,8 +38,8 @@ const EditorPara = styled.p`
   }
 
   ${theme.media.mobile} {
-    font-size: 1.2rem;
-    line-height: 1.6;
+    font-size: 1.25rem;
+    line-height: 1.7;
   }
 `
 
@@ -56,7 +58,7 @@ const EditorImg = styled.img`
 `
 const EditorImgCaption = styled.div`
   margin-top: 6px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 500;
   color: #666;
 `

@@ -4,7 +4,6 @@ import EditorBoardRender from '@/components/Sites/EditorBoardRender';
 function BoardContainer({ siteData }) {
   return (
     <>
-
       <S.BoardDetailWrapper>
         <S.BoardClusterWrapper>
           <S.BoardClusterIcon src={siteData?.icon?.img} alt={siteData?.icon?.name} />

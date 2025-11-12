@@ -69,6 +69,8 @@ function MapContainer() {
 
   // POI 클릭 시 라우팅 처리
   const handlePOIClick = useCallback((site) => {
+    // POI 클릭 시 보드를 펼치기 위한 이벤트 발생 (같은 POI 재클릭 포함)
+    window.dispatchEvent(new CustomEvent('poiClicked', { detail: { siteId: site.id } }));
     router.push(`/sites/${site.id}`);
   }, [router]);
 
