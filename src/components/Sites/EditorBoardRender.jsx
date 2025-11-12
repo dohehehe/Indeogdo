@@ -43,6 +43,45 @@ const EditorPara = styled.p`
   }
 `
 
+const EditorHeader = styled.div`
+  margin-bottom: 10px;
+  color: black;
+  word-break: keep-all;
+  line-height: 1.3;
+
+  & h1 {
+    font-size: 1.8rem !important;
+    font-weight: 800 !important;
+    margin: 0;
+  }
+
+  & h2 {
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
+    margin: 0;
+  }
+
+  & h3 {
+    font-size: 1.4rem !important;
+    font-weight: 700 !important;
+    margin: 0;
+  }
+
+  ${theme.media.mobile} {
+    & h1 {
+      font-size: 1.7rem !important;
+    }
+
+    & h2 {
+      font-size: 1.6rem !important;
+    }
+
+    & h3 {
+      font-size: 1.5rem !important;
+    }
+  }
+`
+
 const EditorImgWrapper = styled.div`
   width: 100%;
   margin-bottom: 30px;
@@ -69,6 +108,30 @@ function EditorBoardRender({ item }) {
       <EditorArticle>
         {item?.map((block, idx) => (
           <div key={idx}>
+            {block.type === 'header' ? (
+              <EditorHeader>
+                {(() => {
+                  const level = block.data.level || 1;
+                  const processedText = block.data.text
+                    .replace(/&lt;/g, '<')
+                    .replace(/&gt;/g, '>')
+                    .replace(/\n/g, '<br />')
+                    .replace(/\*/g, '<span class="sticker">*</span>');
+
+                  if (level === 1) {
+                    return <h1 dangerouslySetInnerHTML={{ __html: processedText }} />;
+                  } else if (level === 2) {
+                    return <h2 dangerouslySetInnerHTML={{ __html: processedText }} />;
+                  } else if (level === 3) {
+                    return <h3 dangerouslySetInnerHTML={{ __html: processedText }} />;
+                  } else {
+                    return <h1 dangerouslySetInnerHTML={{ __html: processedText }} />;
+                  }
+                })()}
+              </EditorHeader>
+            ) : (
+              ''
+            )}
             {block.type === 'paragraph' ? (
               <>
                 <EditorPara dangerouslySetInnerHTML={{ __html: block.data.text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/\n/g, '<br />').replace(/\*/g, '<span class="sticker">*</span>') }} />

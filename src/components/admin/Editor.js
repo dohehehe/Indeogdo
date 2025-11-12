@@ -9,9 +9,22 @@ const EditorWrapper = styled.div`
   border-radius: 8px;
   background: white;
   margin-bottom: 20px;
+  font-size: 1.25rem;
+  line-height: 1.65;
+  font-weight: 500;
 
   & h1 {
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+  }
+
+  & h2 {
     font-size: 1.6rem !important;
+    font-weight: 700 !important;
+  }
+
+  & h3 {
+    font-size: 1.5rem !important;
   }
 `;
 
@@ -54,9 +67,10 @@ const Editor = forwardRef(({ data }, ref) => {
           return;
         }
 
-        // 동적 import로 EditorJS와 ImageTool 로드
-        const [{ default: EditorJS }, { default: ImageTool }] = await Promise.all([
+        // 동적 import로 EditorJS, Header, ImageTool 로드
+        const [{ default: EditorJS }, { default: Header }, { default: ImageTool }] = await Promise.all([
           import('@editorjs/editorjs'),
+          import('@editorjs/header'),
           import('@editorjs/image')
         ]);
 
@@ -64,6 +78,15 @@ const Editor = forwardRef(({ data }, ref) => {
           holder: 'editorjs',
           placeholder: '내용을 입력하세요...',
           tools: {
+            header: {
+              class: Header,
+              shortcut: 'CMD+SHIFT+H',
+              config: {
+                placeholder: '제목을 입력하세요',
+                levels: [1, 2, 3],
+                defaultLevel: 1
+              }
+            },
             image: {
               class: ImageTool,
               config: {
