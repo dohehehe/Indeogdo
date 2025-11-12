@@ -4,7 +4,7 @@ import * as S from '@/styles/Navigation/navigation.style';
 import useTheme from '@/hooks/useTheme';
 import useMobile from '@/hooks/useMobile';
 import useCredits from '@/hooks/useCredits';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import ThemeSection from '@/components/Navigation/ThemeSection';
@@ -18,6 +18,7 @@ function Navigation() {
   const { credits, loading: creditsLoading, error: creditsError } = useCredits();
   const { isAuthenticated } = useAuth();
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const navRef = useRef(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAddingTheme, setIsAddingTheme] = useState(false);
   const [newThemeTitle, setNewThemeTitle] = useState('');
@@ -138,9 +139,31 @@ function Navigation() {
     setIsModalOpen(false);
   };
 
+  // 모바일 환경에서 네비게이션 밖을 클릭하면 닫기
+  useEffect(() => {
+    if (!isMobile || !isNavOpen) return;
+
+    const handleClickOutside = (event) => {
+      if (navRef.current && !navRef.current.contains(event.target)) {
+        setIsNavOpen(false);
+      }
+    };
+
+    // 이벤트 리스너 추가 (약간의 지연을 두어 현재 클릭 이벤트가 처리된 후 실행)
+    setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }, 0);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isMobile, isNavOpen]);
+
   return (
     <>
-      <S.NavigationWrapper $isMobile={isMobile} $isOpen={isNavOpen} isAdmin={isAdmin}>
+      <S.NavigationWrapper ref={navRef} $isMobile={isMobile} $isOpen={isNavOpen} isAdmin={isAdmin}>
         {isMobile && (
           <S.MobileToggleButton onClick={toggleNavigation} $isOpen={isNavOpen}>
             <S.HamburgerIcon $isOpen={isNavOpen}>
