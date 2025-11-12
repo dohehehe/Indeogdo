@@ -58,6 +58,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
 
   const [iconOpen, setIconOpen] = useState(false);
   const iconWrapRef = useRef(null);
+  const [coordinateFieldIndices, setCoordinateFieldIndices] = useState(new Set());
 
   const onSubmit = async () => {
     if (saving) return;
@@ -108,12 +109,22 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
       }
 
       const targetSiteId = isEditing ? siteId : result.id;
-      const submittedAddresses = (formValues.addresses || []).map((entry) => ({
-        addressId: entry.addressId || null,
-        address: entry.address?.trim() || '',
-        latitude: entry.latitude ?? null,
-        longitude: entry.longitude ?? null,
-      }));
+      const submittedAddresses = (formValues.addresses || []).map((entry) => {
+        // 위도/경도가 빈 문자열이면 null로 변환
+        const latitude = entry.latitude === '' || entry.latitude === null || entry.latitude === undefined
+          ? null
+          : entry.latitude;
+        const longitude = entry.longitude === '' || entry.longitude === null || entry.longitude === undefined
+          ? null
+          : entry.longitude;
+
+        return {
+          addressId: entry.addressId || null,
+          address: entry.address?.trim() || '',
+          latitude: latitude,
+          longitude: longitude,
+        };
+      });
 
       const originalAddressesMap = new Map(
         (originalAddressesRef.current || []).map((addr) => [addr.addressId, addr])
@@ -124,7 +135,8 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
 
       submittedAddresses.forEach((entry) => {
         if (entry.addressId) {
-          if (!entry.address) {
+          // 기존 주소인 경우: address가 없고 위도/경도도 없으면 삭제
+          if (!entry.address && !entry.latitude && !entry.longitude) {
             removedAddressIdsRef.current.add(entry.addressId);
             return;
           }
@@ -141,6 +153,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
           }
           originalAddressesMap.delete(entry.addressId);
         } else if (entry.address || entry.latitude || entry.longitude) {
+          // 새 주소인 경우: address 또는 위도/경도 중 하나라도 있으면 생성
           addressesToCreate.push(entry);
         }
       });
@@ -262,6 +275,15 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
       });
       replaceAddresses(addressesForForm);
       setEditorData({ blocks: siteData?.contents || [] });
+
+      // 기존 주소 중 name이 없고 위도/경도만 있는 항목을 좌표 필드로 표시
+      const coordinateIndices = new Set();
+      addressesForForm.forEach((addr, idx) => {
+        if (!addr.address && (addr.latitude || addr.longitude)) {
+          coordinateIndices.add(idx);
+        }
+      });
+      setCoordinateFieldIndices(coordinateIndices);
     };
 
     loadAddresses();
@@ -320,11 +342,37 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
     });
   };
 
+  const handleAddCoordinates = () => {
+    const newIndex = addressFields.length;
+    appendAddress({
+      addressId: null,
+      address: '',
+      latitude: null,
+      longitude: null,
+    });
+    // 위도/경도 입력 필드로 표시하기 위해 인덱스 추가
+    setCoordinateFieldIndices(prev => new Set([...prev, newIndex]));
+  };
+
   const handleRemoveAddress = (index) => {
     const field = addressFields[index];
     if (field?.addressId) {
       removedAddressIdsRef.current.add(field.addressId);
     }
+    setCoordinateFieldIndices(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(index);
+      // 인덱스가 변경되므로 재계산
+      const updatedSet = new Set();
+      prev.forEach(idx => {
+        if (idx < index) {
+          updatedSet.add(idx);
+        } else if (idx > index) {
+          updatedSet.add(idx - 1);
+        }
+      });
+      return updatedSet;
+    });
     removeAddress(index);
   };
 
@@ -389,30 +437,84 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
           <S.BoardInputGroup>
             <S.BoardInputLabel htmlFor="address" >주소</S.BoardInputLabel>
             <S.AddressList>
-              {addressFields.map((field, index) => (
-                <S.AddressItem key={field.id ?? `address-${index}`}>
-                  <S.AddressInputWrapper>
-                    <AddressSearch
-                      setValue={setValue}
-                      register={register}
-                      namePrefix={`addresses.${index}`}
-                      error={errors?.addresses?.[index]?.address?.message}
-                    />
-                  </S.AddressInputWrapper>
-                  {addressFields.length > 1 && (
-                    <S.AddressActions>
-                      <S.AddressRemoveButton
-                        type="button"
-                        onClick={() => handleRemoveAddress(index)}
-                      >
-                        삭제
-                      </S.AddressRemoveButton>
-                    </S.AddressActions>
-                  )}
-                </S.AddressItem>
-              ))}
+              {addressFields.map((field, index) => {
+                const hasAddress = watch(`addresses.${index}.address`);
+                const hasCoordinates = watch(`addresses.${index}.latitude`) || watch(`addresses.${index}.longitude`);
+                const isCoordinateField = coordinateFieldIndices.has(index);
+
+                // 위도/경도 입력 필드로 지정되었거나, 주소가 없고 위도/경도만 있는 경우
+                if (isCoordinateField || (!hasAddress && hasCoordinates)) {
+                  return (
+                    <S.AddressItem key={field.id ?? `address-${index}`}>
+                      <S.CoordinatesInputWrapper>
+                        <S.CoordinatesInputGroup>
+                          <S.BoardTextInput
+                            type="text"
+                            placeholder="위도를 입력하세요"
+                            {...register(`addresses.${index}.latitude`)}
+                          />
+                        </S.CoordinatesInputGroup>
+                        <S.CoordinatesInputGroup>
+                          <S.BoardTextInput
+                            type="text"
+                            placeholder="경도를 입력하세요"
+                            {...register(`addresses.${index}.longitude`)}
+                          />
+                        </S.CoordinatesInputGroup>
+                        <input type="hidden" {...register(`addresses.${index}.address`)} />
+                        <input type="hidden" {...register(`addresses.${index}.addressId`)} />
+                      </S.CoordinatesInputWrapper>
+                      {addressFields.length > 1 && (
+                        <S.AddressActions>
+                          <S.AddressRemoveButton
+                            type="button"
+                            onClick={() => {
+                              setCoordinateFieldIndices(prev => {
+                                const newSet = new Set(prev);
+                                newSet.delete(index);
+                                return newSet;
+                              });
+                              handleRemoveAddress(index);
+                            }}
+                          >
+                            삭제
+                          </S.AddressRemoveButton>
+                        </S.AddressActions>
+                      )}
+                    </S.AddressItem>
+                  );
+                } else if (hasAddress || !hasAddress) {
+                  // 주소 입력 UI (기본)
+                  return (
+                    <S.AddressItem key={field.id ?? `address-${index}`}>
+                      <S.AddressInputWrapper>
+                        <AddressSearch
+                          setValue={setValue}
+                          register={register}
+                          namePrefix={`addresses.${index}`}
+                          error={errors?.addresses?.[index]?.address?.message}
+                        />
+                      </S.AddressInputWrapper>
+                      {addressFields.length > 1 && (
+                        <S.AddressActions>
+                          <S.AddressRemoveButton
+                            type="button"
+                            onClick={() => handleRemoveAddress(index)}
+                          >
+                            삭제
+                          </S.AddressRemoveButton>
+                        </S.AddressActions>
+                      )}
+                    </S.AddressItem>
+                  );
+                }
+                return null;
+              })}
               <S.AddressAddButton type="button" onClick={handleAddAddress}>
                 + 주소 추가
+              </S.AddressAddButton>
+              <S.AddressAddButton type="button" onClick={handleAddCoordinates}>
+                + 위도 경도 직접 추가
               </S.AddressAddButton>
             </S.AddressList>
           </S.BoardInputGroup>

@@ -254,7 +254,7 @@ export const AddressAddButton = styled.button`
   display: inline-flex;
   align-items: center;
   padding: 11px 12px;
-  margin-right: 40px;
+  margin-right: 0px;
   font-size: 0.95rem;
   font-weight: 600;
   color: black;
@@ -267,6 +267,20 @@ export const AddressAddButton = styled.button`
   &:hover {
     background-color: #f5f5f5;
   }
+`
+
+export const CoordinatesInputWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+`
+
+export const CoordinatesInputGroup = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 `
 
 export const AddressRemoveButton = styled.button`

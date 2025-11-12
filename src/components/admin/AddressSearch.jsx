@@ -119,7 +119,7 @@ export default function AddressSearch({ register, setValue, namePrefix, error })
     <>
       <S.BoardTextInput
         placeholder="주소를 검색해주세요."
-        {...register(addressField, { required: '주소는 필수 입력 항목입니다.' })}
+        {...register(addressField)}
         onClick={() => setIsOpen(!isOpen)}
         readOnly
       />
