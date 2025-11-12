@@ -188,10 +188,9 @@ export async function DELETE(request, context) {
       );
     }
 
-    const { data, error } = await supabaseAdmin
+    // 먼저 해당 site를 조회하여 존재 여부 확인
+    const { data: siteData, error: siteFetchError } = await supabaseAdmin
       .from('sites')
-      .delete()
-      .eq('id', id)
       .select(`
         *,
         cluster:cluster_id (
@@ -207,6 +206,60 @@ export async function DELETE(request, context) {
           name,
           latitude,
           longitude
+        )
+      `)
+      .eq('id', id)
+      .single();
+
+    if (siteFetchError) {
+      if (siteFetchError.code === 'PGRST116') {
+        return NextResponse.json(
+          { error: 'Site not found' },
+          { status: 404 }
+        );
+      }
+      console.error('Site fetch error:', siteFetchError);
+      return NextResponse.json(
+        { error: 'Failed to fetch site', details: siteFetchError.message },
+        { status: 500 }
+      );
+    }
+
+    if (!siteData) {
+      return NextResponse.json(
+        { error: 'Site not found' },
+        { status: 404 }
+      );
+    }
+
+    // 해당 site_id를 참조하는 address 레코드들 삭제
+    const { error: addressDeleteError } = await supabaseAdmin
+      .from('address')
+      .delete()
+      .eq('site_id', id);
+
+    if (addressDeleteError) {
+      console.error('Address delete error:', addressDeleteError);
+      return NextResponse.json(
+        { error: 'Failed to delete related addresses', details: addressDeleteError.message },
+        { status: 500 }
+      );
+    }
+
+    // address 삭제 후 site 삭제
+    const { data, error } = await supabaseAdmin
+      .from('sites')
+      .delete()
+      .eq('id', id)
+      .select(`
+        *,
+        cluster:cluster_id (
+          id,
+          title
+        ),
+        icon:icon_id (
+          id,
+          img
         )
       `);
 
@@ -228,7 +281,7 @@ export async function DELETE(request, context) {
     return NextResponse.json({
       success: true,
       data: data[0],
-      message: 'Site deleted successfully'
+      message: 'Site and related addresses deleted successfully'
     });
 
   } catch (error) {
