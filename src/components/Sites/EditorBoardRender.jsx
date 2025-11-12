@@ -6,10 +6,21 @@ import { theme } from '@/styles/Theme';
 
 const EditorArticle = styled.article`
   display: flex;
-  flex-direction: column;
+  // flex-direction: column;
+  flex-wrap: wrap;
   margin-top: 50px;
   margin-left: 5px;
   color: black;
+  gap: 10px;
+
+  /* .stretched 클래스를 가진 자식을 가진 부모 div 선택 */
+  & > div:has(.small) {
+    width: calc(50% - 5px);
+  }
+
+  & div {
+    width: 100%;
+  }
 
   ${theme.media.mobile} {
     margin-left: 0px;
@@ -84,12 +95,12 @@ const EditorHeader = styled.div`
 
 const EditorImgWrapper = styled.div`
   width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 `
 
 const EditorImg = styled.img`
   width: 100%;
-  border: 2px solid black;
+  border: 1.4px solid black;
 
   ${theme.media.mobile} {
     border: 1px solid black;
@@ -140,8 +151,17 @@ function EditorBoardRender({ item }) {
               ''
             )}
             {block.type === 'image' ? (
-              <EditorImgWrapper>
-                <EditorImg src={block.data.file.url} alt={block.data.caption ? block.data.caption : 'Image'} />
+              <EditorImgWrapper
+                className={[
+                  block.data.stretched && 'stretched',
+                  !block.data.stretched && 'small'
+                ].filter(Boolean).join(' ')}
+              >
+                <EditorImg
+                  src={block.data.file.url}
+                  alt={block.data.caption ? block.data.caption : 'Image'}
+                  withBorder={block.data.withBorder}
+                />
                 {block.data.caption ? (
                   <EditorImgCaption
                     dangerouslySetInnerHTML={{

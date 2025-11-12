@@ -26,6 +26,18 @@ const EditorWrapper = styled.div`
   & h3 {
     font-size: 1.5rem !important;
   }
+
+  & .image-tool {
+    width: 40% !important;
+  }
+
+  & .image-tool--stretched {
+    width: 100% !important;
+  }
+
+  & .image-tool__caption{
+    position: static !important;
+  }
 `;
 
 const Editor = forwardRef(({ data }, ref) => {
@@ -92,6 +104,12 @@ const Editor = forwardRef(({ data }, ref) => {
               config: {
                 captionPlaceholder: '이미지 설명을 입력하세요',
                 buttonContent: '이미지 선택',
+                features: {
+                  stretch: true,
+                  border: false,
+                  caption: true,
+                  background: false
+                },
                 uploader: {
                   uploadByFile: async (file) => {
                     try {

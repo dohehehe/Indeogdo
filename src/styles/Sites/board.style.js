@@ -27,7 +27,7 @@ export const BoardWrapper = styled.div`
   border-radius: 12px 0 0 0;
   box-shadow: 0 4px 20px rgba(9, 36, 50, 0.39);
   overflow: hidden;
-  z-index: 5;
+  z-index: 10;
   display: flex;
   border: 2px solid black;
   border-right: none;
@@ -50,6 +50,7 @@ export const BoardWrapper = styled.div`
     border: 1px solid black;
     height: 80dvh;
     flex-direction: column;
+    z-index: 5;
 
     &:hover {
       box-shadow: 0 0px 20px rgba(12, 73, 104, 0.56);
