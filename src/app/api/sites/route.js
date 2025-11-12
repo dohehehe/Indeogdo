@@ -21,6 +21,12 @@ export async function GET(request) {
         icon:icon_id (
           id,
           img
+        ),
+        addresses:address (
+          id,
+          name,
+          latitude,
+          longitude
         )
       `)
       .order('order', { ascending: true, nullsLast: true })
@@ -66,7 +72,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { title, address, latitude, longitude, contents, cluster_id, icon_id, order } = body;
+    const { title, contents, cluster_id, icon_id, order } = body;
 
     if (!title) {
       return NextResponse.json(
@@ -96,12 +102,15 @@ export async function POST(request) {
       );
     }
 
+    // icon_id 정규화 (빈 문자열을 null로 변환)
+    const normalizedIconId = (icon_id === '' ? null : icon_id);
+
     // icon_id가 제공된 경우 유효성 확인
-    if (icon_id) {
+    if (normalizedIconId) {
       const { data: iconExists, error: iconError } = await supabaseAdmin
         .from('icon')
         .select('id')
-        .eq('id', icon_id)
+        .eq('id', normalizedIconId)
         .single();
 
       if (iconError || !iconExists) {
@@ -114,17 +123,12 @@ export async function POST(request) {
 
     const insertData = {
       title,
-      address,
-      latitude,
-      longitude,
       contents,
       cluster_id,
-      icon_id
+      icon_id: normalizedIconId
     };
 
-    if (order !== undefined && order !== null) {
-      insertData.order = order;
-    }
+    if (order !== undefined && order !== null) insertData.order = order;
 
     const { data, error } = await supabaseAdmin
       .from('sites')
@@ -138,6 +142,12 @@ export async function POST(request) {
         icon:icon_id (
           id,
           img
+        ),
+        addresses:address (
+          id,
+          name,
+          latitude,
+          longitude
         )
       `);
 

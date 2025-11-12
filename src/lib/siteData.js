@@ -29,6 +29,12 @@ export async function getSiteData(id) {
         icon:icon_id (
           id,
           img
+        ),
+        addresses:address (
+          id,
+          name,
+          latitude,
+          longitude
         )
       `)
       .eq('id', id)

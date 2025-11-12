@@ -24,6 +24,12 @@ export async function GET(request, context) {
         icon:icon_id (
           id,
           img
+        ),
+        addresses:address (
+          id,
+          name,
+          latitude,
+          longitude
         )
       `)
       .eq('id', id)
@@ -62,7 +68,7 @@ export async function PUT(request, context) {
   try {
     const { id } = await context.params;
     const body = await request.json();
-    const { title, address, latitude, longitude, contents, cluster_id, icon_id, order } = body;
+    const { title, contents, cluster_id, icon_id, order } = body;
     const normalizedClusterId = (cluster_id === '' ? null : cluster_id);
     const normalizedIconId = (icon_id === '' ? null : icon_id);
 
@@ -113,9 +119,6 @@ export async function PUT(request, context) {
     }
 
     const updateData = { title };
-    if (address !== undefined) updateData.address = address;
-    if (latitude !== undefined) updateData.latitude = latitude;
-    if (longitude !== undefined) updateData.longitude = longitude;
     if (contents !== undefined) updateData.contents = contents;
     if (normalizedClusterId !== undefined) updateData.cluster_id = normalizedClusterId;
     if (normalizedIconId !== undefined) updateData.icon_id = normalizedIconId;
@@ -134,6 +137,12 @@ export async function PUT(request, context) {
         icon:icon_id (
           id,
           img
+        ),
+        addresses:address (
+          id,
+          name,
+          latitude,
+          longitude
         )
       `);
 
@@ -192,6 +201,12 @@ export async function DELETE(request, context) {
         icon:icon_id (
           id,
           img
+        ),
+        addresses:address (
+          id,
+          name,
+          latitude,
+          longitude
         )
       `);
 
