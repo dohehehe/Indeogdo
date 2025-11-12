@@ -15,10 +15,14 @@ export async function generateMetadata({ params }) {
 
     // 사이트 데이터로 메타데이터 구성
     const siteTitle = data.title || '사이트';
-    const siteAddress = data.address || '';
+    const siteAddress = data.addresses && data.addresses.length > 0
+      ? data.addresses.map(addr => addr.name).join(', ')
+      : '';
     const clusterTitle = data.cluster?.title || '';
     const themeTitle = data.cluster?.theme?.title || '';
-    const siteDescription = `${themeTitle} : ${clusterTitle} - ${siteTitle} (${data.address})`;
+    const siteDescription = siteAddress
+      ? `${themeTitle} : ${clusterTitle} - ${siteTitle} (${siteAddress})`
+      : `${themeTitle} : ${clusterTitle} - ${siteTitle}`;
 
 
     // 이미지 URL (icon이 있으면 사용, 없으면 기본 로고)

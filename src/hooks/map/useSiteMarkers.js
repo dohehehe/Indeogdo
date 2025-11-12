@@ -40,7 +40,10 @@ const useSiteMarkers = (mapInstance) => {
     // 새로 추가할 마커들 생성
     const newMarkers = [];
     sitesToAdd.forEach((site) => {
-      if (site.latitude && site.longitude) {
+      // addresses 배열에서 첫 번째 주소 사용
+      const firstAddress = site.addresses && site.addresses.length > 0 ? site.addresses[0] : null;
+
+      if (firstAddress && firstAddress.latitude && firstAddress.longitude) {
         // 커스텀 아이콘 생성
         const icon = site.icon?.img ? {
           url: site.icon.img,
@@ -50,8 +53,8 @@ const useSiteMarkers = (mapInstance) => {
 
         const marker = new window.google.maps.Marker({
           position: {
-            lat: parseFloat(site.latitude),
-            lng: parseFloat(site.longitude)
+            lat: parseFloat(firstAddress.latitude),
+            lng: parseFloat(firstAddress.longitude)
           },
           map: mapInstance,
           title: site.title,
@@ -69,7 +72,7 @@ const useSiteMarkers = (mapInstance) => {
           content: `
             <div style="padding: 10px; max-width: 200px;">
               <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #333;">${site.title}</h3>
-              ${site.address ? `<p style="margin: 0 0 8px 0; font-size: 14px; color: #666;">${site.address}</p>` : ''}
+              ${firstAddress.name ? `<p style="margin: 0 0 8px 0; font-size: 14px; color: #666;">${firstAddress.name}</p>` : ''}
               ${site.cluster ? `<p style="margin: 8px 0 0 0; font-size: 12px; color: #2196f3; font-weight: bold;">클러스터: ${site.cluster.title}</p>` : ''}
             </div>
           `

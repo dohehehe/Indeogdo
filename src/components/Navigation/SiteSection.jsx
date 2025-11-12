@@ -65,9 +65,6 @@ function SiteSection({ clusterId, isAdmin, isOrdering, onOrderChange }) {
       const updatePromises = sites.map((site, index) =>
         updateSite(site.id, {
           title: site.title,
-          address: site.address || '',
-          latitude: site.latitude || null,
-          longitude: site.longitude || null,
           contents: site.contents || [],
           cluster_id: site.cluster?.id || site.cluster_id,
           icon_id: site.icon?.id || site.icon_id || null,
