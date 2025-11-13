@@ -3,16 +3,17 @@
 import styled from '@emotion/styled';
 
 export const IconBoardWrapper = styled.div`
-  width: 300px;
-  height: auto;
+  width: 310px;
+  max-height: 92dvh;
   background-color: white;
   border-radius: 8px;
   border: 1.6px solid black;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 18px;
+  // padding-bottom: 0px;
   position: fixed;
   top: 15px;
-  left: 550px;
+  left: 540px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -48,6 +49,17 @@ export const IconList = styled.ul`
   transition: height 0.3s ease-in-out;
   // padding-top: 0px;
   margin-top: 5px;
+  overflow-y: auto;
+  padding-bottom: 20px;
+  padding-top: 20px;
+
+    /* 스크롤바 숨기기 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 `;
 
 export const IconItem = styled.li`
