@@ -315,13 +315,13 @@ export const BoardInputGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   width: 100%;
 `
 
 export const BoardInputLabel = styled.label`
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.2rem;
+  font-weight: 700;
   color: black;
 `
 
@@ -369,8 +369,13 @@ export const AddressAddButton = styled.button`
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: #f5f5f5;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `
 
@@ -401,8 +406,14 @@ export const AddressRemoveButton = styled.button`
   flex-shrink: 0;
   padding-top: 14px;
 
-  &:hover {
+  &:hover:not(:disabled) {
     text-decoration: underline;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: #999;
   }
 `
 
@@ -420,6 +431,12 @@ export const BoardTextInput = styled.input`
   &::placeholder {
     color: #999;
     font-weight: 500;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #f5f5f5;
   }
 
   ${theme.media.mobile} {
@@ -524,4 +541,59 @@ export const BoardClusterSelect = styled.select`
   border: 1px solid black;
   border-radius: 8px;
   outline: none;
+`
+export const AddressWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 4px;
+  align-items: center;
+  justify-content: space-between;
+`
+
+export const AreaSwitchWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  // margin-bottom: 10px;
+  margin-right: 5px;
+`
+
+export const AreaSwitchLabel = styled.label`
+  font-size: 1rem;
+  font-weight: 600;
+  color: black;
+  cursor: pointer;
+`
+
+export const AreaToggleSwitch = styled.button`
+  position: relative;
+  width: 40px;
+  height: 20px;
+  background-color: ${props => props.$isActive ? 'black' : '#ccc'};
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  outline: none;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: ${props => props.$isActive ? '#333' : '#bbb'};
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+  }
+`
+
+export const AreaToggleSlider = styled.div`
+  position: absolute;
+  top: 2px;
+  left: ${props => props.$isActive ? '22px' : '2px'};
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border-radius: 50%;
+  transition: left 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 `
