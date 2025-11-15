@@ -51,6 +51,7 @@ export const BoardWrapper = styled.div`
     height: 80dvh;
     flex-direction: column;
     z-index: 5;
+    display: ${props => props.$isVisible === false ? 'none' : 'flex'};
 
     &:hover {
       box-shadow: 0 0px 20px rgba(12, 73, 104, 0.56);
