@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 import * as S from '@/styles/Sites/board.style';
 
-export default function AddressSearch({ register, setValue, namePrefix, error }) {
+export default function AddressSearch({ register, setValue, namePrefix, error, disabled = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const [kakaoLoaded, setKakaoLoaded] = useState(false);
 
@@ -120,14 +120,15 @@ export default function AddressSearch({ register, setValue, namePrefix, error })
       <S.BoardTextInput
         placeholder="주소를 검색해주세요."
         {...register(addressField)}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
         readOnly
+        disabled={disabled}
       />
       <input type="hidden" {...register(latitudeField)} />
       <input type="hidden" {...register(longitudeField)} />
       <input type="hidden" {...register(idField)} />
       {error && <S.BoardInputError>{error}</S.BoardInputError>}
-      {isOpen && <DaumPostcodeEmbed onComplete={handleComplete} style={{ border: '1px solid black', borderRadius: '8px', marginTop: '6px', padding: '2px 3px', width: '100%' }} />}
+      {isOpen && !disabled && <DaumPostcodeEmbed onComplete={handleComplete} style={{ border: '1px solid black', borderRadius: '8px', marginTop: '6px', padding: '2px 3px', width: '100%' }} />}
     </>
   );
 }

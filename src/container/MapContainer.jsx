@@ -198,7 +198,12 @@ function MapContainer() {
       )}
 
       {/* 다각형들 렌더링 */}
-      <MapPolygons mapInstance={mapInstance} mapInitialized={mapInitialized} zoomLevel={zoomLevel} />
+      <MapPolygons
+        mapInstance={mapInstance}
+        mapInitialized={mapInitialized}
+        zoomLevel={zoomLevel}
+        selectedSites={selectedSites}
+      />
     </div>
   );
 };

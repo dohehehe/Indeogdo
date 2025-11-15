@@ -72,7 +72,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { title, contents, cluster_id, icon_id, order } = body;
+    const { title, contents, cluster_id, icon_id, order, area } = body;
 
     if (!title) {
       return NextResponse.json(
@@ -129,6 +129,7 @@ export async function POST(request) {
     };
 
     if (order !== undefined && order !== null) insertData.order = order;
+    if (area !== undefined && area !== null) insertData.area = area;
 
     const { data, error } = await supabaseAdmin
       .from('sites')

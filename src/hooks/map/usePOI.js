@@ -237,13 +237,13 @@ const usePOI = (mapInstance, zoomLevel) => {
 
     setPoiMarkers([...poiMarkersRef.current]);
 
-    // 첫 번째 POI 위치로 지도 중심 이동 (선택사항)
-    if (poiDataList.length > 0 && poiDataList[0].latitude && poiDataList[0].longitude) {
-      mapInstance.setCenter({
-        lat: parseFloat(poiDataList[0].latitude),
-        lng: parseFloat(poiDataList[0].longitude)
-      });
-    }
+    // 첫 번째 POI 위치로 지도 중심 이동 제거 (초기 로드 시 지도 위치 변경 방지)
+    // if (poiDataList.length > 0 && poiDataList[0].latitude && poiDataList[0].longitude) {
+    //   mapInstance.setCenter({
+    //     lat: parseFloat(poiDataList[0].latitude),
+    //     lng: parseFloat(poiDataList[0].longitude)
+    //   });
+    // }
   }, [mapInstance, clearPOIs, createTextLabel, updateMarkersVisibility]);
 
   // 단일 POI 마커 제거 (하위 호환성)

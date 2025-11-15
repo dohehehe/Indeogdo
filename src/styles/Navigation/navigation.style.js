@@ -441,6 +441,18 @@ export const CreditItem = styled.li`
   }
 `;
 
+export const CreditItemContent = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: black;
+  font-family: 'Sweet';
+  font-weight: 400;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  word-break: keep-all;
+`;
+
 export const CopyRight = styled.div`
   font-size: 0.8rem;
   color: #666;

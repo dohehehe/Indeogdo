@@ -152,7 +152,7 @@ const useMapPolygon = ({
         throw new Error('Google Maps API not loaded');
       }
 
-      const polygon = new window.google.maps.Polygon({
+      const polygonOptions = {
         paths: coords.map(coord => ({
           lat: coord.lat,
           lng: coord.lng
@@ -162,7 +162,14 @@ const useMapPolygon = ({
         strokeWeight: width,
         fillColor: addOpacityToColor(fill, fillOpac),
         fillOpacity: fillOpac,
-      });
+      };
+
+      // zIndex 옵션이 있으면 추가
+      if (options.zIndex !== undefined) {
+        polygonOptions.zIndex = options.zIndex;
+      }
+
+      const polygon = new window.google.maps.Polygon(polygonOptions);
 
       polygon.setMap(map);
 
@@ -433,11 +440,99 @@ const useMapPolygon = ({
     };
   }, [removePolygon]);
 
+  // opacity 애니메이션 함수
+  const animateOpacity = useCallback((targetFillOpacity, targetStrokeOpacity, duration = 500) => {
+    if (!polygonRef.current) {
+      console.warn('animateOpacity: polygonRef.current is null');
+      return;
+    }
+
+    const startTime = Date.now();
+    const is3D = is3DMapRef.current;
+    const currentFillColor = fillColor;
+    const currentStrokeColor = strokeColor;
+
+    // polygon의 현재 opacity 값을 가져오기
+    // polygon이 생성될 때 설정된 초기 opacity 사용 (shouldAnimate일 때는 0)
+    let startFillOpacity = fillOpacity;
+    let startStrokeOpacity = strokeOpacity;
+
+    if (!is3D) {
+      // 2D Polygon의 경우 현재 opacity 가져오기 시도
+      const polygon = polygonRef.current;
+      if (polygon) {
+        // Google Maps Polygon은 직접 속성 접근이 어려우므로
+        // 초기값을 사용하거나, polygon 객체에서 가져오기 시도
+        try {
+          // polygon의 내부 속성에서 opacity 가져오기 시도
+          if (polygon.fillOpacity !== undefined) {
+            startFillOpacity = polygon.fillOpacity;
+          }
+          if (polygon.strokeOpacity !== undefined) {
+            startStrokeOpacity = polygon.strokeOpacity;
+          }
+        } catch (e) {
+          // 접근 실패 시 초기값 사용
+          console.log('Could not get current opacity, using initial values');
+        }
+      }
+    }
+
+    console.log('animateOpacity - start:', { startFillOpacity, startStrokeOpacity, targetFillOpacity, targetStrokeOpacity, is3D });
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // easing function (ease-in-out)
+      const easeInOut = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+      const currentFillOpacity = startFillOpacity + (targetFillOpacity - startFillOpacity) * easeInOut;
+      const currentStrokeOpacity = startStrokeOpacity + (targetStrokeOpacity - startStrokeOpacity) * easeInOut;
+
+      if (is3D) {
+        // 3D Polygon의 경우 opacity를 직접 변경할 수 없으므로 색상에 alpha를 적용
+        if (polygonRef.current) {
+          const fillColorWithOpacity = addOpacityToColor(currentFillColor, currentFillOpacity);
+          const strokeColorWithOpacity = addOpacityToColor(currentStrokeColor, currentStrokeOpacity);
+
+          if (polygonRef.current.fillColor !== undefined) {
+            polygonRef.current.fillColor = fillColorWithOpacity;
+          }
+          if (polygonRef.current.strokeColor !== undefined) {
+            polygonRef.current.strokeColor = strokeColorWithOpacity;
+          }
+        }
+      } else {
+        // 2D Polygon 업데이트
+        const polygon = polygonRef.current;
+        if (polygon && polygon.setOptions) {
+          const updateOptions = {
+            fillOpacity: currentFillOpacity,
+            strokeOpacity: currentStrokeOpacity
+          };
+          polygon.setOptions(updateOptions);
+        }
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        console.log('animateOpacity - completed:', { currentFillOpacity, currentStrokeOpacity });
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [fillOpacity, strokeOpacity, fillColor, strokeColor, addOpacityToColor]);
+
   return {
     polygon: polygonRef.current,
     createPolygon,
     updatePolygon,
     removePolygon,
+    animateOpacity,
     is3D: is3DMapRef.current
   };
 };

@@ -45,6 +45,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
       title: siteData?.title || '',
       iconId: siteData?.icon?.id || '',
       clusterId: clusterId || siteData?.cluster?.id || '',
+      area: siteData?.area ?? false,
       addresses: [
         {
           addressId: null,
@@ -88,6 +89,9 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
         title: formValues.title || siteData?.title || '',
         contents: contentsBlocks,
       };
+
+      // area
+      payload.area = formValues.area ?? siteData?.area ?? false;
 
       // icon_id
       const iconRaw = formValues.iconId;
@@ -281,6 +285,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
         title: siteData?.title || '',
         iconId: siteData?.icon?.id || '',
         clusterId: clusterId || siteData?.cluster?.id || '',
+        area: siteData?.area ?? false,
         addresses: addressesForForm,
       });
       replaceAddresses(addressesForForm);
@@ -297,9 +302,10 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
     };
 
     loadAddresses();
-  }, [siteData?.id, siteData?.title, siteData?.contents, siteData?.icon?.id, clusterId, fetchAddressesBySite, reset, replaceAddresses]);
+  }, [siteData?.id, siteData?.title, siteData?.contents, siteData?.icon?.id, siteData?.area, clusterId, fetchAddressesBySite, reset, replaceAddresses]);
 
   const watched = watch();
+  const areaValue = watched.area ?? false;
 
   useEffect(() => {
     if (typeof onChange === 'function') {
@@ -307,10 +313,11 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
         title: watched.title,
         iconId: watched.iconId,
         clusterId: watched.clusterId,
+        area: watched.area,
         addresses: watched.addresses,
       });
     }
-  }, [watched.title, watched.iconId, watched.clusterId, watched.addresses, onChange]);
+  }, [watched.title, watched.iconId, watched.clusterId, watched.area, watched.addresses, onChange]);
 
   useEffect(() => {
     const onDocClick = (e) => {
@@ -445,7 +452,29 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
           </S.BoardInputGroup>
 
           <S.BoardInputGroup>
-            <S.BoardInputLabel htmlFor="address" >주소</S.BoardInputLabel>
+            <S.AddressWrapper>
+              <S.BoardInputLabel htmlFor="address" >주소</S.BoardInputLabel>
+
+              <S.AreaSwitchWrapper>
+                <S.AreaSwitchLabel htmlFor="area">인덕원 구역 활성화</S.AreaSwitchLabel>
+                <input
+                  type="hidden"
+                  {...register('area')}
+                />
+                <S.AreaToggleSwitch
+                  type="button"
+                  $isActive={areaValue}
+                  onClick={() => {
+                    const newValue = !areaValue;
+                    setValue('area', newValue, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+                  }}
+                  aria-label="구역 스위치"
+                >
+                  <S.AreaToggleSlider $isActive={areaValue} />
+                </S.AreaToggleSwitch>
+              </S.AreaSwitchWrapper>
+            </S.AddressWrapper>
+
             <S.AddressList>
               {addressFields.map((field, index) => {
                 const hasAddress = watch(`addresses.${index}.address`);
@@ -462,6 +491,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
                             type="text"
                             placeholder="위도를 입력하세요"
                             {...register(`addresses.${index}.latitude`)}
+                            disabled={areaValue}
                           />
                         </S.CoordinatesInputGroup>
                         <S.CoordinatesInputGroup>
@@ -469,6 +499,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
                             type="text"
                             placeholder="경도를 입력하세요"
                             {...register(`addresses.${index}.longitude`)}
+                            disabled={areaValue}
                           />
                         </S.CoordinatesInputGroup>
                         <input type="hidden" {...register(`addresses.${index}.address`)} />
@@ -486,6 +517,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
                               });
                               handleRemoveAddress(index);
                             }}
+                            disabled={areaValue}
                           >
                             삭제
                           </S.AddressRemoveButton>
@@ -503,6 +535,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
                           register={register}
                           namePrefix={`addresses.${index}`}
                           error={errors?.addresses?.[index]?.address?.message}
+                          disabled={areaValue}
                         />
                       </S.AddressInputWrapper>
                       {addressFields.length > 1 && (
@@ -510,6 +543,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
                           <S.AddressRemoveButton
                             type="button"
                             onClick={() => handleRemoveAddress(index)}
+                            disabled={areaValue}
                           >
                             삭제
                           </S.AddressRemoveButton>
@@ -520,10 +554,10 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
                 }
                 return null;
               })}
-              <S.AddressAddButton type="button" onClick={handleAddAddress}>
+              <S.AddressAddButton type="button" onClick={handleAddAddress} disabled={areaValue}>
                 + 주소 추가
               </S.AddressAddButton>
-              <S.AddressAddButton type="button" onClick={handleAddCoordinates}>
+              <S.AddressAddButton type="button" onClick={handleAddCoordinates} disabled={areaValue}>
                 + 위도 경도 직접 추가
               </S.AddressAddButton>
             </S.AddressList>

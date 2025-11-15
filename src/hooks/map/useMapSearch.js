@@ -56,23 +56,33 @@ const useMapSearch = (mapInstance, zoomLevel) => {
       mapInstance.setCenter(location);
       mapInstance.setZoom(zoomLevel);
 
-      // 기존 마커 제거
-      const markers = document.querySelectorAll('[data-marker]');
-      markers.forEach(marker => marker.remove());
+      // 기존 검색 마커 제거
+      if (window._searchMarker) {
+        window._searchMarker.setMap(null);
+        window._searchMarker = null;
+      }
 
-      // 새로운 마커 생성
+      // 기본 마커 사용 (POI 마커와 동일한 방식)
       const marker = new window.google.maps.Marker({
         position: location,
         map: mapInstance,
-        title: name
+        title: name,
+        icon: {
+          url: '/icon/marker.png',
+          scaledSize: new window.google.maps.Size(32, 32),
+          anchor: new window.google.maps.Point(16, 16)
+        },
+        animation: window.google.maps.Animation.DROP
       });
 
-      // 마커에 식별자 추가
-      if (marker.getElement && typeof marker.getElement === 'function') {
-        marker.getElement().setAttribute('data-marker', 'true');
-      } else {
-        marker._isSearchMarker = true;
-      }
+      // 애니메이션 제거
+      setTimeout(() => {
+        marker.setAnimation(null);
+      }, 1000);
+
+      // 마커에 식별자 추가 및 전역 참조 저장
+      marker._isSearchMarker = true;
+      window._searchMarker = marker;
 
       setSearchResults([]);
     } catch (error) {
