@@ -15,7 +15,9 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
   const { updateCluster, deleteCluster } = useCluster();
   const setClusterSites = useClusterSitesStore((state) => state.setClusterSites);
   const removeClusterSites = useClusterSitesStore((state) => state.removeClusterSites);
-  const [isActive, setIsActive] = useState(false);
+  // 인덕도 cluster는 초기 로드 시 활성화
+  const INDEOGDO_CLUSTER_ID = 'c3215e24-0b9c-4e09-825d-18657bf4a0ba';
+  const [isActive, setIsActive] = useState(cluster.id === INDEOGDO_CLUSTER_ID);
   const [sites, setSites] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingTitle, setEditingTitle] = useState('');
