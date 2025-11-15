@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import useMobile from '@/hooks/useMobile';
 
 // 지도 초기화를 위한 커스텀 훅
 const useMapInitialization = () => {
@@ -9,6 +10,7 @@ const useMapInitialization = () => {
   const [mapInstance, setMapInstance] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(17);
   const [initialPosition, setInitialPosition] = useState(null);
+  const isMobile = useMobile();
 
   // 지도 스타일 함수
   const getMapStyles = useCallback(() => {
@@ -398,11 +400,10 @@ const useMapInitialization = () => {
           setLoading(true);
           setError(null);
 
-          // 모바일 감지
-          const isMobile = window.innerWidth <= 768;
-          const lat = isMobile ? 37.400409 : 37.400409;
-          const lng = isMobile ? 126.974294 : 126.974294;
-          const currentZoomLevel = isMobile ? 15 : zoomLevel; // 모바일일 경우 zoom level 낮춤
+          const lat = 37.400409;
+          const lng = 126.974294;
+          // 모바일에서는 줌 레벨을 낮춰서 더 넓은 범위 표시
+          const zoom = isMobile ? Math.max(zoomLevel - 1, 15) : zoomLevel;
 
           // 서버에서 API 키 가져오기
           const response = await fetch('/api/maps/script');
@@ -417,7 +418,7 @@ const useMapInitialization = () => {
             // 이미 로드된 경우 바로 지도 생성
             const map = new google.maps.Map(mapRef.current, {
               center: { lat, lng },
-              zoom: currentZoomLevel,
+              zoom,
               mapTypeId: 'roadmap',
               disableDefaultUI: true,
               styles: getMapStyles() // mapId 제거, styles 직접 설정
@@ -425,7 +426,7 @@ const useMapInitialization = () => {
             setMapInstance(map);
             setLoading(false);
             setMapInitialized(true);
-            setInitialPosition({ lat, lng, zoom: currentZoomLevel });
+            setInitialPosition({ lat, lng, zoom });
             return;
           }
 
@@ -440,7 +441,7 @@ const useMapInitialization = () => {
               try {
                 const map = new google.maps.Map(mapRef.current, {
                   center: { lat, lng },
-                  zoom: currentZoomLevel,
+                  zoom,
                   mapTypeId: 'roadmap',
                   disableDefaultUI: true,
                   styles: getMapStyles() // mapId 제거, styles 직접 설정
@@ -448,7 +449,7 @@ const useMapInitialization = () => {
                 setMapInstance(map);
                 setLoading(false);
                 setMapInitialized(true);
-                setInitialPosition({ lat, lng, zoom: currentZoomLevel });
+                setInitialPosition({ lat, lng, zoom });
               } catch (error) {
                 console.error('Map initialization error:', error);
                 setError(error.message);
@@ -479,19 +480,16 @@ const useMapInitialization = () => {
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [getMapStyles, mapInitialized]); // zoomLevel 제거, mapInitialized 추가
+  }, [getMapStyles, mapInitialized, zoomLevel, isMobile]); // zoomLevel, isMobile 추가하여 초기화 시에도 반영
 
   // zoomLevel 변경 시 기존 지도의 zoom만 업데이트
   useEffect(() => {
     if (mapInstance && mapInitialized) {
-      // 모바일 감지
-      const isMobile = window.innerWidth <= 768;
-      const currentZoomLevel = isMobile ? 15 : zoomLevel;
-
-      // 지도가 이미 초기화되어 있으면 zoom만 변경
-      mapInstance.setZoom(currentZoomLevel);
+      // 모바일에서는 줌 레벨을 낮춰서 더 넓은 범위 표시
+      const currentZoom = isMobile ? Math.max(zoomLevel - 1, 15) : zoomLevel;
+      mapInstance.setZoom(currentZoom);
     }
-  }, [zoomLevel, mapInstance, mapInitialized]);
+  }, [zoomLevel, mapInstance, mapInitialized, isMobile]);
 
   // 컴포넌트 언마운트 시 정리
   useEffect(() => {
