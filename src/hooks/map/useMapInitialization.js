@@ -145,18 +145,18 @@ const useMapInitialization = () => {
           }
         ]
       },
-      {
-        "featureType": "poi.park",
-        "elementType": "geometry.fill",
-        "stylers": [
-          // {
-          //   "color": "#AADAE0"
-          // }
-          {
-            "color": "#A8DCD7"
-          }
-        ]
-      },
+      // {
+      //   "featureType": "poi.park",
+      //   "elementType": "geometry.fill",
+      //   "stylers": [
+      //     // {
+      //     //   "color": "#AADAE0"
+      //     // }
+      //     {
+      //       "color": "#A8DCD7"
+      //     }
+      //   ]
+      // },
       {
         "featureType": "poi.park",
         "elementType": "labels.text.fill",
