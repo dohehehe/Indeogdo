@@ -376,8 +376,13 @@ const useMapInitialization = () => {
     ];
   }, []);
 
-  // 구글 지도 초기화
+  // 구글 지도 초기화 (한 번만 실행)
   useEffect(() => {
+    // 이미 초기화된 경우 재초기화하지 않음
+    if (mapInitialized) {
+      return;
+    }
+
     const initMap = async () => {
       // DOM 요소가 준비될 때까지 대기
       const waitForElement = () => {
@@ -397,6 +402,7 @@ const useMapInitialization = () => {
           const isMobile = window.innerWidth <= 768;
           const lat = isMobile ? 37.400409 : 37.400409;
           const lng = isMobile ? 126.974294 : 126.974294;
+          const currentZoomLevel = isMobile ? 15 : zoomLevel; // 모바일일 경우 zoom level 낮춤
 
           // 서버에서 API 키 가져오기
           const response = await fetch('/api/maps/script');
@@ -411,21 +417,21 @@ const useMapInitialization = () => {
             // 이미 로드된 경우 바로 지도 생성
             const map = new google.maps.Map(mapRef.current, {
               center: { lat, lng },
-              zoom: zoomLevel,
+              zoom: currentZoomLevel,
               mapTypeId: 'roadmap',
               disableDefaultUI: true,
-              styles: getMapStyles()
+              styles: getMapStyles() // mapId 제거, styles 직접 설정
             });
             setMapInstance(map);
             setLoading(false);
             setMapInitialized(true);
-            setInitialPosition({ lat, lng, zoom: zoomLevel });
+            setInitialPosition({ lat, lng, zoom: currentZoomLevel });
             return;
           }
 
-          // 구글 지도 스크립트 동적 로드
+          // 구글 지도 스크립트 동적 로드 (marker 라이브러리 추가)
           const script = document.createElement('script');
-          script.src = `https://maps.googleapis.com/maps/api/js?key=${data.apiKey}&loading=async&region=KR&language=ko&libraries=places&v=weekly`;
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${data.apiKey}&loading=async&region=KR&language=ko&libraries=places,marker&v=weekly`;
           script.async = true;
           script.defer = true;
 
@@ -434,15 +440,15 @@ const useMapInitialization = () => {
               try {
                 const map = new google.maps.Map(mapRef.current, {
                   center: { lat, lng },
-                  zoom: zoomLevel,
+                  zoom: currentZoomLevel,
                   mapTypeId: 'roadmap',
                   disableDefaultUI: true,
-                  styles: getMapStyles()
+                  styles: getMapStyles() // mapId 제거, styles 직접 설정
                 });
                 setMapInstance(map);
                 setLoading(false);
                 setMapInitialized(true);
-                setInitialPosition({ lat, lng, zoom: zoomLevel });
+                setInitialPosition({ lat, lng, zoom: currentZoomLevel });
               } catch (error) {
                 console.error('Map initialization error:', error);
                 setError(error.message);
@@ -473,7 +479,19 @@ const useMapInitialization = () => {
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [zoomLevel, getMapStyles]);
+  }, [getMapStyles, mapInitialized]); // zoomLevel 제거, mapInitialized 추가
+
+  // zoomLevel 변경 시 기존 지도의 zoom만 업데이트
+  useEffect(() => {
+    if (mapInstance && mapInitialized) {
+      // 모바일 감지
+      const isMobile = window.innerWidth <= 768;
+      const currentZoomLevel = isMobile ? 15 : zoomLevel;
+
+      // 지도가 이미 초기화되어 있으면 zoom만 변경
+      mapInstance.setZoom(currentZoomLevel);
+    }
+  }, [zoomLevel, mapInstance, mapInitialized]);
 
   // 컴포넌트 언마운트 시 정리
   useEffect(() => {
