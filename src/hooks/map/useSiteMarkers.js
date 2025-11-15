@@ -62,6 +62,7 @@ const useSiteMarkers = (mapInstance) => {
 
     // 새로 추가할 마커들 생성
     const newMarkers = [];
+
     sites?.forEach((site) => {
       // site의 모든 address에 대해 마커 생성
       if (site.addresses && site.addresses.length > 0) {
@@ -73,12 +74,16 @@ const useSiteMarkers = (mapInstance) => {
 
           // 위도, 경도가 있는 address만 마커 생성
           if (address.latitude && address.longitude) {
-            // 커스텀 아이콘 생성
+            // 기본 마커 사용
             const icon = site.icon?.img ? {
               url: site.icon.img,
               scaledSize: new window.google.maps.Size(32, 32),
               anchor: new window.google.maps.Point(16, 16)
-            } : null;
+            } : {
+              url: '/icon/marker.png',
+              scaledSize: new window.google.maps.Size(32, 32),
+              anchor: new window.google.maps.Point(16, 16)
+            };
 
             const marker = new window.google.maps.Marker({
               position: {
@@ -91,26 +96,12 @@ const useSiteMarkers = (mapInstance) => {
               animation: window.google.maps.Animation.DROP
             });
 
-            // 애니메이션을 잠시 후에 중지 (새로 추가되는 마커만)
             setTimeout(() => {
               marker.setAnimation(null);
             }, 1000);
 
-            // 인포윈도우 생성
-            const infoWindow = new window.google.maps.InfoWindow({
-              content: `
-                <div style="padding: 10px; max-width: 200px;">
-                  <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #333;">${site.title}</h3>
-                  ${address.name ? `<p style="margin: 0 0 8px 0; font-size: 14px; color: #666;">${address.name}</p>` : ''}
-                  ${site.cluster ? `<p style="margin: 8px 0 0 0; font-size: 12px; color: #2196f3; font-weight: bold;">클러스터: ${site.cluster.title}</p>` : ''}
-                </div>
-              `
-            });
-
-            // 마커 클릭 시 인포윈도우 표시 및 라우팅
+            // 마커 클릭 시 라우팅
             marker.addListener('click', () => {
-              // infoWindow.open(mapInstance, marker);
-
               // POI 상세 페이지로 라우팅
               if (window.onPOIClick) {
                 window.onPOIClick(site);
