@@ -154,6 +154,7 @@ export const BoardDetailWrapper = styled.div`
   overflow-y: auto;
   width: 100%;
   max-width: 800px;
+  position: relative;
 
     
   /* 스크롤바 숨기기 */
@@ -169,6 +170,45 @@ export const BoardDetailWrapper = styled.div`
     margin-top: -43px;
     padding-top: 18px;
     max-width: unset;
+  }
+`;
+
+export const ScrollToTopButton = styled.button`
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: 1px solid white;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+
+  ${theme.media.mobile} {
+    bottom: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    font-size: 1.4rem;
   }
 `;
 

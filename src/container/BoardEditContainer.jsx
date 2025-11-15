@@ -21,6 +21,16 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
   const { createAddress, updateAddress, deleteAddress, fetchAddressesBySite } = useAddress();
   const originalAddressesRef = useRef([]);
   const removedAddressIdsRef = useRef(new Set());
+  const boardDetailRef = useRef(null);
+
+  const scrollToTop = () => {
+    if (boardDetailRef.current) {
+      boardDetailRef.current.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const {
     register,
@@ -378,7 +388,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
 
   return (
     <>
-      <S.BoardEditWrapper>
+      <S.BoardEditWrapper ref={boardDetailRef}>
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 50, transform: 'scale(1.4)', transformOrigin: 'right' }}>
           <EB.EditButtonWrapper>
             <EB.EditButton type="submit" disabled={saving} form="board-edit-form">{saving ? '저장 중...' : '저장'}</EB.EditButton> |
@@ -524,6 +534,10 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
             <Editor ref={editorRef} data={editorData} />
           </S.BoardInputGroup>
         </S.BoardEditForm>
+
+        <S.ScrollToTopButton onClick={scrollToTop} title="위로 가기">
+          ↑
+        </S.ScrollToTopButton>
       </S.BoardEditWrapper>
     </>
   );
