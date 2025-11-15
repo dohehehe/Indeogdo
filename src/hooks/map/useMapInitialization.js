@@ -72,7 +72,7 @@ const useMapInitialization = () => {
             "color": "#ffffff"
           },
           {
-            "weight": "1.00"
+            "weight": "2.94"
           }
         ]
       },
@@ -89,6 +89,9 @@ const useMapInitialization = () => {
         "featureType": "administrative",
         "elementType": "geometry.fill",
         "stylers": [
+          {
+            "visibility": "on"
+          },
           {
             "weight": "1.14"
           }
@@ -108,10 +111,10 @@ const useMapInitialization = () => {
         "elementType": "geometry.fill",
         "stylers": [
           {
-            "color": "#040404"
+            "visibility": "off"
           },
           {
-            "visibility": "off"
+            "color": "#040404"
           }
         ]
       },
@@ -121,27 +124,6 @@ const useMapInitialization = () => {
         "stylers": [
           {
             "visibility": "on"
-          }
-        ]
-      },
-      {
-        "featureType": "administrative.land_parcel",
-        "elementType": "labels.text.stroke",
-        "stylers": [
-          {
-            "weight": "0.70"
-          },
-          {
-            "visibility": "off"
-          }
-        ]
-      },
-      {
-        "featureType": "landscape",
-        "elementType": "labels.icon",
-        "stylers": [
-          {
-            "visibility": "off"
           }
         ]
       },
@@ -155,47 +137,11 @@ const useMapInitialization = () => {
         ]
       },
       {
-        "featureType": "landscape.natural.landcover",
-        "elementType": "geometry.fill",
-        "stylers": [
-          {
-            "visibility": "off"
-          }
-        ]
-      },
-      {
-        "featureType": "landscape.natural.terrain",
+        "featureType": "poi.park",
         "elementType": "all",
         "stylers": [
           {
-            "visibility": "off"
-          }
-        ]
-      },
-      {
-        "featureType": "poi",
-        "elementType": "labels.text.stroke",
-        "stylers": [
-          {
-            "visibility": "off"
-          }
-        ]
-      },
-      {
-        "featureType": "poi.attraction",
-        "elementType": "all",
-        "stylers": [
-          {
-            "visibility": "off"
-          }
-        ]
-      },
-      {
-        "featureType": "poi.medical",
-        "elementType": "all",
-        "stylers": [
-          {
-            "visibility": "off"
+            "visibility": "on"
           }
         ]
       },
@@ -203,18 +149,39 @@ const useMapInitialization = () => {
         "featureType": "poi.park",
         "elementType": "geometry.fill",
         "stylers": [
+          // {
+          //   "color": "#AADAE0"
+          // }
           {
-            "visibility": "off"
-          },
+            "color": "#A8DCD7"
+          }
+        ]
+      },
+      {
+        "featureType": "poi.park",
+        "elementType": "labels.text.fill",
+        "stylers": [
           {
-            "color": "#e5e5e7"
+            "color": "#000000"
+          }
+        ]
+      },
+      {
+        "featureType": "poi.park",
+        "elementType": "labels.icon",
+        "stylers": [
+          {
+            "color": "#000000"
           }
         ]
       },
       {
         "featureType": "road",
-        "elementType": "geometry.fill",
+        "elementType": "geometry",
         "stylers": [
+          {
+            "visibility": "on"
+          },
           {
             "color": "#fffbfb"
           }
@@ -222,10 +189,19 @@ const useMapInitialization = () => {
       },
       {
         "featureType": "road",
-        "elementType": "labels.icon",
+        "elementType": "geometry.stroke",
         "stylers": [
           {
-            "visibility": "off"
+            "color": "#000000"
+          }
+        ]
+      },
+      {
+        "featureType": "road",
+        "elementType": "labels.text.stroke",
+        "stylers": [
+          {
+            "weight": "1.56"
           }
         ]
       },
@@ -234,7 +210,19 @@ const useMapInitialization = () => {
         "elementType": "all",
         "stylers": [
           {
+            "weight": "1.44"
+          },
+          {
             "visibility": "on"
+          }
+        ]
+      },
+      {
+        "featureType": "road.highway",
+        "elementType": "geometry",
+        "stylers": [
+          {
+            "weight": "0.01"
           }
         ]
       },
@@ -246,7 +234,7 @@ const useMapInitialization = () => {
             "color": "#ffffff"
           },
           {
-            "weight": "14.00"
+            "weight": "10"
           }
         ]
       },
@@ -258,7 +246,7 @@ const useMapInitialization = () => {
             "color": "#000000"
           },
           {
-            "weight": "1.20"
+            "weight": "1.2"
           }
         ]
       },
@@ -267,7 +255,7 @@ const useMapInitialization = () => {
         "elementType": "labels.text.fill",
         "stylers": [
           {
-            "color": "#FFFFFF"
+            "color": "#000000"
           }
         ]
       },
@@ -282,22 +270,10 @@ const useMapInitialization = () => {
       },
       {
         "featureType": "road.highway.controlled_access",
-        "elementType": "all",
+        "elementType": "geometry",
         "stylers": [
           {
-            "visibility": "off"
-          },
-          {
-            "weight": "1.00"
-          }
-        ]
-      },
-      {
-        "featureType": "road.highway.controlled_access",
-        "elementType": "labels.icon",
-        "stylers": [
-          {
-            "visibility": "off"
+            "weight": "0.01"
           }
         ]
       },
@@ -307,15 +283,27 @@ const useMapInitialization = () => {
         "stylers": [
           {
             "visibility": "on"
+          },
+          {
+            "weight": "4.40"
           }
         ]
       },
       {
         "featureType": "road.arterial",
-        "elementType": "labels",
+        "elementType": "geometry",
         "stylers": [
           {
-            "visibility": "off"
+            "weight": "1.33"
+          }
+        ]
+      },
+      {
+        "featureType": "road.arterial",
+        "elementType": "geometry.fill",
+        "stylers": [
+          {
+            "weight": "10.00"
           }
         ]
       },
@@ -327,7 +315,7 @@ const useMapInitialization = () => {
             "visibility": "on"
           },
           {
-            "weight": "0.97"
+            "weight": "1.11"
           }
         ]
       },
@@ -335,60 +323,12 @@ const useMapInitialization = () => {
         "featureType": "road.local",
         "elementType": "geometry.fill",
         "stylers": [
-          {
-            "visibility": "on"
-          },
           {
             "color": "#fbfbfb"
           }
         ]
       },
       {
-        "featureType": "road.local",
-        "elementType": "labels.icon",
-        "stylers": [
-          {
-            "visibility": "off"
-          }
-        ]
-      },
-      {
-        "featureType": "transit",
-        "elementType": "all",
-        "stylers": [
-          {
-            "visibility": "off"
-          }
-        ]
-      },
-      {
-        "featureType": "transit",
-        "elementType": "geometry.fill",
-        "stylers": [
-          {
-            "color": "#ff0000"
-          }
-        ]
-      },
-      {
-        "featureType": "transit",
-        "elementType": "geometry.stroke",
-        "stylers": [
-          {
-            "color": "#ff0000"
-          }
-        ]
-      },
-      {
-        "featureType": "transit",
-        "elementType": "labels.icon",
-        "stylers": [
-          {
-            "visibility": "off"
-          }
-        ]
-      },
-      {
         "featureType": "water",
         "elementType": "all",
         "stylers": [
@@ -402,13 +342,10 @@ const useMapInitialization = () => {
         "elementType": "geometry.fill",
         "stylers": [
           {
-            "visibility": "on"
-          },
-          {
             "color": "#000000"
           },
           {
-            "weight": "0.56"
+            "weight": "2.21"
           }
         ]
       },
@@ -418,6 +355,9 @@ const useMapInitialization = () => {
         "stylers": [
           {
             "color": "#ffffff"
+          },
+          {
+            "weight": "0.01"
           }
         ]
       },
@@ -426,10 +366,10 @@ const useMapInitialization = () => {
         "elementType": "labels.text.stroke",
         "stylers": [
           {
-            "color": "#fcfcfc"
+            "color": "#ff0000"
           },
           {
-            "weight": "3.67"
+            "weight": "3.74"
           }
         ]
       }

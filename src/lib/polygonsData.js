@@ -14,10 +14,10 @@ export const polygonsData = [
       [37.401876, 126.972661],
       [37.401771, 126.971838]
     ],
-    fillColor: "#add5ff",
+    fillColor: "#A6E0C0",
     strokeColor: "#000",
     strokeWidth: 0.2,
-    fillOpacity: 1.0,
+    fillOpacity: 0.7,
     strokeOpacity: 1.0,
     minZoom: 17,
     visible: true
@@ -33,7 +33,7 @@ export const polygonsData = [
     fillColor: "#A6E0C0",
     strokeColor: "#000",
     strokeWidth: 0.2,
-    fillOpacity: 0.8,
+    fillOpacity: 0,
     minZoom: 17,
     visible: true
   },
@@ -47,7 +47,7 @@ export const polygonsData = [
     fillColor: "#A6E0C0",
     strokeColor: "#000",
     strokeWidth: 0.2,
-    fillOpacity: 0.8,
+    fillOpacity: 0,
     minZoom: 17,
     visible: true
   },
@@ -62,7 +62,7 @@ export const polygonsData = [
     fillColor: "#A6E0C0",
     strokeColor: "#000",
     strokeWidth: 0.2,
-    fillOpacity: 0.8,
+    fillOpacity: 0,
     minZoom: 17,
     visible: true
   },
