@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 // 장소 검색을 위한 커스텀 훅
 const useMapSearch = (mapInstance, zoomLevel) => {
@@ -38,6 +38,13 @@ const useMapSearch = (mapInstance, zoomLevel) => {
     }
   }, [mapInstance]);
 
+  const removeSearchMarker = useCallback(() => {
+    if (window._searchMarker) {
+      window._searchMarker.setMap(null);
+      window._searchMarker = null;
+    }
+  }, []);
+
   // 검색 결과 클릭 핸들러
   const handleResultClick = useCallback((place) => {
     if (!mapInstance) return;
@@ -57,10 +64,7 @@ const useMapSearch = (mapInstance, zoomLevel) => {
       mapInstance.setZoom(zoomLevel);
 
       // 기존 검색 마커 제거
-      if (window._searchMarker) {
-        window._searchMarker.setMap(null);
-        window._searchMarker = null;
-      }
+      removeSearchMarker();
 
       // 기본 마커 사용 (POI 마커와 동일한 방식)
       const marker = new window.google.maps.Marker({
@@ -88,12 +92,45 @@ const useMapSearch = (mapInstance, zoomLevel) => {
     } catch (error) {
       console.error('마커 추가 중 오류:', error);
     }
-  }, [mapInstance, zoomLevel]);
+  }, [mapInstance, zoomLevel, removeSearchMarker]);
+
+  // 지도 클릭 시 검색 마커 제거
+  useEffect(() => {
+    if (!mapInstance || !window.google || !window.google.maps) {
+      return;
+    }
+
+    const listeners = [
+      mapInstance.addListener('click', removeSearchMarker),
+      mapInstance.addListener('dragstart', removeSearchMarker)
+    ];
+
+    const mapDiv = mapInstance.getDiv();
+    if (mapDiv) {
+      mapDiv.addEventListener('mousedown', removeSearchMarker, true);
+    }
+
+    return () => {
+      listeners.forEach((listener) => {
+        if (!listener) return;
+        if (typeof listener.remove === 'function') {
+          listener.remove();
+        } else if (window.google?.maps?.event) {
+          window.google.maps.event.removeListener(listener);
+        }
+      });
+
+      if (mapDiv) {
+        mapDiv.removeEventListener('mousedown', removeSearchMarker, true);
+      }
+    };
+  }, [mapInstance, removeSearchMarker]);
 
   // 검색 결과 초기화
   const clearSearchResults = useCallback(() => {
     setSearchResults([]);
-  }, []);
+    removeSearchMarker();
+  }, [removeSearchMarker]);
 
   return {
     searchResults,

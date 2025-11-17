@@ -173,7 +173,7 @@ const useMapInitialization = () => {
         "elementType": "labels.icon",
         "stylers": [
           {
-            "color": "#000000"
+            "color": "#d1ff0b"
           }
         ]
       },
@@ -224,7 +224,7 @@ const useMapInitialization = () => {
         "elementType": "geometry",
         "stylers": [
           {
-            "weight": "0.01"
+            "weight": "0"
           }
         ]
       },
@@ -254,10 +254,10 @@ const useMapInitialization = () => {
       },
       {
         "featureType": "road.highway",
-        "elementType": "labels.text.fill",
+        "elementType": "labels.text",
         "stylers": [
           {
-            "color": "#000000"
+            "visibility": "off"
           }
         ]
       },
@@ -275,7 +275,7 @@ const useMapInitialization = () => {
         "elementType": "geometry",
         "stylers": [
           {
-            "weight": "0.01"
+            "weight": "0"
           }
         ]
       },

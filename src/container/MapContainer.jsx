@@ -5,10 +5,13 @@ import { useRouter, usePathname } from 'next/navigation';
 import MapSearch from '@/components/Map/MapSearch';
 import MapReset from '@/components/Map/MapReset';
 import MapPolygons from '@/components/Map/MapPolygons';
+import MapPolylines from '@/components/Map/MapPolylines';
+import MapCoordinatePopup from '@/components/Map/MapCoordinatePopup';
 import useMapInitialization from '@/hooks/map/useMapInitialization';
 import useSiteMarkers from '@/hooks/map/useSiteMarkers';
 import useMapSearch from '@/hooks/map/useMapSearch';
 import usePOI from '@/hooks/map/usePOI';
+import useMapCoordinatePopup from '@/hooks/map/useMapCoordinatePopup';
 
 function MapContainer() {
   const router = useRouter();
@@ -38,7 +41,9 @@ function MapContainer() {
   const {
     siteMarkers,
     createSiteMarkers,
-    clearSiteMarkers
+    clearSiteMarkers,
+    setActiveSiteMarker,
+    fitMapToSiteMarkers
   } = useSiteMarkers(mapInstance);
 
   // 장소 검색 훅
@@ -57,6 +62,12 @@ function MapContainer() {
     clearPOI
   } = usePOI(mapInstance, zoomLevel);
 
+  const {
+    coordinateInfo,
+    isGeocoding,
+    clearCoordinateInfo
+  } = useMapCoordinatePopup(mapInstance);
+
   const [selectedSites, setSelectedSites] = useState([]);
 
   // Navigation에서 선택된 sites 데이터를 받는 전역 함수 설정
@@ -64,15 +75,19 @@ function MapContainer() {
     setSelectedSites(sites);
     if (mapInstance) {
       createSiteMarkers(sites);
+      fitMapToSiteMarkers();
     }
-  }, [mapInstance, createSiteMarkers]);
+  }, [mapInstance, createSiteMarkers, fitMapToSiteMarkers]);
 
   // POI 클릭 시 라우팅 처리
   const handlePOIClick = useCallback((site) => {
+    if (setActiveSiteMarker) {
+      setActiveSiteMarker(site.id);
+    }
     // POI 클릭 시 보드를 펼치기 위한 이벤트 발생 (같은 POI 재클릭 포함)
     window.dispatchEvent(new CustomEvent('poiClicked', { detail: { siteId: site.id } }));
     router.push(`/sites/${site.id}`);
-  }, [router]);
+  }, [router, setActiveSiteMarker]);
 
   // POI 생성 핸들러 (단일)
   const handleCreatePOI = useCallback((latitude, longitude, name, fontSize) => {
@@ -126,6 +141,18 @@ function MapContainer() {
       }
     };
   }, [handleSitesSelected, handlePOIClick, handleCreatePOI, handleCreatePOIs]);
+
+  useEffect(() => {
+    if (!setActiveSiteMarker) {
+      return;
+    }
+    const siteMatch = pathname.match(/^\/sites\/([^/]+)/);
+    if (siteMatch && siteMatch[1]) {
+      setActiveSiteMarker(siteMatch[1]);
+    } else {
+      setActiveSiteMarker(null);
+    }
+  }, [pathname, setActiveSiteMarker]);
 
 
   // 지도 리셋 함수
@@ -197,12 +224,23 @@ function MapContainer() {
         <MapReset onReset={handleMapReset} />
       )}
 
+      {/* <MapCoordinatePopup
+        coordinateInfo={coordinateInfo}
+        isGeocoding={isGeocoding}
+        onClose={clearCoordinateInfo}
+      /> */}
+
       {/* 다각형들 렌더링 */}
       <MapPolygons
         mapInstance={mapInstance}
         mapInitialized={mapInitialized}
         zoomLevel={zoomLevel}
         selectedSites={selectedSites}
+      />
+      <MapPolylines
+        mapInstance={mapInstance}
+        mapInitialized={mapInitialized}
+        zoomLevel={zoomLevel}
       />
     </div>
   );
