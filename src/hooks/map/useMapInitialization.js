@@ -173,7 +173,7 @@ const useMapInitialization = () => {
         "elementType": "labels.icon",
         "stylers": [
           {
-            "color": "#000000"
+            "color": "#d1ff0b"
           }
         ]
       },

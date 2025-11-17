@@ -17,26 +17,26 @@ export const polygonsData = [
     fillColor: "#A6E0C0",
     strokeColor: "#000",
     strokeWidth: 0.2,
-    fillOpacity: 0.7,
+    fillOpacity: 0,
     strokeOpacity: 1.0,
     minZoom: 17,
     visible: true
   },
-  {
-    id: 'park-1',
-    coordinates: [
-      [37.402427, 126.973951],
-      [37.402284, 126.974358],
-      [37.401921, 126.974167],
-      [37.402082, 126.973738]
-    ],
-    fillColor: "#A6E0C0",
-    strokeColor: "#000",
-    strokeWidth: 0.2,
-    fillOpacity: 0,
-    minZoom: 17,
-    visible: true
-  },
+  // {
+  //   id: 'park-1',
+  //   coordinates: [
+  //     [37.402427, 126.973951],
+  //     [37.402284, 126.974358],
+  //     [37.401921, 126.974167],
+  //     [37.402082, 126.973738]
+  //   ],
+  //   fillColor: "#A6E0C0",
+  //   strokeColor: "#000",
+  //   strokeWidth: 0.2,
+  //   fillOpacity: 0,
+  //   minZoom: 17,
+  //   visible: true
+  // },
   {
     id: 'park-2',
     coordinates: [
