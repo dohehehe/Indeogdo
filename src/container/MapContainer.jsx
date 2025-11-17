@@ -39,7 +39,8 @@ function MapContainer() {
     siteMarkers,
     createSiteMarkers,
     clearSiteMarkers,
-    setActiveSiteMarker
+    setActiveSiteMarker,
+    fitMapToSiteMarkers
   } = useSiteMarkers(mapInstance);
 
   // 장소 검색 훅
@@ -65,8 +66,9 @@ function MapContainer() {
     setSelectedSites(sites);
     if (mapInstance) {
       createSiteMarkers(sites);
+      fitMapToSiteMarkers();
     }
-  }, [mapInstance, createSiteMarkers]);
+  }, [mapInstance, createSiteMarkers, fitMapToSiteMarkers]);
 
   // POI 클릭 시 라우팅 처리
   const handlePOIClick = useCallback((site) => {

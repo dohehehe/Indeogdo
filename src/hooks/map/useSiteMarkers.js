@@ -6,6 +6,47 @@ const useSiteMarkers = (mapInstance) => {
   const activeMarkerRef = useRef(null);
   const activeSiteIdRef = useRef(null);
 
+  const fitMapToSiteMarkers = useCallback((options = {}) => {
+    if (
+      !mapInstance ||
+      typeof window === 'undefined' ||
+      !window.google?.maps?.LatLngBounds
+    ) {
+      return;
+    }
+
+    const markers = (options.markers || siteMarkersRef.current || []).filter(Boolean);
+
+    if (!markers.length) {
+      return;
+    }
+
+    const bounds = new window.google.maps.LatLngBounds();
+
+    markers.forEach(marker => {
+      const position = marker.getPosition?.();
+      if (position) {
+        bounds.extend(position);
+      }
+    });
+
+    if (bounds.isEmpty()) {
+      return;
+    }
+
+    if (markers.length === 1) {
+      const center = bounds.getCenter();
+      mapInstance.panTo(center);
+      if (options.singleMarkerZoom) {
+        mapInstance.setZoom(options.singleMarkerZoom);
+      }
+      return;
+    }
+
+    const padding = options.padding ?? (window.innerWidth < 768 ? 32 : 64);
+    mapInstance.fitBounds(bounds, padding);
+  }, [mapInstance]);
+
   const stopActiveMarkerAnimation = useCallback(() => {
     if (activeMarkerRef.current) {
       activeMarkerRef.current.setAnimation(null);
@@ -172,13 +213,15 @@ const useSiteMarkers = (mapInstance) => {
     siteMarkersRef.current = allMarkers;
     setSiteMarkers(allMarkers);
     applyActiveMarkerAnimation();
-  }, [mapInstance, applyActiveMarkerAnimation, stopActiveMarkerAnimation]);
+    fitMapToSiteMarkers();
+  }, [mapInstance, applyActiveMarkerAnimation, stopActiveMarkerAnimation, fitMapToSiteMarkers]);
 
   return {
     siteMarkers,
     createSiteMarkers,
     clearSiteMarkers,
-    setActiveSiteMarker
+    setActiveSiteMarker,
+    fitMapToSiteMarkers
   };
 };
 
