@@ -5,10 +5,13 @@ import { useRouter, usePathname } from 'next/navigation';
 import MapSearch from '@/components/Map/MapSearch';
 import MapReset from '@/components/Map/MapReset';
 import MapPolygons from '@/components/Map/MapPolygons';
+import MapPolylines from '@/components/Map/MapPolylines';
+import MapCoordinatePopup from '@/components/Map/MapCoordinatePopup';
 import useMapInitialization from '@/hooks/map/useMapInitialization';
 import useSiteMarkers from '@/hooks/map/useSiteMarkers';
 import useMapSearch from '@/hooks/map/useMapSearch';
 import usePOI from '@/hooks/map/usePOI';
+import useMapCoordinatePopup from '@/hooks/map/useMapCoordinatePopup';
 
 function MapContainer() {
   const router = useRouter();
@@ -58,6 +61,12 @@ function MapContainer() {
     createPOIs,
     clearPOI
   } = usePOI(mapInstance, zoomLevel);
+
+  const {
+    coordinateInfo,
+    isGeocoding,
+    clearCoordinateInfo
+  } = useMapCoordinatePopup(mapInstance);
 
   const [selectedSites, setSelectedSites] = useState([]);
 
@@ -215,12 +224,23 @@ function MapContainer() {
         <MapReset onReset={handleMapReset} />
       )}
 
+      {/* <MapCoordinatePopup
+        coordinateInfo={coordinateInfo}
+        isGeocoding={isGeocoding}
+        onClose={clearCoordinateInfo}
+      /> */}
+
       {/* 다각형들 렌더링 */}
       <MapPolygons
         mapInstance={mapInstance}
         mapInitialized={mapInitialized}
         zoomLevel={zoomLevel}
         selectedSites={selectedSites}
+      />
+      <MapPolylines
+        mapInstance={mapInstance}
+        mapInitialized={mapInitialized}
+        zoomLevel={zoomLevel}
       />
     </div>
   );
