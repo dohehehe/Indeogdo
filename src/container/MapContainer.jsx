@@ -38,7 +38,8 @@ function MapContainer() {
   const {
     siteMarkers,
     createSiteMarkers,
-    clearSiteMarkers
+    clearSiteMarkers,
+    setActiveSiteMarker
   } = useSiteMarkers(mapInstance);
 
   // 장소 검색 훅
@@ -69,10 +70,13 @@ function MapContainer() {
 
   // POI 클릭 시 라우팅 처리
   const handlePOIClick = useCallback((site) => {
+    if (setActiveSiteMarker) {
+      setActiveSiteMarker(site.id);
+    }
     // POI 클릭 시 보드를 펼치기 위한 이벤트 발생 (같은 POI 재클릭 포함)
     window.dispatchEvent(new CustomEvent('poiClicked', { detail: { siteId: site.id } }));
     router.push(`/sites/${site.id}`);
-  }, [router]);
+  }, [router, setActiveSiteMarker]);
 
   // POI 생성 핸들러 (단일)
   const handleCreatePOI = useCallback((latitude, longitude, name, fontSize) => {
@@ -126,6 +130,18 @@ function MapContainer() {
       }
     };
   }, [handleSitesSelected, handlePOIClick, handleCreatePOI, handleCreatePOIs]);
+
+  useEffect(() => {
+    if (!setActiveSiteMarker) {
+      return;
+    }
+    const siteMatch = pathname.match(/^\/sites\/([^/]+)/);
+    if (siteMatch && siteMatch[1]) {
+      setActiveSiteMarker(siteMatch[1]);
+    } else {
+      setActiveSiteMarker(null);
+    }
+  }, [pathname, setActiveSiteMarker]);
 
 
   // 지도 리셋 함수

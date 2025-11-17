@@ -1,18 +1,57 @@
 import { useCallback, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
 // POI 마커 관리를 위한 커스텀 훅
 const useSiteMarkers = (mapInstance) => {
   const [siteMarkers, setSiteMarkers] = useState([]);
   const siteMarkersRef = useRef([]);
-  const router = useRouter();
+  const activeMarkerRef = useRef(null);
+  const activeSiteIdRef = useRef(null);
+
+  const stopActiveMarkerAnimation = useCallback(() => {
+    if (activeMarkerRef.current) {
+      activeMarkerRef.current.setAnimation(null);
+      activeMarkerRef.current = null;
+    }
+  }, []);
+
+  const applyActiveMarkerAnimation = useCallback(() => {
+    if (!activeSiteIdRef.current) {
+      stopActiveMarkerAnimation();
+      return;
+    }
+
+    const targetMarker = siteMarkersRef.current.find(
+      marker => marker._siteId === activeSiteIdRef.current
+    );
+
+    if (typeof window === 'undefined' || !window.google?.maps?.Animation) {
+      return;
+    }
+
+    if (activeMarkerRef.current && activeMarkerRef.current !== targetMarker) {
+      activeMarkerRef.current.setAnimation(null);
+      activeMarkerRef.current = null;
+    }
+
+    if (targetMarker) {
+      targetMarker.setAnimation(window.google.maps.Animation.BOUNCE);
+      activeMarkerRef.current = targetMarker;
+    }
+  }, [stopActiveMarkerAnimation]);
+
+  const setActiveSiteMarker = useCallback((siteId) => {
+    activeSiteIdRef.current = siteId || null;
+    applyActiveMarkerAnimation();
+  }, [applyActiveMarkerAnimation]);
+
   // 기존 site 마커들 제거
   const clearSiteMarkers = useCallback(() => {
+    stopActiveMarkerAnimation();
     siteMarkersRef.current.forEach(marker => {
       marker.setMap(null);
     });
     siteMarkersRef.current = [];
     setSiteMarkers([]);
-  }, []);
+  }, [stopActiveMarkerAnimation]);
 
   // 선택된 sites 데이터를 받아서 POI 마커 생성 (최적화된 버전)
   const createSiteMarkers = useCallback((sites) => {
@@ -59,6 +98,9 @@ const useSiteMarkers = (mapInstance) => {
     markersToRemove.forEach(marker => {
       marker.setMap(null);
     });
+    if (activeMarkerRef.current && markersToRemove.includes(activeMarkerRef.current)) {
+      stopActiveMarkerAnimation();
+    }
 
     // 새로 추가할 마커들 생성
     const newMarkers = [];
@@ -129,12 +171,14 @@ const useSiteMarkers = (mapInstance) => {
     const allMarkers = [...markersToKeep, ...newMarkers];
     siteMarkersRef.current = allMarkers;
     setSiteMarkers(allMarkers);
-  }, [mapInstance]);
+    applyActiveMarkerAnimation();
+  }, [mapInstance, applyActiveMarkerAnimation, stopActiveMarkerAnimation]);
 
   return {
     siteMarkers,
     createSiteMarkers,
-    clearSiteMarkers
+    clearSiteMarkers,
+    setActiveSiteMarker
   };
 };
 
