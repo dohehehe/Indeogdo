@@ -467,3 +467,47 @@ export const CopyRight = styled.div`
     display: ${props => props.$isOpen ? 'block' : 'none'};
   }
 `;
+
+export const ClusterSettingWrapper = styled.div`
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  margin-left: 30px;
+  margin-right: 8px;
+  margin-bottom: -12px;
+  padding-bottom: 10px;
+  justify-content: flex-end;
+  border-left: 2px solid #e0e0e0;
+  color: black;
+  font-family: 'Sweet';
+  font-weight: 500;
+  font-size: 0.9rem;
+`;
+
+export const ClusterSettingList = styled.ul`
+  display: flex;
+  gap: 15px;
+  align-items: center;
+`;
+
+export const ClusterSettingItem = styled.li`
+  display: flex;
+  gap: 5px;
+  align-items: center;
+`;
+
+export const ClusterSettingButton = styled.input`
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid black;
+  background-color: white;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  color: black;
+`;

@@ -260,12 +260,14 @@ export const SameLocationNav = styled.div`
   display: flex;
   align-items: center;
   gap: 3px;
+  margin-right: -10px;
 
   ${theme.media.mobile} {
     position: fixed;
     bottom: 23px;
     left: 25px;
     z-index: 3;
+    margin-right: unset;
   }
 `;
 

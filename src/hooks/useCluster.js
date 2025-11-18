@@ -63,7 +63,7 @@ const useCluster = () => {
   }, []);
 
   // 클러스터 생성
-  const createCluster = useCallback(async (title, themeId) => {
+  const createCluster = useCallback(async (title, themeId, intro = false, toggle = false) => {
     setLoading(true);
     setError(null);
 
@@ -73,7 +73,12 @@ const useCluster = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, theme_id: themeId }),
+        body: JSON.stringify({
+          title,
+          theme_id: themeId,
+          intro: Boolean(intro),
+          toggle: Boolean(toggle),
+        }),
       });
 
       const result = await response.json();
@@ -95,7 +100,7 @@ const useCluster = () => {
   }, []);
 
   // 클러스터 수정
-  const updateCluster = useCallback(async (id, title, themeId = null, order) => {
+  const updateCluster = useCallback(async (id, title, themeId = null, order, intro, toggle) => {
     setLoading(true);
     setError(null);
 
@@ -106,6 +111,12 @@ const useCluster = () => {
       }
       if (order !== undefined) {
         updateData.order = order;
+      }
+      if (intro !== undefined) {
+        updateData.intro = Boolean(intro);
+      }
+      if (toggle !== undefined) {
+        updateData.toggle = Boolean(toggle);
       }
 
       const response = await fetch(`/api/cluster/${id}`, {

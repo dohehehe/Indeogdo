@@ -22,7 +22,17 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editingTitle, setEditingTitle] = useState('');
   const [isOrdering, setIsOrdering] = useState(false);
+  const [isUpdatingIntro, setIsUpdatingIntro] = useState(false);
+  const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
+  const [localIntro, setLocalIntro] = useState(Boolean(cluster?.intro));
+  const [localToggle, setLocalToggle] = useState(Boolean(cluster?.toggle));
   const router = useRouter();
+  const resolvedThemeId = themeId || cluster?.theme_id || null;
+  useEffect(() => {
+    setLocalIntro(Boolean(cluster?.intro));
+    setLocalToggle(Boolean(cluster?.toggle));
+  }, [cluster?.intro, cluster?.toggle]);
+
 
   // 클러스터 활성화 시 sites 가져오기
   useEffect(() => {
@@ -117,6 +127,56 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
     setIsOrdering(prev => !prev);
   };
 
+  const handleToggleIntroSetting = async (e) => {
+    e?.stopPropagation();
+    if (isUpdatingIntro) return;
+
+    const nextIntro = !localIntro;
+    setLocalIntro(nextIntro);
+    setIsUpdatingIntro(true);
+    try {
+      await updateCluster(
+        cluster.id,
+        cluster.title,
+        resolvedThemeId || undefined,
+        undefined,
+        nextIntro,
+        localToggle,
+      );
+    } catch (err) {
+      console.error('Toggle intro setting error:', err);
+      alert('인트로 표시 설정을 변경하는 중 오류가 발생했습니다.');
+      setLocalIntro(!nextIntro);
+    } finally {
+      setIsUpdatingIntro(false);
+    }
+  };
+
+  const handleToggleVisibilitySetting = async (e) => {
+    e?.stopPropagation();
+    if (isUpdatingVisibility) return;
+
+    const nextToggle = !localToggle;
+    setLocalToggle(nextToggle);
+    setIsUpdatingVisibility(true);
+    try {
+      await updateCluster(
+        cluster.id,
+        cluster.title,
+        resolvedThemeId || undefined,
+        undefined,
+        localIntro,
+        nextToggle,
+      );
+    } catch (err) {
+      console.error('Toggle visibility setting error:', err);
+      alert('장소 표시 설정을 변경하는 중 오류가 발생했습니다.');
+      setLocalToggle(!nextToggle);
+    } finally {
+      setIsUpdatingVisibility(false);
+    }
+  };
+
   return (
     <S.ClusterContainer>
       <S.ClusterItem
@@ -154,6 +214,28 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
 
       {isAdmin && (
         <>
+          <S.ClusterSettingWrapper>
+            <S.ClusterSettingList>
+              <S.ClusterSettingItem>
+                인트로 표시
+                <S.ClusterSettingButton
+                  type="checkbox"
+                  checked={localIntro}
+                  onChange={handleToggleIntroSetting}
+                  disabled={isUpdatingIntro}
+                />
+              </S.ClusterSettingItem>
+              <S.ClusterSettingItem>
+                장소 표시
+                <S.ClusterSettingButton
+                  type="checkbox"
+                  checked={localToggle}
+                  onChange={handleToggleVisibilitySetting}
+                  disabled={isUpdatingVisibility}
+                />
+              </S.ClusterSettingItem>
+            </S.ClusterSettingList>
+          </S.ClusterSettingWrapper>
           <SiteSection
             clusterId={cluster.id}
             isAdmin={isAdmin}

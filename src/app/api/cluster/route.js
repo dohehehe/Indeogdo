@@ -56,7 +56,13 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { title, theme_id, order } = body;
+    const {
+      title,
+      theme_id,
+      order,
+      intro = false,
+      toggle = false,
+    } = body;
 
     if (!title) {
       return NextResponse.json(
@@ -86,7 +92,12 @@ export async function POST(request) {
       );
     }
 
-    const insertData = { title, theme_id };
+    const insertData = {
+      title,
+      theme_id,
+      intro: Boolean(intro),
+      toggle: Boolean(toggle),
+    };
     if (order !== undefined && order !== null) {
       insertData.order = order;
     }
