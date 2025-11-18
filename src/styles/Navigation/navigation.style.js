@@ -207,7 +207,7 @@ export const ClusterItem = styled.li`
   font-family: 'Sweet';
   font-size: 1.3rem;
   list-style: none;
-  font-weight: ${props => props.$isActive ? '800' : '500'};
+  font-weight: ${props => props.$isActive ? '600' : '500'};
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -230,7 +230,7 @@ export const ClusterTitle = styled.div`
   flex: 1;
   color: black;
   font-family: 'Sweet';
-  font-weight: ${props => props.$isActive ? '800' : '500'};
+  font-weight: ${props => props.$isActive ? '700' : '500'};
 `;
 
 export const ToggleSwitch = styled.button`

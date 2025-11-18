@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 import { theme } from '@/styles/Theme';
 
 export const BoardWrapper = styled.div`
@@ -150,6 +151,16 @@ export const BoardButton = styled.button`
   }
 `;
 
+// Board 상세 내용 로딩 시 fade-in 애니메이션
+export const BoardLoadingOpacity = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 export const BoardDetailWrapper = styled.div`
   padding: 0px 0px 30px 0px;
   overflow-y: auto;
@@ -157,6 +168,7 @@ export const BoardDetailWrapper = styled.div`
   max-width: 800px;
   position: relative;
   // height: 100%;
+  animation: ${BoardLoadingOpacity} 0.8s ease-in-out;
     
   /* 스크롤바 숨기기 */
   scrollbar-width: none; /* Firefox */
@@ -674,4 +686,13 @@ export const AreaToggleSlider = styled.div`
   border-radius: 50%;
   transition: left 0.3s ease;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+`
+
+
+export const BoardLoading = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
 `
