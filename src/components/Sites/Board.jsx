@@ -86,6 +86,13 @@ function Board({ children }) {
     }
   };
 
+  // 라우터(pathname)가 변경되면 다시 보이도록 처리
+  useEffect(() => {
+    if (isMobile) {
+      setIsVisible(true);
+    }
+  }, [pathname, isMobile]);
+
   return (
     <S.BoardWrapper ref={boardRef} $widthMode={widthMode} $isVisible={isVisible}>
       <S.BoardButtonWrapper>

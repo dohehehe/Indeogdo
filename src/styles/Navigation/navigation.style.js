@@ -38,6 +38,7 @@ export const NavigationWrapper = styled.div`
     border: 1.5px solid black;
     transition: all 0.8s ease-in-out;
     width: ${props => props.$isOpen ? '250px' : '43px'};
+    min-height: 41px;
     max-height: ${props => props.$isOpen ? '30dvh' : '41px'};
     padding: ${props => props.$isOpen ? '0px 12px 40px 5px' : '0'};
   }
@@ -56,8 +57,8 @@ export const MobileToggleButton = styled.button`
     right: 6.6px;
     top: ${props => props.$isOpen ? '64px' : '60px'};
     z-index: 20;
-    height: 40px;
-    width: 40px;
+    min-height: 40px;
+    min-width: 40px;
   }
 `;
 

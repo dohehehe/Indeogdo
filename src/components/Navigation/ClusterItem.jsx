@@ -285,7 +285,7 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
                 />
               </S.ClusterSettingItem>
               <S.ClusterSettingItem>
-                리스트
+                리스트 펼치기
                 <S.ClusterSettingButton
                   type="checkbox"
                   checked={localToggle}
@@ -294,7 +294,7 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
                 />
               </S.ClusterSettingItem>
               <S.ClusterSettingItem>
-                상세 주소
+                상세 주소 숨기기
                 <S.ClusterSettingButton
                   type="checkbox"
                   checked={localAddress}

@@ -131,39 +131,41 @@ function BoardContainer({ siteData }) {
   return (
     <>
       <S.BoardDetailWrapper ref={boardDetailRef}>
-        <S.BoardClusterWrapper>
-          <S.BoardClusterIcon src={siteData?.icon?.img} alt={siteData?.icon?.name} />
-          <S.BoardClusterTitle>{siteData?.cluster?.title}</S.BoardClusterTitle>
-          {hasSameLocationGroup && (
-            <S.SameLocationNav>
-              <S.SameLocationButton
-                type="button"
-                onClick={() => handleNavigateSameLocation('prev')}
-                title="이전 장소 보기"
-              >
-                ←
-              </S.SameLocationButton>
-              <S.SameLocationIndicator>
-                {/* {currentIndex + 1}/{sameLocationSites.length} */}
-              </S.SameLocationIndicator>
-              <S.SameLocationButton
-                type="button"
-                onClick={() => handleNavigateSameLocation('next')}
-                title="다음 장소 보기"
-              >
-                →
-              </S.SameLocationButton>
-            </S.SameLocationNav>
+        <S.BoardHeader>
+          <S.BoardClusterWrapper>
+            <S.BoardClusterIcon src={siteData?.icon?.img} alt={siteData?.icon?.name} />
+            <S.BoardClusterTitle>{siteData?.cluster?.title}</S.BoardClusterTitle>
+            {hasSameLocationGroup && (
+              <S.SameLocationNav>
+                <S.SameLocationButton
+                  type="button"
+                  onClick={() => handleNavigateSameLocation('prev')}
+                  title="이전 장소 보기"
+                >
+                  ←
+                </S.SameLocationButton>
+                <S.SameLocationIndicator>
+                  {/* {currentIndex + 1}/{sameLocationSites.length} */}
+                </S.SameLocationIndicator>
+                <S.SameLocationButton
+                  type="button"
+                  onClick={() => handleNavigateSameLocation('next')}
+                  title="다음 장소 보기"
+                >
+                  →
+                </S.SameLocationButton>
+              </S.SameLocationNav>
+            )}
+          </S.BoardClusterWrapper>
+          <S.BoardTitle>{siteData?.title}</S.BoardTitle>
+          {siteData?.addresses && siteData.addresses.length > 0 && (
+            <S.BoardAddress hidden={!shouldShowAddresses}>
+              {siteData.addresses.map((addr, index) => (
+                <div key={addr.id || index}>{addr.name}</div>
+              ))}
+            </S.BoardAddress>
           )}
-        </S.BoardClusterWrapper>
-        <S.BoardTitle>{siteData?.title}</S.BoardTitle>
-        {siteData?.addresses && siteData.addresses.length > 0 && (
-          <S.BoardAddress hidden={!shouldShowAddresses}>
-            {siteData.addresses.map((addr, index) => (
-              <div key={addr.id || index}>{addr.name}</div>
-            ))}
-          </S.BoardAddress>
-        )}
+        </S.BoardHeader>
         <EditorBoardRender item={siteData?.contents} />
       </S.BoardDetailWrapper>
       <S.ScrollToTopButton onClick={scrollToTop} title="위로 가기">

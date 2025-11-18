@@ -151,7 +151,7 @@ export const BoardButton = styled.button`
 `;
 
 export const BoardDetailWrapper = styled.div`
-  padding: 40px 50px 30px 10px;
+  padding: 0px 0px 30px 0px;
   overflow-y: auto;
   width: 100%;
   max-width: 800px;
@@ -167,9 +167,10 @@ export const BoardDetailWrapper = styled.div`
   }
 
   ${theme.media.mobile} {
-    padding: 30px 20px;
-    margin-top: -38px;
-    padding-top: 18px;
+    // padding: 30px 20px;
+    padding-bottom: 30px;
+    margin-top: -35px;
+    // padding-top: 18px;
     max-width: unset;
   }
 `;
@@ -213,20 +214,36 @@ export const ScrollToTopButton = styled.button`
   }
 `;
 
+export const BoardHeader = styled.div`
+  // background-color: white;
+  background-image: linear-gradient(to bottom,rgba(255, 255, 255, 0.95) 70%, #ffffff00 100%);
+  padding-top: 30px;
+  padding-bottom: 70px;
+  position: sticky;
+  top: 0px;
+  z-index: 1;
+
+  ${theme.media.mobile} {
+    padding: 10px 20px 30px 15px;
+    // margin-top: -18px;
+    top: -50px;
+    padding-bottom: 40px;
+  }
+`
+
 export const BoardClusterWrapper = styled.div`
   display: flex;
   gap: 7px;
   align-items: center;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   width: 100%;
-  position: sticky;
-  top: -25px;
   z-index: 10;
 
+
   ${theme.media.mobile} {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     gap: 7px;
-    margin-left: -4px;
+    margin-left: 0px;
     position: static;
   }
 `;
@@ -260,7 +277,8 @@ export const SameLocationNav = styled.div`
   display: flex;
   align-items: center;
   gap: 3px;
-  margin-right: -10px;
+  margin-right: 20px;
+  // margin-top: -2px;
 
   ${theme.media.mobile} {
     position: fixed;
@@ -317,14 +335,11 @@ export const BoardTitle = styled.h1`
   margin-bottom: 5px;
   color: black;
   line-height: 1.2;
-  position: sticky;
-  top: 5px;
-  z-index: 10;
-  // background-color: red;
+  word-break: keep-all;
 
   ${theme.media.mobile} {
       position: sticky;
-      top: -2px;
+      top: -7px;
       font-size: 2rem;
       z-index: 10;
       width: calc(100% - 30px);
@@ -336,6 +351,10 @@ export const BoardAddress = styled.h3`
   font-weight: 600;
   margin-bottom: 10px;
   color: black;
+
+  ${theme.media.mobile} {
+    margin-left: 3px;
+  }
 `
 
 
