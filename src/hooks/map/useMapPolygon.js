@@ -30,10 +30,12 @@ const useMapPolygon = ({
   strokeOpacity = 1.0,
   minZoom = null,
   zoomLevel = null,
-  options = {}
+  options = {},
+  eventHandlers = undefined
 }) => {
   const polygonRef = useRef(null);
   const is3DMapRef = useRef(false);
+  const eventListenersRef = useRef([]);
 
   // 좌표 형식 변환: 배열 [lat, lng] 또는 [lat, lng, altitude]를 객체 { lat, lng, altitude? }로 변환
   const normalizeCoordinates = useCallback((coords) => {
@@ -180,6 +182,67 @@ const useMapPolygon = ({
     }
   }, [addOpacityToColor]);
 
+  const clearEventListeners = useCallback(() => {
+    if (!eventListenersRef.current.length) {
+      return;
+    }
+
+    eventListenersRef.current.forEach((listener) => {
+      if (!listener) return;
+
+      if (listener.type === 'gmaps' && listener.listener) {
+        try {
+          if (typeof listener.listener.remove === 'function') {
+            listener.listener.remove();
+          } else if (typeof window !== 'undefined' && window.google?.maps?.event?.removeListener) {
+            window.google.maps.event.removeListener(listener.listener);
+          }
+        } catch (error) {
+          console.warn('Failed to remove google maps listener:', error);
+        }
+      } else if (listener.type === 'dom' && listener.target && listener.eventName && listener.handler) {
+        try {
+          listener.target.removeEventListener(listener.eventName, listener.handler);
+        } catch (error) {
+          console.warn('Failed to remove DOM listener:', error);
+        }
+      }
+    });
+
+    eventListenersRef.current = [];
+  }, []);
+
+  const attachEventHandlers = useCallback((polygon) => {
+    if (!polygon || !eventHandlers) {
+      return;
+    }
+
+    const handlerEntries = Object.entries(eventHandlers).filter(([, handler]) => typeof handler === 'function');
+    if (!handlerEntries.length) {
+      return;
+    }
+
+    handlerEntries.forEach(([eventName, handler]) => {
+      if (is3DMapRef.current && polygon?.addEventListener) {
+        polygon.addEventListener(eventName, handler);
+        eventListenersRef.current.push({
+          type: 'dom',
+          target: polygon,
+          eventName,
+          handler
+        });
+      } else if (!is3DMapRef.current && typeof polygon?.addListener === 'function') {
+        const listener = polygon.addListener(eventName, handler);
+        if (listener) {
+          eventListenersRef.current.push({
+            type: 'gmaps',
+            listener
+          });
+        }
+      }
+    });
+  }, [eventHandlers]);
+
   // 다각형 제거
   const removePolygon = useCallback(() => {
     if (!polygonRef.current) {
@@ -187,6 +250,7 @@ const useMapPolygon = ({
     }
 
     try {
+      clearEventListeners();
       if (is3DMapRef.current) {
         // 3D Polygon 제거
         const polygon = polygonRef.current;
@@ -206,7 +270,7 @@ const useMapPolygon = ({
     } catch (error) {
       console.error('Failed to remove polygon:', error);
     }
-  }, []);
+  }, [clearEventListeners]);
 
   // 다각형 생성
   const createPolygon = useCallback(async () => {
@@ -258,12 +322,13 @@ const useMapPolygon = ({
       }
 
       polygonRef.current = polygon;
+      attachEventHandlers(polygon);
       return polygon;
     } catch (error) {
       console.error('Failed to create polygon:', error);
       return null;
     }
-  }, [mapInstance, coordinates, fillColor, strokeColor, strokeWidth, fillOpacity, strokeOpacity, minZoom, zoomLevel, options, checkIf3DMap, create3DPolygon, create2DPolygon, normalizeCoordinates, removePolygon]);
+  }, [mapInstance, coordinates, fillColor, strokeColor, strokeWidth, fillOpacity, strokeOpacity, minZoom, zoomLevel, options, checkIf3DMap, create3DPolygon, create2DPolygon, normalizeCoordinates, removePolygon, attachEventHandlers]);
 
   // 다각형 업데이트
   const updatePolygon = useCallback(async (newCoordinates, newFillColor, newStrokeColor, newStrokeWidth, newOptions) => {
@@ -296,6 +361,7 @@ const useMapPolygon = ({
           opts
         );
         polygonRef.current = polygon;
+        attachEventHandlers(polygon);
         return polygon;
       } else {
         // 2D Polygon 업데이트
@@ -333,13 +399,15 @@ const useMapPolygon = ({
         if (Object.keys(updateOptions).length > 0) {
           polygon.setOptions(updateOptions);
         }
+        clearEventListeners();
+        attachEventHandlers(polygon);
         return polygon;
       }
     } catch (error) {
       console.error('Failed to update polygon:', error);
       return null;
     }
-  }, [mapInstance, coordinates, fillColor, strokeColor, strokeWidth, fillOpacity, strokeOpacity, options, createPolygon, create3DPolygon, normalizeCoordinates, removePolygon, addOpacityToColor]);
+  }, [mapInstance, coordinates, fillColor, strokeColor, strokeWidth, fillOpacity, strokeOpacity, options, createPolygon, create3DPolygon, normalizeCoordinates, removePolygon, addOpacityToColor, attachEventHandlers, clearEventListeners]);
 
   // 줌 레벨에 따라 다각형 표시/숨김 처리
   const updatePolygonVisibility = useCallback(() => {
@@ -432,6 +500,13 @@ const useMapPolygon = ({
       removePolygon();
     };
   }, [mapInstance, coordinates, fillColor, strokeColor, strokeWidth, fillOpacity, strokeOpacity, minZoom, zoomLevel, createPolygon, removePolygon]);
+
+  // 이벤트 핸들러가 변경되면 다시 연결
+  useEffect(() => {
+    if (!polygonRef.current) return;
+    clearEventListeners();
+    attachEventHandlers(polygonRef.current);
+  }, [eventHandlers, attachEventHandlers, clearEventListeners]);
 
   // 컴포넌트 언마운트 시 정리
   useEffect(() => {
