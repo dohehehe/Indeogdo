@@ -45,7 +45,9 @@ function Board({ children }) {
   // 보드 외부 클릭 시 narrow로 변경
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // router.push('/sites');
       if (widthMode === 'narrow') return;
+
 
       if (boardRef.current && !boardRef.current.contains(event.target)) {
         setWidthMode('narrow');

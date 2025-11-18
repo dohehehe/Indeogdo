@@ -206,12 +206,12 @@ export const ClusterItem = styled.li`
   font-family: 'Sweet';
   font-size: 1.3rem;
   list-style: none;
-  font-weight: 500;
+  font-weight: ${props => props.$isActive ? '800' : '500'};
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 15px;
-  color: #333;
+  color: ${props => props.$isActive ? 'black' : '#333'};
   margin-right: 9px;
 
   &:hover {
@@ -229,6 +229,7 @@ export const ClusterTitle = styled.div`
   flex: 1;
   color: black;
   font-family: 'Sweet';
+  font-weight: ${props => props.$isActive ? '800' : '500'};
 `;
 
 export const ToggleSwitch = styled.button`
@@ -337,7 +338,9 @@ export const OrderButton = styled.button`
   }
 `;
 
-// Site 목록 관련 스타일
+
+
+// 관리자 Site 목록 관련 스타일
 export const ClusterContainer = styled.div`
   margin-bottom: 5px;
 
@@ -346,14 +349,57 @@ export const ClusterContainer = styled.div`
   }
 `;
 
-export const SiteList = styled.div`
+export const SiteList = styled.ul`
+  margin-left: 30px;
+  padding-top: 2px;
+  padding-left: 14px;
+  border-left: 2px solid #e0e0e0;
+  margin-bottom: ${props => props.$isActive ? '10px' : '0'};
+  list-style: none;
+  height: ${props => props.$isActive ? '100%' : '0px'};
+  opacity: ${props => props.$isActive ? '1' : '0'};
+  transition: height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+`;
+
+export const SiteItem = styled.li`
+  padding: 3px 8px;
+  // margin-bottom: 0.5px;
+  // background-color: #f8f9fa;
+  border-radius: 4px;
+  // border: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+`;
+
+export const SiteIcon = styled.img`
+  width: 15px;
+  height: 15px;
+  object-fit: cover;
+`;
+
+export const SiteTitle = styled.div`
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: black;
+  margin-right: auto;
+`;
+
+export const AdminSiteList = styled.div`
   margin-left: 30px;
   margin-top: 12px;
   padding-left: 20px;
   border-left: 2px solid #e0e0e0;
+  margin-bottom: 20px;
 `;
 
-export const SiteItem = styled.div`
+export const AdminSiteItem = styled.div`
   padding: 6px 8px;
   margin-bottom: 4px;
   background-color: #f8f9fa;
@@ -369,7 +415,7 @@ export const SiteItem = styled.div`
   }
 `;
 
-export const SiteTitle = styled.div`
+export const AdminSiteTitle = styled.div`
   font-size: 1.1rem;
   font-weight: 500;
   color: black;
@@ -377,7 +423,7 @@ export const SiteTitle = styled.div`
   margin-right: auto;
 `;
 
-export const SiteIcon = styled.img`
+export const AdminSiteIcon = styled.img`
   width: 15px;
   height: 15px;
   object-fit: cover;

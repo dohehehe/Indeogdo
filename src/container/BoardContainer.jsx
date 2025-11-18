@@ -25,6 +25,7 @@ function BoardContainer({ siteData }) {
   const router = useRouter();
   const boardDetailRef = useRef(null);
   const activeClustersSites = useClusterSitesStore((state) => state.activeClustersSites);
+  const shouldShowAddresses = siteData?.cluster?.address !== false;
 
   const activeSites = useMemo(() => {
     if (!activeClustersSites) {
@@ -156,13 +157,13 @@ function BoardContainer({ siteData }) {
           )}
         </S.BoardClusterWrapper>
         <S.BoardTitle>{siteData?.title}</S.BoardTitle>
-        {/* {siteData?.addresses && siteData.addresses.length > 0 && (
-          <S.BoardAddress>
+        {siteData?.addresses && siteData.addresses.length > 0 && (
+          <S.BoardAddress hidden={!shouldShowAddresses}>
             {siteData.addresses.map((addr, index) => (
               <div key={addr.id || index}>{addr.name}</div>
             ))}
           </S.BoardAddress>
-        )} */}
+        )}
         <EditorBoardRender item={siteData?.contents} />
       </S.BoardDetailWrapper>
       <S.ScrollToTopButton onClick={scrollToTop} title="위로 가기">

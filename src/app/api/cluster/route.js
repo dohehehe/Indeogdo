@@ -62,6 +62,7 @@ export async function POST(request) {
       order,
       intro = false,
       toggle = false,
+      address = false,
     } = body;
 
     if (!title) {
@@ -97,6 +98,7 @@ export async function POST(request) {
       theme_id,
       intro: Boolean(intro),
       toggle: Boolean(toggle),
+      address: Boolean(address),
     };
     if (order !== undefined && order !== null) {
       insertData.order = order;

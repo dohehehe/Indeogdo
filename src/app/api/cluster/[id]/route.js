@@ -66,6 +66,7 @@ export async function PUT(request, context) {
       order,
       intro,
       toggle,
+      address,
     } = body;
 
     if (!id) {
@@ -110,6 +111,9 @@ export async function PUT(request, context) {
     }
     if (toggle !== undefined) {
       updateData.toggle = Boolean(toggle);
+    }
+    if (address !== undefined) {
+      updateData.address = Boolean(address);
     }
 
     const { data, error } = await supabaseAdmin
