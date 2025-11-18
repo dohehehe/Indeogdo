@@ -10,7 +10,7 @@ export const CreditBoardWrapper = styled.div`
   padding: 18px;
   position: fixed;
   top: 15px;
-  left: 900px;
+  left: 870px;
   display: flex;
   flex-direction: column;
   gap: 20px;

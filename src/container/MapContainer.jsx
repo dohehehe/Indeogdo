@@ -6,6 +6,7 @@ import MapSearch from '@/components/Map/MapSearch';
 import MapReset from '@/components/Map/MapReset';
 import MapPolygons from '@/components/Map/MapPolygons';
 import MapPolylines from '@/components/Map/MapPolylines';
+import MapUndergroundLayer from '@/components/Map/MapUndergroundLayer';
 import MapCoordinatePopup from '@/components/Map/MapCoordinatePopup';
 import useMapInitialization from '@/hooks/map/useMapInitialization';
 import useSiteMarkers from '@/hooks/map/useSiteMarkers';
@@ -236,6 +237,11 @@ function MapContainer() {
         mapInitialized={mapInitialized}
         zoomLevel={zoomLevel}
         selectedSites={selectedSites}
+      />
+      <MapUndergroundLayer
+        mapInstance={mapInstance}
+        mapInitialized={mapInitialized}
+        zoomLevel={zoomLevel}
       />
       <MapPolylines
         mapInstance={mapInstance}

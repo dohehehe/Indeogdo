@@ -13,7 +13,7 @@ export const IconBoardWrapper = styled.div`
   // padding-bottom: 0px;
   position: fixed;
   top: 15px;
-  left: 540px;
+  left: 530px;
   display: flex;
   flex-direction: column;
   gap: 20px;
