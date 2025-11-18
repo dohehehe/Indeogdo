@@ -458,7 +458,7 @@ export const CreditList = styled.ul`
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 10px;
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -482,7 +482,7 @@ export const CreditItem = styled.li`
     & span:first-of-type {
     font-weight: 700;
     flex-shrink: 0;
-    width: 45px;
+    width: 80px;
     display: inline-block;
     text-align: right;
   }
