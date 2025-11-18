@@ -197,6 +197,166 @@ export const polygonsData = [
     visible: true
   },
   {
+    id: 'crossroad-1-1',
+    coordinates: [
+      [37.40311010152104, 126.97538392288486],
+      [37.40300516458962, 126.97554150266448],
+      [37.40297693280122, 126.97550998670856],
+      [37.40308133709763, 126.97535307748119]
+    ],
+    fillColor: "#D1D1D1",
+    strokeColor: "#000",
+    fillOpacity: 1,
+    strokeWidth: 1.2,
+    strokeOpacity: 1,
+    minZoom: 17,
+    visible: true
+  },
+  {
+    id: 'crossroad-1-2',
+    coordinates: [
+      [37.403052572663114, 126.97532491428653],
+      [37.4029481683267, 126.97547914130489],
+      [37.402917273138065, 126.97544695479671],
+      [37.403024873567624, 126.97529272777835]
+    ],
+    fillColor: "#D1D1D1",
+    strokeColor: "#000",
+    fillOpacity: 1,
+    strokeWidth: 1.2,
+    strokeOpacity: 1,
+    minZoom: 17,
+    visible: true
+  },
+  {
+    id: 'crossroad-1-3',
+    coordinates: [
+      [37.40299291306009, 126.97525651795665],
+      [37.40288637793659, 126.97541208607952],
+      [37.40285548272249, 126.97537587625781],
+      [37.40296203725485, 126.97522301472135]
+    ],
+    fillColor: "#D1D1D1",
+    strokeColor: "#000",
+    fillOpacity: 1,
+    strokeWidth: 1.2,
+    strokeOpacity: 1,
+    minZoom: 17,
+    visible: true
+  },
+  {
+    id: 'crossroad-1-4',
+    coordinates: [
+      [37.40293859953105, 126.9751948515267],
+      [37.40283153165395, 126.9753484079928],
+      [37.40280223444698, 126.97531823314138],
+      [37.40290983504175, 126.97516400612302]
+    ],
+    fillColor: "#D1D1D1",
+    strokeColor: "#000",
+    fillOpacity: 1,
+    strokeWidth: 1.2,
+    strokeOpacity: 1,
+    minZoom: 17,
+    visible: true
+  },
+  {
+    id: 'crossroad-2-1',
+    coordinates: [
+      [37.39877508134961, 126.9766939411486],
+      [37.398664278581734, 126.97669394114857],
+      [37.398664811287716, 126.97674087980633],
+      [37.39877508134966, 126.97673953870182]
+    ],
+    fillColor: "#D1D1D1",
+    strokeColor: "#000",
+    fillOpacity: 1,
+    strokeWidth: 1.2,
+    strokeOpacity: 1,
+    minZoom: 17,
+    visible: true
+  },
+  {
+    id: 'crossroad-2-2',
+    coordinates: [
+      [37.39877508134961, 126.97678781846409],
+      [37.39866534399371, 126.9767891595686],
+      [37.39866587669977, 126.97683341601734],
+      [37.39877508134961, 126.97683207491283]
+    ],
+    fillColor: "#D1D1D1",
+    strokeColor: "#000",
+    fillOpacity: 1,
+    strokeWidth: 1.2,
+    strokeOpacity: 1,
+    minZoom: 17,
+    visible: true
+  },
+  {
+    id: 'crossroad-2-3',
+    coordinates: [
+      [37.39877508134961, 126.97688437798863],
+      [37.39877508134961, 126.9769326577509],
+      [37.39866640940566, 126.97693332830315],
+      [37.39866534399366, 126.97688303688412]
+    ],
+    fillColor: "#D1D1D1",
+    strokeColor: "#000",
+    fillOpacity: 1,
+    strokeWidth: 1.2,
+    strokeOpacity: 1,
+    minZoom: 17,
+    visible: true
+  },
+  {
+    id: 'crossroad-2-4',
+    coordinates: [
+      [37.39877614676004, 126.97698361972218],
+      [37.39877614676006, 126.97703055837994],
+      [37.398667474817664, 126.97703324058895],
+      [37.398667474817664, 126.97698630193119]
+    ],
+    fillColor: "#D1D1D1",
+    strokeColor: "#000",
+    fillOpacity: 1,
+    strokeWidth: 1.2,
+    strokeOpacity: 1,
+    minZoom: 17,
+    visible: true
+  },
+  {
+    id: 'crossroad-2-5',
+    coordinates: [
+      [37.39877614676006, 126.9770774970377],
+      [37.39866800752365, 126.9770788381422],
+      [37.39866854022962, 126.97712711790447],
+      [37.39877667946529, 126.97712577679997]
+    ],
+    fillColor: "#D1D1D1",
+    strokeColor: "#000",
+    fillOpacity: 1,
+    strokeWidth: 1.2,
+    strokeOpacity: 1,
+    minZoom: 17,
+    visible: true
+  },
+  {
+    id: 'crossroad-2-6',
+    coordinates: [
+      [37.398777212170465, 126.97717405656223],
+      [37.39866854022962, 126.97717673877125],
+      [37.39866854022962, 126.9772223363245],
+      [37.398777212170465, 126.9772223363245]
+    ],
+    fillColor: "#D1D1D1",
+    strokeColor: "#000",
+    fillOpacity: 1,
+    strokeWidth: 1.2,
+    strokeOpacity: 1,
+    minZoom: 17,
+    visible: true
+  },
+  {
     id: 'underground',
     coordinates: [
       [37.402879, 126.976017],
