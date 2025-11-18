@@ -156,7 +156,7 @@ export const BoardDetailWrapper = styled.div`
   width: 100%;
   max-width: 800px;
   position: relative;
-
+  // height: 100%;
     
   /* 스크롤바 숨기기 */
   scrollbar-width: none; /* Firefox */
@@ -168,7 +168,7 @@ export const BoardDetailWrapper = styled.div`
 
   ${theme.media.mobile} {
     padding: 30px 20px;
-    margin-top: -43px;
+    margin-top: -38px;
     padding-top: 18px;
     max-width: unset;
   }
@@ -218,6 +218,7 @@ export const BoardClusterWrapper = styled.div`
   gap: 7px;
   align-items: center;
   margin-bottom: 50px;
+  width: 100%;
   position: sticky;
   top: -25px;
   z-index: 10;
@@ -245,11 +246,66 @@ export const BoardClusterTitle = styled.h2`
   font-size: 1.7rem;
   font-weight: 800;
   color: black;
+  white-space: nowrap;
 
   ${theme.media.mobile} {
     font-size: 1.4rem;
     font-weight: 800;
     padding-bottom: 1px;
+  }
+`;
+
+export const SameLocationNav = styled.div`
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+
+  ${theme.media.mobile} {
+    position: fixed;
+    bottom: 23px;
+    left: 25px;
+    z-index: 3;
+  }
+`;
+
+export const SameLocationButton = styled.button`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid black;
+  background-color: white;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  color: black;
+
+  &:hover {
+    background-color: #f4f4f4;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  ${theme.media.mobile} {
+    width: 30px;
+    height: 30px;
+    font-size: 0.95rem;
+  }
+`;
+
+export const SameLocationIndicator = styled.span`
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: black;
+
+  ${theme.media.mobile} {
+    font-size: 0.85rem;
   }
 `;
 
