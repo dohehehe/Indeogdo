@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import useMapPolygon from '@/hooks/map/useMapPolygon';
 import { polygonsData } from '@/lib/polygonsData';
 import { areaPolygonData } from '@/lib/areaPolygonData';
@@ -18,6 +19,13 @@ function MapPolygons({ mapInstance, mapInitialized, zoomLevel, selectedSites = [
 
   // area가 true인 site가 있는지 확인
   const hasAreaSite = selectedSites.some(site => site.area === true);
+  // area가 true인 site들 중 가장 최신 것 선택 (배열의 마지막 요소)
+  const areaSite = useMemo(() => {
+    const areaSites = selectedSites.filter(site => site.area === true);
+    // 배열의 마지막 요소가 가장 최신
+    return areaSites.length > 0 ? areaSites[areaSites.length - 1] : null;
+  }, [selectedSites]);
+  const router = useRouter();
   const areaTextMarkerRef = useRef(null);
 
   // polygon의 중심점 계산
@@ -38,77 +46,6 @@ function MapPolygons({ mapInstance, mapInitialized, zoomLevel, selectedSites = [
     };
   };
 
-  // areaPolygon 텍스트 마커 생성/제거
-  useEffect(() => {
-    if (!mapInstance || !window.google || !window.google.maps) return;
-
-    if (hasAreaSite) {
-      // 텍스트 마커 생성
-      const centroid = calculateCentroid(areaPolygonData.coordinates);
-      if (centroid) {
-        // 텍스트 레이블을 위한 Canvas 아이콘 생성
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        const fontSize = 18;
-        const text = '인덕도';
-
-        context.font = `bold ${fontSize}px Arial, sans-serif`;
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-
-        const textWidth = context.measureText(text).width;
-        const padding = 8;
-        const totalWidth = textWidth + padding * 2;
-        const totalHeight = fontSize + padding * 2;
-
-        canvas.width = totalWidth;
-        canvas.height = totalHeight;
-
-        // 다시 폰트 설정
-        context.font = `bold ${fontSize}px Arial, sans-serif`;
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-
-        // 흰색 테두리
-        context.strokeStyle = '#ffffff';
-        context.lineWidth = 3;
-        context.lineJoin = 'round';
-        context.miterLimit = 2;
-        context.strokeText(text, totalWidth / 2, totalHeight / 2);
-
-        // 검정색 텍스트
-        context.fillStyle = '#000000';
-        context.fillText(text, totalWidth / 2, totalHeight / 2);
-
-        const marker = new window.google.maps.Marker({
-          position: centroid,
-          map: mapInstance,
-          icon: {
-            url: canvas.toDataURL(),
-            size: new window.google.maps.Size(totalWidth, totalHeight),
-            anchor: new window.google.maps.Point(totalWidth / 2, totalHeight / 2)
-          },
-          zIndex: 3, // polygon보다 위에 표시
-          optimized: false
-        });
-
-        areaTextMarkerRef.current = marker;
-      }
-    } else {
-      // 텍스트 마커 제거
-      if (areaTextMarkerRef.current) {
-        areaTextMarkerRef.current.setMap(null);
-        areaTextMarkerRef.current = null;
-      }
-    }
-
-    return () => {
-      if (areaTextMarkerRef.current) {
-        areaTextMarkerRef.current.setMap(null);
-        areaTextMarkerRef.current = null;
-      }
-    };
-  }, [hasAreaSite, mapInstance]);
 
   // 각 다각형을 렌더링 (시각적 요소는 없지만 훅 실행을 위해 컴포넌트로 처리)
   // areaPolygon을 마지막에 렌더링하여 다른 polygon들 위에 표시되도록 함
@@ -121,6 +58,9 @@ function MapPolygons({ mapInstance, mapInitialized, zoomLevel, selectedSites = [
           mapInstance={mapInstance}
           polygonData={polygonData}
           zoomLevel={zoomLevel}
+          siteId={polygonData.siteId}
+          selectedSites={selectedSites}
+          router={router}
         />
       ))}
       {/* area가 true인 site가 있으면 area polygon 표시 */}
@@ -130,6 +70,9 @@ function MapPolygons({ mapInstance, mapInitialized, zoomLevel, selectedSites = [
           mapInstance={mapInstance}
           polygonData={areaPolygonData}
           zoomLevel={zoomLevel}
+          siteId={areaSite?.id}
+          selectedSites={selectedSites}
+          router={router}
         />
       )}
     </>
@@ -139,7 +82,26 @@ function MapPolygons({ mapInstance, mapInitialized, zoomLevel, selectedSites = [
 /**
  * 개별 다각형을 관리하는 내부 컴포넌트
  */
-function PolygonItem({ mapInstance, polygonData, zoomLevel }) {
+function PolygonItem({ mapInstance, polygonData, zoomLevel, siteId, selectedSites, router }) {
+  const handlePolygonNavigate = useCallback(() => {
+    if (!siteId) return;
+
+    const targetSite = selectedSites?.find(site => site.id === siteId);
+
+    if (typeof window !== 'undefined') {
+      if (targetSite && typeof window.onPOIClick === 'function') {
+        window.onPOIClick(targetSite);
+        return;
+      }
+
+      window.dispatchEvent(new CustomEvent('poiClicked', { detail: { siteId } }));
+    }
+
+    if (router) {
+      router.push(`/sites/${siteId}`);
+    }
+  }, [siteId, selectedSites, router]);
+
   const {
     createPolygon,
     removePolygon
@@ -156,10 +118,12 @@ function PolygonItem({ mapInstance, polygonData, zoomLevel }) {
     options: {
       ...(polygonData.options || {}),
       ...(polygonData.zIndex !== undefined ? { zIndex: polygonData.zIndex } : {})
-    }
+    },
+    eventHandlers: siteId ? { click: handlePolygonNavigate } : undefined
   });
 
   // visible prop과 coordinates에 따라 다각형 표시/숨김
+  // siteId가 변경되면 polygon을 다시 생성하여 새로운 이벤트 핸들러 적용
   useEffect(() => {
     if (!mapInstance) return;
 
@@ -178,6 +142,8 @@ function PolygonItem({ mapInstance, polygonData, zoomLevel }) {
     mapInstance,
     polygonData.visible,
     polygonData.coordinates,
+    siteId,
+    handlePolygonNavigate,
     createPolygon,
     removePolygon
   ]);

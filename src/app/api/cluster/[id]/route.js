@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 
 // 특정 Cluster 조회
-export async function GET(request, { params }) {
+export async function GET(request, context) {
   try {
-    const { id } = params;
+    const resolvedParams = await context?.params;
+    const { id } = resolvedParams || {};
 
     if (!id) {
       return NextResponse.json(
@@ -54,11 +55,19 @@ export async function GET(request, { params }) {
 }
 
 // Cluster 수정
-export async function PUT(request, { params }) {
+export async function PUT(request, context) {
   try {
-    const { id } = params;
+    const resolvedParams = await context?.params;
+    const { id } = resolvedParams || {};
     const body = await request.json();
-    const { title, theme_id, order } = body;
+    const {
+      title,
+      theme_id,
+      order,
+      intro,
+      toggle,
+      address,
+    } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -96,6 +105,15 @@ export async function PUT(request, { params }) {
     }
     if (order !== undefined && order !== null) {
       updateData.order = order;
+    }
+    if (intro !== undefined) {
+      updateData.intro = Boolean(intro);
+    }
+    if (toggle !== undefined) {
+      updateData.toggle = Boolean(toggle);
+    }
+    if (address !== undefined) {
+      updateData.address = Boolean(address);
     }
 
     const { data, error } = await supabaseAdmin
@@ -141,9 +159,10 @@ export async function PUT(request, { params }) {
 }
 
 // Cluster 삭제
-export async function DELETE(request, { params }) {
+export async function DELETE(request, context) {
   try {
-    const { id } = params;
+    const resolvedParams = await context?.params;
+    const { id } = resolvedParams || {};
 
     if (!id) {
       return NextResponse.json(

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import * as S from '@/styles/Navigation/navigation.style';
 import EditButton from '@/components/admin/EditButton';
 import SiteSection from '@/components/Navigation/SiteSection';
@@ -8,7 +8,8 @@ import useSites from '@/hooks/useSites';
 import useCluster from '@/hooks/useCluster';
 import useClusterSitesStore from '@/stores/clusterSitesStore';
 import AddButton from '@/components/admin/AddButton';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import SiteItem from '@/components/Navigation/SiteItem';
 
 function ClusterItem({ cluster, isAdmin, themeId }) {
   const { fetchSitesByCluster } = useSites();
@@ -22,7 +23,24 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editingTitle, setEditingTitle] = useState('');
   const [isOrdering, setIsOrdering] = useState(false);
+  const [isUpdatingIntro, setIsUpdatingIntro] = useState(false);
+  const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
+  const [isUpdatingAddress, setIsUpdatingAddress] = useState(false);
+  const [localIntro, setLocalIntro] = useState(Boolean(cluster?.intro));
+  const [localToggle, setLocalToggle] = useState(Boolean(cluster?.toggle));
+  const [localAddress, setLocalAddress] = useState(
+    cluster?.address === undefined ? true : Boolean(cluster.address)
+  );
   const router = useRouter();
+  const pathname = usePathname();
+  const introNavigationRef = useRef(null);
+  const resolvedThemeId = themeId || cluster?.theme_id || null;
+  useEffect(() => {
+    setLocalIntro(Boolean(cluster?.intro));
+    setLocalToggle(Boolean(cluster?.toggle));
+    setLocalAddress(cluster?.address === undefined ? true : Boolean(cluster.address));
+  }, [cluster?.intro, cluster?.toggle, cluster?.address]);
+
 
   // 클러스터 활성화 시 sites 가져오기
   useEffect(() => {
@@ -44,6 +62,7 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
     } else {
       // 비활성화 시 전역 store에서 제거
       removeClusterSites(cluster.id);
+      introNavigationRef.current = null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActive, cluster.id]);
@@ -55,6 +74,24 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sites]);
+
+  useEffect(() => {
+    if (!isActive || !cluster?.intro || pathname?.startsWith('/admin')) {
+      if (!isActive) {
+        introNavigationRef.current = null;
+      }
+      return;
+    }
+
+    if (!sites || sites.length === 0) return;
+    const firstSite = sites[0];
+    if (!firstSite?.id) return;
+    if (introNavigationRef.current === firstSite.id) return;
+
+    introNavigationRef.current = firstSite.id;
+    router.push(`/sites/${firstSite.id}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isActive, cluster?.intro, sites, pathname]);
 
   const handleToggle = (e) => {
     e.stopPropagation();
@@ -117,6 +154,84 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
     setIsOrdering(prev => !prev);
   };
 
+  const handleToggleIntroSetting = async (e) => {
+    e?.stopPropagation();
+    if (isUpdatingIntro) return;
+
+    const nextIntro = !localIntro;
+    setLocalIntro(nextIntro);
+    setIsUpdatingIntro(true);
+    try {
+      await updateCluster(
+        cluster.id,
+        cluster.title,
+        resolvedThemeId || undefined,
+        undefined,
+        nextIntro,
+        localToggle,
+        localAddress,
+      );
+    } catch (err) {
+      console.error('Toggle intro setting error:', err);
+      alert('인트로 표시 설정을 변경하는 중 오류가 발생했습니다.');
+      setLocalIntro(!nextIntro);
+    } finally {
+      setIsUpdatingIntro(false);
+    }
+  };
+
+  const handleToggleVisibilitySetting = async (e) => {
+    e?.stopPropagation();
+    if (isUpdatingVisibility) return;
+
+    const nextToggle = !localToggle;
+    setLocalToggle(nextToggle);
+    setIsUpdatingVisibility(true);
+    try {
+      await updateCluster(
+        cluster.id,
+        cluster.title,
+        resolvedThemeId || undefined,
+        undefined,
+        localIntro,
+        nextToggle,
+        localAddress,
+      );
+    } catch (err) {
+      console.error('Toggle visibility setting error:', err);
+      alert('장소 표시 설정을 변경하는 중 오류가 발생했습니다.');
+      setLocalToggle(!nextToggle);
+    } finally {
+      setIsUpdatingVisibility(false);
+    }
+  };
+
+  const handleToggleAddressSetting = async (e) => {
+    e?.stopPropagation();
+    if (isUpdatingAddress) return;
+
+    const nextAddress = !localAddress;
+    setLocalAddress(nextAddress);
+    setIsUpdatingAddress(true);
+    try {
+      await updateCluster(
+        cluster.id,
+        cluster.title,
+        resolvedThemeId || undefined,
+        undefined,
+        localIntro,
+        localToggle,
+        nextAddress,
+      );
+    } catch (err) {
+      console.error('Toggle address setting error:', err);
+      alert('상세 주소 표시 설정을 변경하는 중 오류가 발생했습니다.');
+      setLocalAddress(!nextAddress);
+    } finally {
+      setIsUpdatingAddress(false);
+    }
+  };
+
   return (
     <S.ClusterContainer>
       <S.ClusterItem
@@ -138,7 +253,7 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
             autoFocus
           />
         ) : (
-          <S.ClusterTitle>{cluster.title}</S.ClusterTitle>
+          <S.ClusterTitle $isActive={isActive}>{cluster.title}</S.ClusterTitle>
         )}
         {isAdmin && (
           isEditing ? (
@@ -152,8 +267,43 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
         )}
       </S.ClusterItem>
 
+      {!isAdmin && cluster?.toggle && (
+        <SiteItem clusterId={cluster.id} isActive={isActive} />
+      )}
+
       {isAdmin && (
         <>
+          <S.ClusterSettingWrapper>
+            <S.ClusterSettingList>
+              <S.ClusterSettingItem>
+                인트로
+                <S.ClusterSettingButton
+                  type="checkbox"
+                  checked={localIntro}
+                  onChange={handleToggleIntroSetting}
+                  disabled={isUpdatingIntro}
+                />
+              </S.ClusterSettingItem>
+              <S.ClusterSettingItem>
+                리스트 펼치기
+                <S.ClusterSettingButton
+                  type="checkbox"
+                  checked={localToggle}
+                  onChange={handleToggleVisibilitySetting}
+                  disabled={isUpdatingVisibility}
+                />
+              </S.ClusterSettingItem>
+              <S.ClusterSettingItem>
+                상세 주소 숨기기
+                <S.ClusterSettingButton
+                  type="checkbox"
+                  checked={localAddress}
+                  onChange={handleToggleAddressSetting}
+                  disabled={isUpdatingAddress}
+                />
+              </S.ClusterSettingItem>
+            </S.ClusterSettingList>
+          </S.ClusterSettingWrapper>
           <SiteSection
             clusterId={cluster.id}
             isAdmin={isAdmin}

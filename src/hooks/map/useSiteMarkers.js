@@ -1,4 +1,16 @@
 import { useCallback, useRef, useState } from 'react';
+
+const buildMarkerIcon = (url) => {
+  if (!url || typeof window === 'undefined' || !window.google?.maps) {
+    return null;
+  }
+
+  return {
+    url,
+    scaledSize: new window.google.maps.Size(32, 32),
+    anchor: new window.google.maps.Point(16, 16)
+  };
+};
 // POI 마커 관리를 위한 커스텀 훅
 const useSiteMarkers = (mapInstance) => {
   const [siteMarkers, setSiteMarkers] = useState([]);
@@ -50,6 +62,9 @@ const useSiteMarkers = (mapInstance) => {
   const stopActiveMarkerAnimation = useCallback(() => {
     if (activeMarkerRef.current) {
       activeMarkerRef.current.setAnimation(null);
+      if (activeMarkerRef.current._iconDefault) {
+        activeMarkerRef.current.setIcon(activeMarkerRef.current._iconDefault);
+      }
       activeMarkerRef.current = null;
     }
   }, []);
@@ -69,11 +84,13 @@ const useSiteMarkers = (mapInstance) => {
     }
 
     if (activeMarkerRef.current && activeMarkerRef.current !== targetMarker) {
-      activeMarkerRef.current.setAnimation(null);
-      activeMarkerRef.current = null;
+      stopActiveMarkerAnimation();
     }
 
     if (targetMarker) {
+      if (targetMarker._iconActive) {
+        targetMarker.setIcon(targetMarker._iconActive);
+      }
       targetMarker.setAnimation(window.google.maps.Animation.BOUNCE);
       activeMarkerRef.current = targetMarker;
     }
@@ -157,16 +174,10 @@ const useSiteMarkers = (mapInstance) => {
 
           // 위도, 경도가 있는 address만 마커 생성
           if (address.latitude && address.longitude) {
-            // 기본 마커 사용
-            const icon = site.icon?.img ? {
-              url: site.icon.img,
-              scaledSize: new window.google.maps.Size(32, 32),
-              anchor: new window.google.maps.Point(16, 16)
-            } : {
-              url: '/icon/marker.png',
-              scaledSize: new window.google.maps.Size(32, 32),
-              anchor: new window.google.maps.Point(16, 16)
-            };
+            const defaultIcon =
+              buildMarkerIcon(site.icon?.img) ||
+              buildMarkerIcon('/icon/marker.png');
+            const activeIcon = buildMarkerIcon(site.icon?.img_active);
 
             const marker = new window.google.maps.Marker({
               position: {
@@ -175,7 +186,7 @@ const useSiteMarkers = (mapInstance) => {
               },
               map: mapInstance,
               title: site.title,
-              icon: icon,
+              icon: defaultIcon,
               animation: window.google.maps.Animation.DROP
             });
 
@@ -195,6 +206,8 @@ const useSiteMarkers = (mapInstance) => {
             marker._isSiteMarker = true;
             marker._siteId = site.id;
             marker._addressId = address.id || null;
+            marker._iconDefault = defaultIcon;
+            marker._iconActive = activeIcon || defaultIcon;
 
             newMarkers.push(marker);
           }

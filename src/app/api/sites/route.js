@@ -20,7 +20,8 @@ export async function GET(request) {
         ),
         icon:icon_id (
           id,
-          img
+          img,
+          img_active
         ),
         addresses:address (
           id,
@@ -142,7 +143,8 @@ export async function POST(request) {
         ),
         icon:icon_id (
           id,
-          img
+          img,
+          img_active
         ),
         addresses:address (
           id,

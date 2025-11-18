@@ -8,10 +8,11 @@ const EditorArticle = styled.article`
   display: flex;
   // flex-direction: column;
   flex-wrap: wrap;
-  margin-top: 50px;
+  margin-top: 30px;
   margin-left: 5px;
   color: black;
   gap: 10px;
+  padding: 0 50px 0 2px;
 
   /* .stretched 클래스를 가진 자식을 가진 부모 div 선택 */
   & > div:has(.small) {
@@ -24,7 +25,8 @@ const EditorArticle = styled.article`
 
   ${theme.media.mobile} {
     margin-left: 0px;
-    margin-top: 70px;
+    margin-top: 20px;
+    padding: 0 20px 0 20px;
   }
 `
 const EditorPara = styled.p`
@@ -34,18 +36,38 @@ const EditorPara = styled.p`
   margin-bottom: 20px;
   color: black;
   word-break: keep-all;
+
+
   & b {
     font-weight: 800;
   }
 
-  & mark {
-    background: none;
+  & i {
     position: relative;
-    display: inline;
-    text-decoration: underline dotted 2px black;
+    display: inline-block;
+    // text-decoration: underline dotted 2px black;
+    text-decoration-style: dotted;
+    text-decoration-color: black;
+    text-decoration-thickness: 1.5px;
+    text-decoration-line: underline;
     text-underline-position: under;
-    text-underline-offset: 4.5px;
+    text-underline-offset: 2px;
     line-height: 2.1;
+
+    ${theme.media.mobile} {
+      text-underline-offset: 0px;
+    }
+  }
+
+
+  & a{
+    color:rgb(43, 143, 249);
+    // text-decoration: underline dotted 2px black;
+    // text-underline-position: under;
+    // text-underline-offset: 2px;
+    // line-height: 2.1;
+    font-weight: 700;
+    cursor: pointer;
   }
 
   ${theme.media.mobile} {
@@ -100,10 +122,10 @@ const EditorImgWrapper = styled.div`
 
 const EditorImg = styled.img`
   width: 100%;
-  border: 1.4px solid black;
+  // border: 1.4px solid black;
 
   ${theme.media.mobile} {
-    border: 1px solid black;
+    // border: 1px solid black;
   }
 `
 const EditorImgCaption = styled.div`
@@ -111,7 +133,52 @@ const EditorImgCaption = styled.div`
   font-size: 1rem;
   font-weight: 500;
   color: #666;
+  // word-break: keep-all;
+  line-height: 1.3;
+
+  & .editor-break {
+    display: block;
+    height: 8px;
+    content: '';
+  }
 `
+
+const BREAK_ELEMENT = '<span class="editor-break" aria-hidden="true"></span>';
+
+const decodeEditorHtml = (text = '') => {
+  return text
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\n/g, BREAK_ELEMENT)
+    .replace(/\*/g, '<span class="sticker">*</span>');
+};
+
+const normalizeLineBreaks = (html = '') => {
+  return html.replace(/<br\s*\/?>/gi, BREAK_ELEMENT);
+};
+
+const enforceLinkTargets = (html = '') => {
+  return html.replace(/<a\b([^>]*)>/gi, (match, attrs = '') => {
+    let attrString = attrs;
+
+    if (!/target\s*=/.test(attrString)) {
+      attrString += `${attrString.trim().length ? ' ' : ' '}target="_blank"`;
+    } else {
+      attrString = attrString.replace(/target\s*=\s*(['"]).*?\1/i, ' target="_blank"');
+    }
+
+    if (!/rel\s*=/.test(attrString)) {
+      attrString += ' rel="noopener noreferrer"';
+    } else {
+      attrString = attrString.replace(/rel\s*=\s*(['"]).*?\1/i, ' rel="noopener noreferrer"');
+    }
+
+    return `<a${attrString}>`;
+  });
+};
+
+const formatEditorHtml = (text = '') =>
+  enforceLinkTargets(normalizeLineBreaks(decodeEditorHtml(text)));
 
 function EditorBoardRender({ item }) {
   return (
@@ -123,11 +190,7 @@ function EditorBoardRender({ item }) {
               <EditorHeader>
                 {(() => {
                   const level = block.data.level || 1;
-                  const processedText = block.data.text
-                    .replace(/&lt;/g, '<')
-                    .replace(/&gt;/g, '>')
-                    .replace(/\n/g, '<br />')
-                    .replace(/\*/g, '<span class="sticker">*</span>');
+                  const processedText = formatEditorHtml(block.data.text);
 
                   if (level === 1) {
                     return <h1 dangerouslySetInnerHTML={{ __html: processedText }} />;
@@ -145,7 +208,11 @@ function EditorBoardRender({ item }) {
             )}
             {block.type === 'paragraph' ? (
               <>
-                <EditorPara dangerouslySetInnerHTML={{ __html: block.data.text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/\n/g, '<br />').replace(/\*/g, '<span class="sticker">*</span>') }} />
+                <EditorPara
+                  dangerouslySetInnerHTML={{
+                    __html: formatEditorHtml(block.data.text),
+                  }}
+                />
               </>
             ) : (
               ''
@@ -165,7 +232,7 @@ function EditorBoardRender({ item }) {
                 {block.data.caption ? (
                   <EditorImgCaption
                     dangerouslySetInnerHTML={{
-                      __html: block.data.caption.replace(/\n/g, '<br />'),
+                      __html: formatEditorHtml(block.data.caption),
                     }}
                   />
                 ) : (

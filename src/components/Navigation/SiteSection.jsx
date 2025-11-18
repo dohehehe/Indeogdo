@@ -120,9 +120,9 @@ function SiteSection({ clusterId, isAdmin, isOrdering, onOrderChange }) {
           </S.CancelButton>
         </div>
       )}
-      <S.SiteList>
+      <S.AdminSiteList>
         {sites.map((site, index) => (
-          <S.SiteItem key={site.id}>
+          <S.AdminSiteItem key={site.id}>
             {isOrdering ? (
               <>
                 <S.SiteIcon src={site.icon?.img || undefined} alt={site.title} />
@@ -144,14 +144,14 @@ function SiteSection({ clusterId, isAdmin, isOrdering, onOrderChange }) {
               </>
             ) : (
               <>
-                <S.SiteIcon src={site.icon?.img || undefined} alt={site.title} />
-                <S.SiteTitle>{site.title}</S.SiteTitle>
+                <S.AdminSiteIcon src={site.icon?.img || undefined} alt={site.title} />
+                <S.AdminSiteTitle>{site.title}</S.AdminSiteTitle>
                 <EditButton onEdit={() => handleEditSite(site)} onDelete={() => handleDeleteSite(site)} hidden={true} />
               </>
             )}
-          </S.SiteItem>
+          </S.AdminSiteItem>
         ))}
-      </S.SiteList>
+      </S.AdminSiteList>
     </>
   );
 }
