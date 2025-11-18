@@ -23,7 +23,8 @@ export async function GET(request, context) {
         ),
         icon:icon_id (
           id,
-          img
+          img,
+          img_active
         ),
         addresses:address (
           id,
@@ -137,7 +138,8 @@ export async function PUT(request, context) {
         ),
         icon:icon_id (
           id,
-          img
+          img,
+          img_active
         ),
         addresses:address (
           id,
@@ -200,7 +202,8 @@ export async function DELETE(request, context) {
         ),
         icon:icon_id (
           id,
-          img
+          img,
+          img_active
         ),
         addresses:address (
           id,
@@ -260,7 +263,8 @@ export async function DELETE(request, context) {
         ),
         icon:icon_id (
           id,
-          img
+          img,
+          img_active
         )
       `);
 
