@@ -34,7 +34,6 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
   const router = useRouter();
   const pathname = usePathname();
   const introNavigationRef = useRef(null);
-  const isInitialActiveRef = useRef(cluster.id === INDEOGDO_CLUSTER_ID);
   const resolvedThemeId = themeId || cluster?.theme_id || null;
   useEffect(() => {
     setLocalIntro(Boolean(cluster?.intro));
@@ -96,10 +95,6 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
 
   const handleToggle = (e) => {
     e.stopPropagation();
-    // 사용자가 직접 토글하면 초기 마운트 플래그 해제
-    if (cluster.id === INDEOGDO_CLUSTER_ID) {
-      isInitialActiveRef.current = false;
-    }
     setIsActive(prev => !prev);
   };
 
