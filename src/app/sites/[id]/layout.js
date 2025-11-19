@@ -20,18 +20,24 @@ export async function generateMetadata({ params }) {
       : '';
     const clusterTitle = data.cluster?.title || '';
     const themeTitle = data.cluster?.theme?.title || '';
-    const siteDescription = siteAddress
+
+    // description: contents에서 첫 번째 paragraph를 찾아 사용, 없으면 기존 로직 사용
+    const firstParagraph = data.contents?.find(item => item.type === 'paragraph')?.data?.text;
+    const paragraphText = firstParagraph
+      ? firstParagraph.replace(/<[^>]*>/g, '').trim() // HTML 태그 제거
+      : null;
+    const fallbackDescription = siteAddress
       ? `${themeTitle} : ${clusterTitle} - ${siteTitle} (${siteAddress})`
       : `${themeTitle} : ${clusterTitle} - ${siteTitle}`;
+    const siteDescription = paragraphText || fallbackDescription;
 
-
-    // 이미지 URL (icon이 있으면 사용, 없으면 기본 로고)
-    const imageUrl = data.icon?.img || '/icon/logo.png';
+    // 이미지 URL (icon이 있으면 사용, 없으면 contents에서 첫 번째 이미지, 그것도 없으면 기본 로고)
+    const firstImageFromContents = data.contents?.find(item => item.type === 'image')?.data?.file?.url;
+    const imageUrl = data.icon?.img || firstImageFromContents || '/screen01.png';
     const siteUrl = typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_SITE_URL
       ? `${process.env.NEXT_PUBLIC_SITE_URL}/sites/${id}`
       : `https://yourdomain.com/sites/${id}`;
 
-    // 키워드 생성
     const keywords = [
       siteTitle,
       siteAddress,
