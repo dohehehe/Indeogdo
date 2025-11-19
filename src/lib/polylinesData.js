@@ -341,6 +341,31 @@ export const polylinesData = [
     minZoom: 17,
     visible: true
   },
+  {
+    id: 'crossroad-3-1',
+    coordinates: [
+      [37.39958701560755, 126.9728751813856],
+      [37.39933238483795, 126.97212684507045],
+    ],
+    strokeColor: '#000',
+    strokeOpacity: 1,
+    strokeWeight: 1,
+    geodesic: true,
+    zIndex: 1,
+    minZoom: 17,
+    visible: true
+  },
+  {
+    id: 'crossroad-3-2',
+    coordinates: [
+      [37.39928976872503, 126.97214696163806],
+      [37.39954653043876, 126.97289663905772]
+    ],
+    strokeColor: '#000',
+    strokeOpacity: 1,
+    strokeWeight: 1,
+    geodesic: true,
+  }
 ];
 
 
