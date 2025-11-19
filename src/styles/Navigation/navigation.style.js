@@ -375,6 +375,7 @@ export const SiteItem = styled.li`
   cursor: pointer;
   align-items: flex-start;
 
+
   &:hover {
     background-color: #e9ecef;
   }
@@ -392,6 +393,7 @@ export const SiteTitle = styled.div`
   font-weight: 500;
   color: black;
   margin-right: auto;
+  word-break: break-all;
 `;
 
 export const AdminSiteList = styled.div`

@@ -48,10 +48,10 @@ export const undergroundPolygonData = {
     [37.402779, 126.976134],
     [37.402862, 126.976001]
   ],
-  fillColor: '#ffffff',
+  fillColor: '#ADD5FF',
   strokeColor: '#000',
-  strokeWidth: 0,
-  fillOpacity: 1,
+  strokeWidth: 0.5,
+  fillOpacity: 0.85,
   strokeOpacity: 1,
   zIndex: 5
 };
