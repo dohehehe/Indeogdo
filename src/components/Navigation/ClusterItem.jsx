@@ -31,6 +31,7 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
   const [localAddress, setLocalAddress] = useState(
     cluster?.address === undefined ? true : Boolean(cluster.address)
   );
+  const [isExpanded, setIsExpanded] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
   const introNavigationRef = useRef(null);
@@ -96,6 +97,13 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
   const handleToggle = (e) => {
     e.stopPropagation();
     setIsActive(prev => !prev);
+  };
+
+  const handleToggleExpand = (e) => {
+    e.stopPropagation();
+    if (!isEditing) {
+      setIsExpanded(prev => !prev);
+    }
   };
 
   const handleStartEdit = (e) => {
@@ -262,7 +270,12 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
               <S.CancelButton onClick={handleCancelEdit}>취소</S.CancelButton>
             </S.EditActionButtons>
           ) : (
-            <EditButton onEdit={handleStartEdit} onDelete={handleDelete} onOrder={handleOrder} text="장소" />
+            <>
+              <EditButton onEdit={handleStartEdit} onDelete={handleDelete} onOrder={handleOrder} text="장소" />
+              <S.ExpandIcon $isExpanded={isExpanded} onClick={handleToggleExpand} style={{ marginTop: '-0.5px', marginBottom: '10px' }}>
+                {isExpanded ? '▲' : '▼'}
+              </S.ExpandIcon>
+            </>
           )
         )}
       </S.ClusterItem>
@@ -271,7 +284,7 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
         <SiteItem clusterId={cluster.id} isActive={isActive} />
       )}
 
-      {isAdmin && (
+      {isAdmin && isExpanded && (
         <>
           <S.ClusterSettingWrapper>
             <S.ClusterSettingList>
@@ -310,7 +323,7 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
             isOrdering={isOrdering}
             onOrderChange={() => setIsOrdering(false)}
           />
-          <div style={{ width: '100px', display: 'flex', margin: '10px 0px 0px 46px', transform: 'scale(0.9)' }}>
+          <div style={{ width: '100px', display: 'flex', margin: '10px 0px 24px 46px', transform: 'scale(0.9)' }}>
             <AddButton onClick={handleStartAddSite}>
               <span>+</span>
               <span>장소 추가</span>
