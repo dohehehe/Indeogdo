@@ -68,6 +68,7 @@ const EditorPara = styled.p`
     // line-height: 2.1;
     font-weight: 700;
     cursor: pointer;
+    text-decoration: none;
   }
 
   ${theme.media.mobile} {

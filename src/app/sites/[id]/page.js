@@ -42,7 +42,7 @@ export default function SitePage({ params }) {
 
   if (loading) {
     return (
-      <S.BoardLoading>로딩 중...</S.BoardLoading>
+      <S.BoardLoading></S.BoardLoading>
     );
   }
 

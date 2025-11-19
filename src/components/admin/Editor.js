@@ -38,6 +38,31 @@ const EditorWrapper = styled.div`
   & .image-tool__caption{
     position: static !important;
   }
+
+  & i {
+    position: relative;
+    display: inline-block;
+    // text-decoration: underline dotted 2px black;
+    text-decoration-style: dotted;
+    text-decoration-color: black;
+    text-decoration-thickness: 1.5px;
+    text-decoration-line: underline;
+    text-underline-position: under;
+    text-underline-offset: 2px;
+    line-height: 2.1;
+    font-style: normal;
+  }
+
+  & a{
+    color:rgb(43, 143, 249);
+    // text-decoration: underline dotted 2px black;
+    // text-underline-position: under;
+    // text-underline-offset: 2px;
+    // line-height: 2.1;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+  }
 `;
 
 const Editor = forwardRef(({ data }, ref) => {

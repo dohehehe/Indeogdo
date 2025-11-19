@@ -373,6 +373,7 @@ export const SiteItem = styled.li`
   align-items: center;
   gap: 7px;
   cursor: pointer;
+  align-items: flex-start;
 
   &:hover {
     background-color: #e9ecef;
@@ -380,13 +381,14 @@ export const SiteItem = styled.li`
 `;
 
 export const SiteIcon = styled.img`
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   object-fit: cover;
+  margin-top: 2.6px;
 `;
 
 export const SiteTitle = styled.div`
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 500;
   color: black;
   margin-right: auto;
