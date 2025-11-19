@@ -54,8 +54,15 @@ export const BoardWrapper = styled.div`
     z-index: 5;
     display: ${props => props.$isVisible === false ? 'none' : 'flex'};
 
+
     &:hover {
       box-shadow: 0 0px 20px rgba(12, 73, 104, 0.56);
+    }
+
+    &:article{
+      transition: opacity 0.5s ease-in-out;
+      display: ${props => props.$isVisible ? 'block' : 'none'};
+      opacity:  ${props => props.$isVisible ? '1' : '0'};
     }
   }
 `;
@@ -161,7 +168,7 @@ export const BoardLoadingOpacity = keyframes`
   }
 `;
 
-export const BoardDetailWrapper = styled.div`
+export const BoardDetailWrapper = styled.article`
   padding: 0px 0px 30px 0px;
   overflow-y: auto;
   width: 100%;
@@ -226,7 +233,7 @@ export const ScrollToTopButton = styled.button`
   }
 `;
 
-export const BoardHeader = styled.div`
+export const BoardHeader = styled.header`
   // background-color: white;
   background-image: linear-gradient(to bottom,rgba(255, 255, 255, 0.95) 70%, #ffffff00 100%);
   padding-top: 30px;

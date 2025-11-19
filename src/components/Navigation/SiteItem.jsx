@@ -21,7 +21,7 @@ function SiteItem({ clusterId, isActive }) {
   }, [clusterId]);
 
   return (
-    <S.SiteList $isActive={isActive}>
+    <S.SiteList hidden={!isActive} $isActive={isActive}>
       {sites.map((site) => (
         <S.SiteItem key={site.id} onClick={() => router.push(`/sites/${site.id}`)}>
           <S.SiteIcon src={site.icon?.img || undefined} alt={site.title} />

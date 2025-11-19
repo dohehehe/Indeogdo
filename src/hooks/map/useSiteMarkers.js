@@ -62,9 +62,6 @@ const useSiteMarkers = (mapInstance) => {
   const stopActiveMarkerAnimation = useCallback(() => {
     if (activeMarkerRef.current) {
       activeMarkerRef.current.setAnimation(null);
-      if (activeMarkerRef.current._iconDefault) {
-        activeMarkerRef.current.setIcon(activeMarkerRef.current._iconDefault);
-      }
       activeMarkerRef.current = null;
     }
   }, []);
@@ -88,9 +85,6 @@ const useSiteMarkers = (mapInstance) => {
     }
 
     if (targetMarker) {
-      if (targetMarker._iconActive) {
-        targetMarker.setIcon(targetMarker._iconActive);
-      }
       targetMarker.setAnimation(window.google.maps.Animation.BOUNCE);
       activeMarkerRef.current = targetMarker;
     }
@@ -177,7 +171,6 @@ const useSiteMarkers = (mapInstance) => {
             const defaultIcon =
               buildMarkerIcon(site.icon?.img) ||
               buildMarkerIcon('/icon/marker.png');
-            const activeIcon = buildMarkerIcon(site.icon?.img_active);
 
             const marker = new window.google.maps.Marker({
               position: {
@@ -206,8 +199,6 @@ const useSiteMarkers = (mapInstance) => {
             marker._isSiteMarker = true;
             marker._siteId = site.id;
             marker._addressId = address.id || null;
-            marker._iconDefault = defaultIcon;
-            marker._iconActive = activeIcon || defaultIcon;
 
             newMarkers.push(marker);
           }

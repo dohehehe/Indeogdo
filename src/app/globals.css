@@ -174,3 +174,28 @@ select {
     color-scheme: dark;
   }
 }
+
+/* 구글 지도 하단 로고 및 컨트롤 숨기기 */
+.gm-style-cc,
+a[href*="google.com/maps"],
+.gm-style-mtc,
+.gm-bundled-control,
+.gm-style-cc>div,
+.gm-style-cc>a,
+div[style*="position: absolute"][style*="left: 0px"][style*="bottom: 0px"] a[href*="google"],
+div[style*="position: absolute"][style*="right: 0px"][style*="bottom: 0px"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* 구글 지도 하단 영역 전체 숨기기 */
+.gm-style>div:last-child>div:last-child {
+  display: none !important;
+}
+
+/* 구글 지도 하단 왼쪽 영역 (로고) */
+.gm-style>div:last-child>div:first-child {
+  display: none !important;
+}
