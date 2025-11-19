@@ -8,14 +8,29 @@ import * as S from '@/styles/Sites/board.style';
 function Board({ children }) {
   const [widthMode, setWidthMode] = useState('normal'); // 'wide', 'normal', 'narrow'
   const [isVisible, setIsVisible] = useState(true); // 모바일에서 보드 표시 여부
+  const [isMounted, setIsMounted] = useState(false); // 슬라이드 인 애니메이션용
   const pathname = usePathname();
   const router = useRouter();
   const boardRef = useRef(null);
   const isMobile = useMobile();
 
-  // 경로가 변경될 때마다 widthMode를 normal로 리셋
+  // 초기 마운트 시 슬라이드 인 애니메이션
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // 경로가 변경될 때마다 widthMode를 normal로 리셋하고 슬라이드 인 애니메이션 재실행
   useEffect(() => {
     setWidthMode('normal');
+    // setIsMounted(false);
+    // // 짧은 딜레이 후 슬라이드 인 애니메이션 시작
+    // const timer = setTimeout(() => {
+    //   setIsMounted(true);
+    // }, 50);
+    // return () => clearTimeout(timer);
   }, [pathname]);
 
   // POI 클릭 시 보드를 펼침 (같은 POI 재클릭 포함)
@@ -94,7 +109,7 @@ function Board({ children }) {
   }, [pathname, isMobile]);
 
   return (
-    <S.BoardWrapper ref={boardRef} $widthMode={widthMode} $isVisible={isVisible}>
+    <S.BoardWrapper ref={boardRef} $widthMode={widthMode} $isVisible={isVisible} $isMounted={isMounted}>
       <S.BoardButtonWrapper>
         <S.BoardButtonMobile onClick={handleMobileClick}>
           <span></span>

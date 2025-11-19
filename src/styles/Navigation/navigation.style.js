@@ -40,7 +40,7 @@ export const NavigationWrapper = styled.div`
     width: ${props => props.$isOpen ? '250px' : '43px'};
     min-height: 41px;
     max-height: ${props => props.$isOpen ? '30dvh' : '41px'};
-    padding: ${props => props.$isOpen ? '0px 12px 40px 5px' : '0'};
+    padding: ${props => props.$isOpen ? '0px 12px 20px 5px' : '0'};
   }
 `;
 
@@ -343,7 +343,7 @@ export const OrderButton = styled.button`
 
 // 관리자 Site 목록 관련 스타일
 export const ClusterContainer = styled.div`
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 
   ${theme.media.mobile} {
     margin-bottom: 6px;
@@ -375,6 +375,7 @@ export const SiteItem = styled.li`
   cursor: pointer;
   align-items: flex-start;
 
+
   &:hover {
     background-color: #e9ecef;
   }
@@ -392,6 +393,7 @@ export const SiteTitle = styled.div`
   font-weight: 500;
   color: black;
   margin-right: auto;
+  word-break: break-all;
 `;
 
 export const AdminSiteList = styled.div`
@@ -399,7 +401,7 @@ export const AdminSiteList = styled.div`
   margin-top: 12px;
   padding-left: 20px;
   border-left: 2px solid #e0e0e0;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 `;
 
 export const AdminSiteItem = styled.div`
@@ -451,6 +453,7 @@ export const CreditButton = styled.button`
 
   ${theme.media.mobile} {
     display: ${props => props.$isOpen ? 'block' : 'none'};
+    margin-top: 40px;
   }
 `;
 
@@ -524,7 +527,7 @@ export const ClusterSettingWrapper = styled.div`
   margin-left: 30px;
   margin-right: 8px;
   margin-bottom: -12px;
-  padding-bottom: 10px;
+  padding-bottom: 14px;
   justify-content: flex-end;
   border-left: 2px solid #e0e0e0;
   color: black;

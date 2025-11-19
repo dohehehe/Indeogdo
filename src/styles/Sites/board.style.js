@@ -10,6 +10,16 @@ export const BoardWrapper = styled.div`
   color: black;
   top: 70px;
   right:  ${props => {
+    // 마운트 전에는 화면 밖에 위치
+    if (!props.$isMounted) {
+      switch (props.$widthMode) {
+        case 'wide': return '-100%';
+        case 'normal': return '-40dvw';
+        case 'narrow': return '-100%';
+        default: return '-40dvw';
+      }
+    }
+    // 마운트 후에는 widthMode에 따라 위치 결정
     switch (props.$widthMode) {
       case 'narrow': return 'calc( -40dvw + 60px)';
       default: return '0';
@@ -33,8 +43,7 @@ export const BoardWrapper = styled.div`
   border: 2px solid black;
   border-right: none;
   border-bottom: none;
-  transition: width 0.8s ease-in-out, right 0.8s ease-in-out, box-shadow 0.3s ease-in-out;
-  transition-delay: 0.3s;
+  transition: width 0.8s ease-in-out, right 0.7s ease-out, box-shadow 0.3s ease-in-out;
 
   &:hover {
     box-shadow: 0 4px 30px rgba(6, 109, 160, 0.8);
