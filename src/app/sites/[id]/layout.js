@@ -34,9 +34,6 @@ export async function generateMetadata({ params }) {
     // 이미지 URL (icon이 있으면 사용, 없으면 contents에서 첫 번째 이미지, 그것도 없으면 기본 로고)
     const firstImageFromContents = data.contents?.find(item => item.type === 'image')?.data?.file?.url;
     const imageUrl = firstImageFromContents || data.icon?.img || '/screen01.png';
-    const siteUrl = typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_SITE_URL
-      ? `${process.env.NEXT_PUBLIC_SITE_URL}/sites/${id}`
-      : `https://yourdomain.com/sites/${id}`;
 
     const keywords = [
       siteTitle,
@@ -58,7 +55,6 @@ export async function generateMetadata({ params }) {
       openGraph: {
         title: `${siteTitle} : 인덕도`,
         description: siteDescription,
-        url: siteUrl,
         siteName: "인덕도",
         images: [
           {

@@ -343,7 +343,7 @@ export const OrderButton = styled.button`
 
 // 관리자 Site 목록 관련 스타일
 export const ClusterContainer = styled.div`
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 
   ${theme.media.mobile} {
     margin-bottom: 6px;

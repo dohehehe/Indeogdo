@@ -18,7 +18,9 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
   const removeClusterSites = useClusterSitesStore((state) => state.removeClusterSites);
   // 인덕도 cluster는 초기 로드 시 활성화
   const INDEOGDO_CLUSTER_ID = 'c3215e24-0b9c-4e09-825d-18657bf4a0ba';
-  const [isActive, setIsActive] = useState(cluster.id === INDEOGDO_CLUSTER_ID);
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isActive, setIsActive] = useState(false);
   const [sites, setSites] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingTitle, setEditingTitle] = useState('');
@@ -32,10 +34,15 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
     cluster?.address === undefined ? true : Boolean(cluster.address)
   );
   const [isExpanded, setIsExpanded] = useState(true);
-  const router = useRouter();
-  const pathname = usePathname();
   const introNavigationRef = useRef(null);
   const resolvedThemeId = themeId || cluster?.theme_id || null;
+
+  // 홈페이지(/)에서만 인덕도 클러스터 초기 활성화
+  useEffect(() => {
+    if (pathname === '/' && cluster.id === INDEOGDO_CLUSTER_ID) {
+      setIsActive(true);
+    }
+  }, [pathname, cluster.id]);
   useEffect(() => {
     setLocalIntro(Boolean(cluster?.intro));
     setLocalToggle(Boolean(cluster?.toggle));
@@ -81,6 +88,11 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
       if (!isActive) {
         introNavigationRef.current = null;
       }
+      return;
+    }
+
+    // 이미 특정 사이트 페이지에 있으면 자동 이동하지 않음
+    if (pathname?.match(/^\/sites\/(.+)$/)) {
       return;
     }
 
