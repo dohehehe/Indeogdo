@@ -40,7 +40,7 @@ export const NavigationWrapper = styled.div`
     width: ${props => props.$isOpen ? '250px' : '43px'};
     min-height: 41px;
     max-height: ${props => props.$isOpen ? '30dvh' : '41px'};
-    padding: ${props => props.$isOpen ? '0px 12px 40px 5px' : '0'};
+    padding: ${props => props.$isOpen ? '0px 12px 20px 5px' : '0'};
   }
 `;
 
@@ -453,7 +453,8 @@ export const CreditButton = styled.button`
 
   ${theme.media.mobile} {
     display: ${props => props.$isOpen ? 'block' : 'none'};
-  }
+    margin-top: 30px  
+    }
 `;
 
 export const CreditList = styled.ul`

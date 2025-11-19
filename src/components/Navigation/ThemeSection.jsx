@@ -1,20 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as S from '@/styles/Navigation/navigation.style';
 import ClusterSection from '@/components/Navigation/ClusterSection';
 import EditButton from '@/components/admin/EditButton';
 import useTheme from '@/hooks/useTheme';
+import useMobile from '@/hooks/useMobile';
 
 function ThemeSection({
   theme,
   isAdmin,
 }) {
   const { updateTheme, deleteTheme } = useTheme();
-  const [isExpanded, setIsExpanded] = useState(true);
+  const isMobile = useMobile();
+  const [isExpanded, setIsExpanded] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth > 768;
+    }
+    return true;
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [editingTitle, setEditingTitle] = useState('');
   const [isOrdering, setIsOrdering] = useState(false);
+
+  useEffect(() => {
+    if (isMobile) {
+      setIsExpanded(false);
+    }
+  }, [isMobile]);
 
   const handleToggleTheme = (e) => {
     if (!isEditing) {
