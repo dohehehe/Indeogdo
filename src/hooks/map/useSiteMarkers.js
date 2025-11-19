@@ -168,8 +168,10 @@ const useSiteMarkers = (mapInstance) => {
 
           // 위도, 경도가 있는 address만 마커 생성
           if (address.latitude && address.longitude) {
-            const defaultIcon =
-              buildMarkerIcon(site.icon?.img) ||
+            const isAreaSite = Boolean(site.area);
+            const defaultIcon = isAreaSite
+              ? undefined
+              : buildMarkerIcon(site.icon?.img) ||
               buildMarkerIcon('/icon/marker.png');
 
             const marker = new window.google.maps.Marker({
@@ -180,6 +182,7 @@ const useSiteMarkers = (mapInstance) => {
               map: mapInstance,
               title: site.title,
               icon: defaultIcon,
+              visible: !isAreaSite,
               animation: window.google.maps.Animation.DROP
             });
 
