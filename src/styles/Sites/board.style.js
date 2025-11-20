@@ -360,7 +360,7 @@ export const SameLocationIndicator = styled.span`
 export const BoardTitle = styled.h1`
   font-size: 2.3rem;
   font-weight: 800;
-  margin-bottom: 5px;
+  margin-bottom: 7px;
   color: black;
   line-height: 1.2;
   word-break: keep-all;
@@ -379,6 +379,7 @@ export const BoardAddress = styled.h3`
   font-weight: 600;
   margin-bottom: 10px;
   color: black;
+  line-height: 1.4;
 
   ${theme.media.mobile} {
     margin-left: 3px;
