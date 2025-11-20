@@ -25,7 +25,9 @@ function BoardContainer({ siteData }) {
   const router = useRouter();
   const boardDetailRef = useRef(null);
   const activeClustersSites = useClusterSitesStore((state) => state.activeClustersSites);
-  const shouldShowAddresses = siteData?.cluster?.address ;
+  const shouldShowAddresses = siteData?.cluster?.address === undefined
+    ? true
+    : Boolean(siteData.cluster.address);
 
   const activeSites = useMemo(() => {
     if (!activeClustersSites) {
@@ -158,8 +160,8 @@ function BoardContainer({ siteData }) {
             )}
           </S.BoardClusterWrapper>
           <S.BoardTitle>{siteData?.title}</S.BoardTitle>
-          {siteData?.addresses && siteData.addresses.length > 0 && (
-            <S.BoardAddress hidden={shouldShowAddresses}>
+          {shouldShowAddresses && siteData?.addresses && siteData.addresses.length > 0 && (
+            <S.BoardAddress>
               {siteData.addresses.map((addr, index) => (
                 <div key={addr.id || index}>{addr.name}</div>
               ))}

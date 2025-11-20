@@ -21,6 +21,7 @@ export async function getSiteData(id) {
         cluster:cluster_id (
           id,
           title,
+          address,
           theme:theme_id (
             id,
             title

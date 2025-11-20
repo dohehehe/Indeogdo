@@ -19,7 +19,8 @@ export async function GET(request, context) {
         *,
         cluster:cluster_id (
           id,
-          title
+          title,
+          address
         ),
         icon:icon_id (
           id,
@@ -134,7 +135,8 @@ export async function PUT(request, context) {
         *,
         cluster:cluster_id (
           id,
-          title
+          title,
+          address
         ),
         icon:icon_id (
           id,
@@ -198,7 +200,8 @@ export async function DELETE(request, context) {
         *,
         cluster:cluster_id (
           id,
-          title
+          title,
+          address
         ),
         icon:icon_id (
           id,
@@ -259,7 +262,8 @@ export async function DELETE(request, context) {
         *,
         cluster:cluster_id (
           id,
-          title
+          title,
+          address
         ),
         icon:icon_id (
           id,

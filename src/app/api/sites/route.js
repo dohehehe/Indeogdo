@@ -16,7 +16,8 @@ export async function GET(request) {
         *,
         cluster:cluster_id (
           id,
-          title
+          title,
+          address
         ),
         icon:icon_id (
           id,
@@ -139,7 +140,8 @@ export async function POST(request) {
         *,
         cluster:cluster_id (
           id,
-          title
+          title,
+          address
         ),
         icon:icon_id (
           id,

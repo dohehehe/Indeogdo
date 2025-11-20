@@ -8,7 +8,7 @@ const EditorArticle = styled.article`
   display: flex;
   // flex-direction: column;
   flex-wrap: wrap;
-  margin-top: 30px;
+  margin-top: 0px;
   margin-left: 5px;
   color: black;
   gap: 10px;
