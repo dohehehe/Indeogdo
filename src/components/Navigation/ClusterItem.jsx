@@ -93,7 +93,7 @@ function ClusterItem({ cluster, isAdmin, themeId }) {
 
     // 이미 특정 사이트 페이지에 있으면 자동 이동하지 않음
     // if (pathname?.match(/^\/sites\/(.+)$/)) {
-     // return;
+    return;
     }
 
     if (!sites || sites.length === 0) return;
