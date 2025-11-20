@@ -159,7 +159,7 @@ function BoardContainer({ siteData }) {
           </S.BoardClusterWrapper>
           <S.BoardTitle>{siteData?.title}</S.BoardTitle>
           {siteData?.addresses && siteData.addresses.length > 0 && (
-            <S.BoardAddress hidden={!shouldShowAddresses}>
+            <S.BoardAddress hidden={shouldShowAddresses}>
               {siteData.addresses.map((addr, index) => (
                 <div key={addr.id || index}>{addr.name}</div>
               ))}
