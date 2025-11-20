@@ -8,7 +8,7 @@ export const BoardWrapper = styled.div`
   position: fixed;
   font-family: 'Sweet';
   color: black;
-  top: 70px;
+  top: 15px;
   right:  ${props => {
     // 마운트 전에는 화면 밖에 위치
     if (!props.$isMounted) {
@@ -33,7 +33,7 @@ export const BoardWrapper = styled.div`
       default: return '40dvw';
     }
   }};
-  height: calc(100dvh - 70px);
+  height: calc(100dvh - 15px);
   background-color: white;
   border-radius: 12px 0 0 0;
   box-shadow: 0 4px 20px rgba(9, 36, 50, 0.39);
@@ -246,7 +246,7 @@ export const BoardHeader = styled.header`
   // background-color: white;
   background-image: linear-gradient(to bottom,rgba(255, 255, 255, 0.95) 70%, #ffffff00 100%);
   padding-top: 30px;
-  padding-bottom: 70px;
+  padding-bottom: 40px;
   position: sticky;
   top: 0px;
   z-index: 1;
