@@ -25,7 +25,7 @@ function BoardContainer({ siteData }) {
   const router = useRouter();
   const boardDetailRef = useRef(null);
   const activeClustersSites = useClusterSitesStore((state) => state.activeClustersSites);
-  const shouldShowAddresses = siteData?.cluster?.address !== false;
+  const shouldShowAddresses = siteData?.cluster?.address ;
 
   const activeSites = useMemo(() => {
     if (!activeClustersSites) {
