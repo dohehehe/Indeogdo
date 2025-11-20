@@ -8,7 +8,7 @@ export const BoardWrapper = styled.div`
   position: fixed;
   font-family: 'Sweet';
   color: black;
-  top: 15px;
+  top: 70px;
   right:  ${props => {
     // 마운트 전에는 화면 밖에 위치
     if (!props.$isMounted) {
@@ -33,7 +33,7 @@ export const BoardWrapper = styled.div`
       default: return '40dvw';
     }
   }};
-  height: calc(100dvh - 15px);
+  height: calc(100dvh - 70px);
   background-color: white;
   border-radius: 12px 0 0 0;
   box-shadow: 0 4px 20px rgba(9, 36, 50, 0.39);
