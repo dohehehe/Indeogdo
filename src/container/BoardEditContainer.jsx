@@ -123,14 +123,17 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
       }
 
       const targetSiteId = isEditing ? siteId : result.id;
+      const parseCoordinate = (value) => {
+        if (value === '' || value === null || value === undefined) {
+          return null;
+        }
+        const parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : null;
+      };
+
       const submittedAddresses = (formValues.addresses || []).map((entry) => {
-        // 위도/경도가 빈 문자열이면 null로 변환
-        const latitude = entry.latitude === '' || entry.latitude === null || entry.latitude === undefined
-          ? null
-          : entry.latitude;
-        const longitude = entry.longitude === '' || entry.longitude === null || entry.longitude === undefined
-          ? null
-          : entry.longitude;
+        const latitude = parseCoordinate(entry.latitude);
+        const longitude = parseCoordinate(entry.longitude);
 
         return {
           addressId: entry.addressId || null,
@@ -533,6 +536,7 @@ function BoardEditContainer({ siteData, onChange, clusterId }) {
                         <AddressSearch
                           setValue={setValue}
                           register={register}
+                          control={control}
                           namePrefix={`addresses.${index}`}
                           error={errors?.addresses?.[index]?.address?.message}
                           disabled={areaValue}

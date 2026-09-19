@@ -457,6 +457,13 @@ export const AddressInputWrapper = styled.div`
   flex: 1;
 `
 
+export const AddressCoordinateHint = styled.p`
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: #555;
+  line-height: 1.4;
+`
+
 export const AddressActions = styled.div`
   display: flex;
   align-items: center;
